@@ -1,25 +1,6 @@
 {
 	"name": "scotia-performance",
-	"private": true,
 	"version": "0.0.1",
-	"type": "module",
-	"scripts": {
-		"dev": "bun x vite dev",
-		"build": "bun x vite build",
-		"preview": "bun x vite preview",
-		"prepare": "bun x svelte-kit sync",
-		"test:unit": "bun x vitest",
-		"test": "bun test",
-		"lint": "bun x eslint . && bun x prettier --check .",
-		"format": "bun x prettier --write .",
-		"check": "bun x svelte-check --tsconfig ./jsconfig.json --threshold error",
-		"check:watch": "bun x svelte-check --tsconfig ./jsconfig.json --watch --threshold error",
-		"optimize:images": "bun run scripts/optimize-images.js",
-		"analyze": "bun x vite build --mode analyze",
-		"analyze:performance": "bun run scripts/analyze-performance.js",
-		"perf": "bun run analyze:performance",
-		"postbuild": "bun run perf"
-	},
 	"devDependencies": {
 		"@eslint/compat": "^1.2.5",
 		"@eslint/js": "^9.18.0",
@@ -45,18 +26,40 @@
 		"sass": "^1.69.0",
 		"sharp": "^0.33.2",
 		"svelte": "^5.0.0",
-		"svelte-check": "^3.6.8",
+		"svelte-check": "^3.7.0",
 		"svelte-preprocess": "^5.1.0",
 		"tailwindcss": "^4.0.0",
 		"terser": "^5.39.0",
+		"typescript": "^5.4.2",
 		"vite": "^6.2.6",
 		"vite-plugin-imagemin": "^0.6.1",
 		"vitest": "^3.0.0"
 	},
-	"dependencies": {},
+	"private": true,
+	"scripts": {
+		"dev": "bun x vite dev",
+		"build": "bun x vite build",
+		"preview": "bun x vite preview",
+		"prepare": "bun x svelte-kit sync",
+		"test:unit": "bun x vitest",
+		"test": "bun test",
+		"lint": "bun x eslint . && bun x prettier --check .",
+		"format": "bun x prettier --write .",
+		"check": "bun x svelte-check --tsconfig ./jsconfig.json --threshold error",
+		"check:watch": "bun x svelte-check --tsconfig ./jsconfig.json --watch --threshold error",
+		"optimize:images": "bun run scripts/optimize-images.js",
+		"analyze": "bun x vite build --mode analyze",
+		"analyze:performance": "bun run scripts/analyze-performance.js",
+		"perf": "bun run analyze:performance",
+		"postbuild": "bun run perf"
+	},
 	"trustedDependencies": [
 		"sharp",
 		"@rollup/rollup-linux-x64-gnu",
 		"lightningcss"
-	]
+	],
+	"type": "module",
+	"dependencies": {
+		"@lucide/svelte": "0.509.0"
+	}
 }

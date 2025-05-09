@@ -16,7 +16,7 @@ const config = {
 			typescript: {
 				tsconfigFile: './tsconfig.json',
 				compilerOptions: {
-					moduleResolution: 'NodeNext'
+					moduleResolution: 'bundler'
 				}
 			}
 		})
@@ -68,12 +68,13 @@ const config = {
 	// Add explicit extensions to handle Svelte files properly
 	extensions: ['.svelte'],
 	
-	// Ensure compilerOptions are properly set
+	// Ensure compilerOptions are properly set for Svelte 5 runes
 	compilerOptions: {
 		accessors: true,
 		immutable: true,
 		enableSourcemap: false,
-		runes: true
+		runes: true,
+		namespace: 'html' // Add namespace to prevent HTML errors
 	}
 };
 

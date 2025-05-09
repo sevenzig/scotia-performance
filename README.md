@@ -117,6 +117,17 @@ For specific deployment environments, refer to the [SvelteKit adapter documentat
 - See `.dev/dependencies.md` for information on critical dependencies and their interactions
 - See `.dev/rules.txt` for Cursor AI guidance
 
+## TypeScript Configuration for Svelte 5
+
+This project uses Svelte 5 with TypeScript. Due to the evolving nature of Svelte 5's TypeScript integration, we've implemented custom configuration to handle HTML namespace errors.
+
+### Known Issues and Solutions
+
+- **HTML Namespace Errors**: The error `Cannot use namespace 'svelteHTML' as a value` is fixed through our ambient type declarations and configuration.
+- **Configuration**: We use bundler module resolution and custom ambient type declarations to resolve TypeScript issues.
+
+For more details, see our [Svelte 5 TypeScript Guidelines](src/docs/rules/svelte5-typescript.md).
+
 ## License
 
 Copyright © Scotia Performance. All rights reserved.

@@ -1,0 +1,19 @@
+{
+  "name": "svelte5-typescript",
+  "description": "Guidelines for handling TypeScript with Svelte 5",
+  "rules": [
+    "Create src/ambient.d.ts to declare svelteHTML namespace with proper interfaces",
+    "Use 'moduleResolution': 'bundler' and 'module': 'ESNext' in both tsconfig.json and jsconfig.json",
+    "Include 'types': ['svelte'] in compiler options to ensure proper type loading",
+    "Add <svelte:options namespace='html' /> to components with namespace errors",
+    "Set namespace: 'html' in svelte.config.js compilerOptions",
+    "Use svelte-check version 3.7.0+ and typescript 5.4.2+ for Svelte 5 compatibility",
+    "Include .d.ts files in tsconfig/jsconfig include arrays",
+    "Remove TypeScript workarounds when Svelte 5 stable is released"
+  ],
+  "glob": "**/*.svelte",
+  "links": [
+    { "text": "Svelte 5 TypeScript Documentation", "url": "src/docs/rules/svelte5-typescript.md" },
+    { "text": "Official Svelte 5 Documentation", "url": "https://svelte-5-preview.vercel.app/" }
+  ]
+} 

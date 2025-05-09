@@ -17,6 +17,8 @@
   });
 </script>
 
+<svelte:options namespace="html" />
+
 <section class="hero">
   <div class="container">
     <div class="info-card">
