@@ -22,7 +22,8 @@
   }
   
   // Toggle services mega menu
-  function toggleServicesMenu() {
+  function toggleServicesMenu(event: MouseEvent) {
+    event.stopPropagation();
     isServicesMenuOpen = !isServicesMenuOpen;
   }
   
@@ -108,7 +109,7 @@
         aria-expanded={isServicesMenuOpen} 
         aria-controls="services-mega-menu"
         aria-label={servicesAriaLabel}
-        on:click|stopPropagation={toggleServicesMenu}
+        onclick={toggleServicesMenu}
       >
         Automotive Services
       </button>
@@ -206,7 +207,7 @@
     class="nav-toggle" 
     aria-label={menuAriaLabel}
     aria-expanded={isMobileMenuOpen}
-    on:click={toggleMobileMenu}
+    onclick={toggleMobileMenu}
   >
     <span></span>
     <span></span>
