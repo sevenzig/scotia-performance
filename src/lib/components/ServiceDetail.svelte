@@ -1,30 +1,41 @@
 <script lang="ts">
-  const { title, description, icon, isReversed = false } = $props<{
+  import * as LucideIcons from '@lucide/svelte';
+
+  const { title, description, icon, isReversed = false, children } = $props<{
     title: string;
     description: string;
     icon?: string;
     isReversed?: boolean;
+    children?: {
+      actions?: () => unknown;
+      image?: () => unknown;
+    };
   }>();
+
+  // Get the icon component dynamically if a valid icon name is provided
+  const IconComponent = $derived(icon && icon in LucideIcons ? LucideIcons[icon as keyof typeof LucideIcons] : null);
 </script>
 
 <div class="service-detail" class:reversed={isReversed}>
   <div class="detail-content">
     <h3>{title}</h3>
     <p>{description}</p>
-    {#if $$slots.actions}
+    {#if children?.actions}
       <div class="actions">
-        <slot name="actions"></slot>
+        {@render children.actions()}
       </div>
     {/if}
   </div>
   
   <div class="detail-image">
-    {#if icon}
+    {#if icon && IconComponent}
       <div class="icon-container">
-        <div class="placeholder-icon">{icon}</div>
+        <div class="placeholder-icon">
+          <IconComponent size={36} strokeWidth={1.5} />
+        </div>
       </div>
-    {:else if $$slots.image}
-      <slot name="image"></slot>
+    {:else if children?.image}
+      {@render children.image()}
     {:else}
       <div class="placeholder-image"></div>
     {/if}
