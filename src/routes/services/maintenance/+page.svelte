@@ -65,54 +65,45 @@
       <ServiceDetail 
         title="Comprehensive Oil Change Service" 
         description="Our oil change service goes beyond just replacing oil. We perform a complete vehicle inspection, checking fluid levels, filters, belts, hoses, and more. We use only high-quality oils and filters matched to your vehicle's specifications."
-      >
-        <svelte:fragment slot="image">
-          <img src="/images/maintenance/oil-change.jpg" alt="Oil change service" class="rounded-lg shadow-md w-full object-cover" style="aspect-ratio: 16/9;">
-        </svelte:fragment>
-        <svelte:fragment slot="actions">
-          <a href="/contact" class="inline-flex items-center text-scotia-blue hover:underline">
+        children={{
+          image: () => `<img src="/images/maintenance/oil-change.jpg" alt="Oil change service" class="rounded-lg shadow-md w-full object-cover" style="aspect-ratio: 16/9;">`,
+          actions: () => `<a href="/contact" class="inline-flex items-center text-scotia-blue hover:underline">
             Schedule Service
             <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
             </svg>
-          </a>
-        </svelte:fragment>
-      </ServiceDetail>
+          </a>`
+        }}
+      />
       
       <ServiceDetail 
         title="30/60/90K Mile Services" 
         description="Factory-recommended maintenance at key mileage intervals helps prevent breakdowns and extends vehicle life. Our comprehensive service packages include all inspections, fluid changes, and adjustments recommended by your vehicle's manufacturer."
         isReversed={true}
-      >
-        <svelte:fragment slot="image">
-          <img src="/images/maintenance/scheduled-maintenance.jpg" alt="Scheduled maintenance service" class="rounded-lg shadow-md w-full object-cover" style="aspect-ratio: 16/9;">
-        </svelte:fragment>
-        <svelte:fragment slot="actions">
-          <a href="/services/maintenance/scheduled" class="inline-flex items-center text-scotia-blue hover:underline">
+        children={{
+          image: () => `<img src="/images/maintenance/scheduled-maintenance.jpg" alt="Scheduled maintenance service" class="rounded-lg shadow-md w-full object-cover" style="aspect-ratio: 16/9;">`,
+          actions: () => `<a href="/services/maintenance/scheduled" class="inline-flex items-center text-scotia-blue hover:underline">
             Learn About Scheduled Maintenance
             <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
             </svg>
-          </a>
-        </svelte:fragment>
-      </ServiceDetail>
+          </a>`
+        }}
+      />
       
       <ServiceDetail 
         title="Brake System Maintenance" 
         description="Your vehicle's braking system is critical for safety. Our brake services include pad replacement, rotor resurfacing or replacement, brake fluid flush, and complete system inspection to ensure optimal stopping power and safety."
-      >
-        <svelte:fragment slot="image">
-          <img src="/images/maintenance/brake-service.jpg" alt="Brake system maintenance" class="rounded-lg shadow-md w-full object-cover" style="aspect-ratio: 16/9;">
-        </svelte:fragment>
-        <svelte:fragment slot="actions">
-          <a href="/contact" class="inline-flex items-center text-scotia-blue hover:underline">
+        children={{
+          image: () => `<img src="/images/maintenance/brake-service.jpg" alt="Brake system maintenance" class="rounded-lg shadow-md w-full object-cover" style="aspect-ratio: 16/9;">`,
+          actions: () => `<a href="/contact" class="inline-flex items-center text-scotia-blue hover:underline">
             Schedule Brake Service
             <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
             </svg>
-          </a>
-        </svelte:fragment>
-      </ServiceDetail>
+          </a>`
+        }}
+      />
     </div>
   </section>
   
