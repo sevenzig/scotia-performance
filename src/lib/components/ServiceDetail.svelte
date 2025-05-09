@@ -1,6 +1,4 @@
 <script lang="ts">
-  import * as LucideIcons from '@lucide/svelte';
-
   const { title, description, icon, isReversed = false, children } = $props<{
     title: string;
     description: string;
@@ -11,9 +9,6 @@
       image?: () => unknown;
     };
   }>();
-
-  // Get the icon component dynamically if a valid icon name is provided
-  const IconComponent = $derived(icon && icon in LucideIcons ? LucideIcons[icon as keyof typeof LucideIcons] : null);
 </script>
 
 <div class="service-detail" class:reversed={isReversed}>
@@ -28,10 +23,12 @@
   </div>
   
   <div class="detail-image">
-    {#if icon && IconComponent}
+    {#if icon}
       <div class="icon-container">
         <div class="placeholder-icon">
-          <IconComponent size={36} strokeWidth={1.5} />
+          <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            {@html icon}
+          </svg>
         </div>
       </div>
     {:else if children?.image}

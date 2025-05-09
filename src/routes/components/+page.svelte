@@ -783,28 +783,6 @@
     padding: 0 2rem;
   }
   
-  .header-content {
-    max-width: 1200px;
-    margin: 0 auto 3rem;
-    text-align: center;
-  }
-  
-  h1 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    color: var(--scotia-blue, #1A5DAD);
-  }
-  
-  .component-showcase__description {
-    font-size: 1.25rem;
-    margin-bottom: 1rem;
-    color: #555;
-    max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  
   /* Section styles */
   .component-section {
     margin-bottom: 5rem;
@@ -857,10 +835,6 @@
   @media (min-width: 768px) {
     .component-examples--grid {
       grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
-    }
-    
-    .component-example--full {
-      grid-column: 1 / -1;
     }
   }
   
@@ -945,9 +919,6 @@
   @media (max-width: 640px) {
     .container {
       padding: 0 1rem;
-    }
-    h1 {
-      font-size: 2rem;
     }
     .component-section__title {
       font-size: 1.5rem;
