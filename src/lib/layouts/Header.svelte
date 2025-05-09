@@ -19,6 +19,15 @@
   // Toggle mobile menu
   function toggleMobileMenu() {
     isMobileMenuOpen = !isMobileMenuOpen;
+    
+    // Handle body scrolling
+    if (typeof document !== 'undefined') {
+      if (isMobileMenuOpen) {
+        document.body.classList.add('menu-open');
+      } else {
+        document.body.classList.remove('menu-open');
+      }
+    }
   }
   
   // Toggle services mega menu
@@ -109,7 +118,7 @@
         aria-expanded={isServicesMenuOpen} 
         aria-controls="services-mega-menu"
         aria-label={servicesAriaLabel}
-        onclick={toggleServicesMenu}
+        onclick={(event: MouseEvent) => toggleServicesMenu(event)}
       >
         Automotive Services
       </button>
@@ -207,7 +216,7 @@
     class="nav-toggle" 
     aria-label={menuAriaLabel}
     aria-expanded={isMobileMenuOpen}
-    onclick={toggleMobileMenu}
+    onclick={() => toggleMobileMenu()}
   >
     <span></span>
     <span></span>
