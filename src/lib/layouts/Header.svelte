@@ -297,7 +297,7 @@
 
     <!-- Bottom Navigation -->
     <div class="bottom-nav">
-      <a href="#">{hoursText}</a>
+      <span class="hours-text">{hoursText}</span>
       <a href="https://www.google.com/maps/search/?api=1&query=24+Sacandaga+Rd,+Scotia,+NY+12302">24 Sacandaga Rd, Scotia</a>
     </div>
   </div>
