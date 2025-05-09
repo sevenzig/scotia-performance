@@ -18,7 +18,7 @@ includes: "**/*.svelte"
    ```svelte
    let count = $state(0);
    let user = $state({ name: 'Alice', age: 30 });
-````
+   ```
 
 2. **Use `$state.raw()` for large objects/arrays** that don't need deep reactivity.
 

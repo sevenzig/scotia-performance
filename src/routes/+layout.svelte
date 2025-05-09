@@ -16,6 +16,7 @@
 	import '../app.scss';
 	import { onMount } from 'svelte';
 	import Header from '$lib/layouts/Header.svelte';
+	import Footer from '$lib/layouts/Footer.svelte';
 	
 	// Props for Svelte 5 snippet pattern
 	const { children } = $props<{
@@ -85,20 +86,7 @@
 		{/if}
 	</main>
 	
-	<footer class="site-footer">
-		<div class="container">
-			{#if initialRenderComplete}
-				<div class="footer-info">
-					<p>© {new Date().getFullYear()} Scotia Performance Auto - All Rights Reserved.</p>
-					<p>24 Sacandaga Rd, Scotia, NY 12302 | <a href="tel:5183746111">(518) 374-6111</a></p>
-				</div>
-			{:else}
-				<div class="footer-info">
-					<p>© Scotia Performance Auto - All Rights Reserved.</p>
-				</div>
-			{/if}
-		</div>
-	</footer>
+	<Footer {initialRenderComplete} />
 </div>
 
 <style>
@@ -109,16 +97,5 @@
 	.site-content {
 		min-height: 70vh;
 		padding-top: 80px; /* Match the header height */
-	}
-	
-	/* Add content-visibility to non-critical elements */
-	@supports (content-visibility: auto) {
-		.site-footer {
-			content-visibility: auto;
-			/* Add fallback height */
-			min-height: 100px;
-			height: 100px;
-			contain-intrinsic-size: 100% 100px;
-		}
 	}
 </style>

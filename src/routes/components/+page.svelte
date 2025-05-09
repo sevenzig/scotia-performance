@@ -32,7 +32,7 @@
   // Example data for component demos
   const garageStatus = $state({ 
     isOpen: true, 
-    message: "We're currently open until 6:00 PM today" 
+    message: "We're currently open until 5:00 PM today" 
   });
   
   const garageClosedStatus = $state({
@@ -84,20 +84,6 @@
 
 <div class="component-showcase">
   <div class="container">
-    <div class="header-content">
-      <h1>Scotia Performance Component Library</h1>
-      <p class="component-showcase__description">
-        This is a showcase of all the UI components used throughout the Scotia Performance website.
-        Use this page as a reference for available components and their variations.
-      </p>
-    </div>
-    
-    <section class="component-section">
-      <h2 class="component-section__title">About Card</h2>
-      <p class="component-section__description">
-        The About Card component displays business information and status.
-        It comes in two status variations: open and closed.
-      </p>
       
       <div class="component-examples component-examples--grid">
         <div class="component-example">
@@ -128,7 +114,6 @@
           </details>
         </div>
       </div>
-    </section>
     
     <section class="component-section">
       <h2 class="component-section__title">Business Info</h2>
