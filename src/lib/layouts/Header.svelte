@@ -5,6 +5,7 @@
   let isMobileMenuOpen = $state(false);
   let isServicesMenuOpen = $state(false);
   let hoursText = $state(businessHoursService.getCurrentStatus().message);
+  let isScrolled = $state(false);
   
   // Derived values
   const menuAriaLabel = $derived(
@@ -41,6 +42,13 @@
     }
   }
   
+  // Handle scroll event to add/remove scrolled class
+  function handleScroll() {
+    if (typeof window !== 'undefined') {
+      isScrolled = window.scrollY > 10;
+    }
+  }
+  
   // Update business hours
   function updateBusinessHours() {
     hoursText = businessHoursService.getCurrentStatus().message;
@@ -49,13 +57,17 @@
   // Set up document click listener and business hours interval
   $effect(() => {
     // Only run in browser environment
-    if (typeof document === 'undefined') return;
+    if (typeof document === 'undefined' || typeof window === 'undefined') return;
     
     // Set up click listener
     document.addEventListener('click', handleClickOutside);
     
-    // Initial update of hours
+    // Set up scroll listener
+    window.addEventListener('scroll', handleScroll);
+    
+    // Initial update of hours and scroll state
     updateBusinessHours();
+    handleScroll();
     
     // Set up interval to update hours
     const interval = setInterval(updateBusinessHours, 60000);
@@ -63,6 +75,7 @@
     // Cleanup function
     return () => {
       document.removeEventListener('click', handleClickOutside);
+      window.removeEventListener('scroll', handleScroll);
       clearInterval(interval);
     };
   });
@@ -82,6 +95,7 @@
 <header 
   class="site-header" 
   class:menu-open={isMobileMenuOpen}
+  class:scrolled={isScrolled}
 >
   <a href="/" class="logo" aria-label="Scotia Performance Home">Scotia Performance</a>
 
@@ -94,7 +108,7 @@
         aria-expanded={isServicesMenuOpen} 
         aria-controls="services-mega-menu"
         aria-label={servicesAriaLabel}
-        on:click={toggleServicesMenu}
+        on:click|stopPropagation={toggleServicesMenu}
       >
         Automotive Services
       </button>
@@ -103,7 +117,7 @@
       <div 
         id="services-mega-menu" 
         class="mega-menu" 
-        data-visible={isServicesMenuOpen}
+        class:active={isServicesMenuOpen}
         hidden={!isServicesMenuOpen}
       >
         <!-- Menu Content -->
@@ -270,18 +284,18 @@
     top: 0;
     left: 0;
     right: 0;
-    background-color: rgba(255, 255, 255, 0.9);
-    transition: background-color 0.3s ease;
+    background-color: $white;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
     z-index: $z-index-header;
     padding: 0 $spacing-4;
     height: 80px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    box-shadow: 0 2px 10px rgba($black, 0.1);
     
     &.scrolled {
-      background-color: $white;
-      box-shadow: 0 2px 10px rgba($black, 0.1);
+      box-shadow: 0 4px 15px rgba($black, 0.15);
     }
     
     @include md {
@@ -291,7 +305,7 @@
 
   /* Logo Styles */
   .logo {
-    color: $scotia-dark;
+    color: $scotia-blue;
     text-decoration: none;
     font-size: $font-size-xl;
     font-weight: $font-weight-bold;
@@ -356,7 +370,7 @@
     font-weight: $font-weight-semibold;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: $scotia-dark;
+    color: $scotia-blue;
     text-decoration: none;
     padding: $spacing-2;
     min-height: 44px;
@@ -366,7 +380,7 @@
     transition: color 0.2s ease;
     
     &:hover {
-      color: $scotia-blue;
+      color: darken($scotia-blue, 15%);
     }
   }
 
@@ -378,7 +392,7 @@
   }
 
   .services-toggle {
-    color: $scotia-dark;
+    color: $scotia-blue;
     padding: $spacing-2;
     min-height: 44px;
     text-transform: uppercase;
@@ -394,6 +408,7 @@
     
     &[aria-expanded="true"] {
       color: $scotia-red;
+      background-color: rgba($scotia-blue, 0.05);
     }
     
     &::after {
@@ -424,7 +439,7 @@
     transition: opacity 0.2s ease, visibility 0.2s ease;
     z-index: 98;
     
-    &[data-visible="true"] {
+    &.active {
       opacity: 1;
       visibility: visible;
     }
