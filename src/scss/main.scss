@@ -1,0 +1,51 @@
+/* Scotia Performance - Main SCSS Entrypoint */
+/*
+ * A consolidated stylesheet structure to improve
+ * maintainability and reduce redundancy
+ */
+
+/* Import core styles */
+@use 'core/variables' as *;  // Now includes CSS custom properties
+@use 'core/mixins' as *;
+@use 'core/reset' as *;
+
+/* Import component styles */
+@use 'components/ui-elements' as *;   // Typography, Buttons, Forms
+@use 'components/structure' as *;     // Layout and Grid systems
+@use 'components/about-card' as *;    // About Card component
+
+/* Import page-specific styles */
+@use 'pages/about' as *;
+@use 'pages/components' as *;         // Component showcase page
+
+/* Global styles */
+html, body {
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  background-color: $white;
+  color: $scotia-gray;
+  font-family: $font-secondary;
+  line-height: 1.5;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
+/* Accessibility utility */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

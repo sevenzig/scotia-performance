@@ -1,0 +1,219 @@
+---
+description: Guidelines for writing efficient and maintainable Svelte 5 code
+globs: 
+alwaysApply: false
+---
+---
+name: "Svelte 5 Best Practices"
+kind: "Agent Requested"
+description: "Guidelines for writing efficient and maintainable Svelte 5 code"
+includes: "**/*.svelte"
+---
+
+# Svelte 5 Best Practices
+
+## Reactivity with Runes
+
+1. **Use `$state()` for reactive state** that needs to be updated directly.
+   ```svelte
+   let count = $state(0);
+   let user = $state({ name: 'Alice', age: 30 });
+````
+
+2. **Use `$state.raw()` for large objects/arrays** that don't need deep reactivity.
+
+   ```svelte
+   let largeData = $state.raw(complexObjectOrArray);
+   // Will only react to direct reassignment, not property changes
+   ```
+
+3. **Use `$state.snapshot()` when you need a non-reactive copy** of state for external libraries or logging.
+
+   ```svelte
+   console.log($state.snapshot(user)); // Creates a static copy
+   ```
+
+4. **Use `$derived()` for computed values** that depend on other state.
+
+   ```svelte
+   let doubled = $derived(count * 2);
+   let isAdult = $derived(user.age >= 18);
+   ```
+
+5. **Use `$effect()` for side effects** that should run when dependencies change.
+
+   ```svelte
+   $effect(() => {
+     document.title = `Count: ${count}`;
+     localStorage.setItem('count', count);
+   });
+   ```
+
+6. **Avoid mixing legacy reactivity (`$:`) with runes** in the same component.
+
+   ```svelte
+   // ❌ Avoid combining legacy and rune-based reactivity
+   $: doubled = count * 2;
+   let doubled = $derived(count * 2); // Use one approach
+   ```
+
+7. **Keep reactive state declarations at the top** of your script section for better readability.
+
+## Component Props and Communication
+
+8. **Use `$props()` with destructuring** for component properties.
+
+   ```svelte
+   let { name = 'Guest', required, optional = 'default', ...rest } = $props();
+   ```
+
+9. **Use `$props.id()` for generating unique IDs** within components for accessibility.
+
+   ```svelte
+   const uid = $props.id();
+   <label for={`${uid}-input`}>Name</label>
+   <input id={`${uid}-input`} />
+   ```
+
+10. **Use `$bindable()` when you need two-way binding** between components.
+
+    ```svelte
+    let { value = $bindable('') } = $props();
+    ```
+
+11. **Use callback props for component communication** instead of event dispatching.
+
+    ```svelte
+    <!-- ParentComponent.svelte -->
+    <ChildComponent onSave={handleSave} />
+
+    <!-- ChildComponent.svelte -->
+    <script>
+      let { onSave } = $props();
+    </script>
+    <button onclick={() => onSave(data)}>Save</button>
+    ```
+
+## Events and DOM Interaction
+
+12. **Use native event attributes** (e.g., `onclick`, `onchange`) instead of Svelte's `on:` directive for inline handlers.
+
+    ```svelte
+    <!-- ✅ Preferred in Svelte 5 -->
+    <button onclick={() => count++}>Increment</button>
+
+    <!-- ❌ Legacy syntax -->
+    <button on:click={() => count++}>Increment</button>
+    ```
+
+13. **Use function shorthand** when the handler has the same name as the event.
+
+    ```svelte
+    <script>
+      function onclick() {
+        count++;
+      }
+    </script>
+    <button {onclick}>Click me</button>
+    ```
+
+## Content Distribution
+
+14. **Use snippets (`#snippet`) and render tags (`@render`) instead of slots.**
+
+    ```svelte
+    <!-- ParentComponent.svelte -->
+    <Card>
+      {#snippet header()}
+        <h2>Card Title</h2>
+      {/snippet}
+      <p>Main content</p>
+    </Card>
+
+    <!-- Card.svelte -->
+    <div class="card">
+      {@render header()}
+      <div class="content">
+        {@render children()}
+      </div>
+    </div>
+    ```
+
+15. **Pass parameters to snippets** for dynamic content.
+
+    ```svelte
+    {#snippet item(product, index)}
+      <li>{index}: {product.name} - ${product.price}</li>
+    {/snippet}
+
+    {#each products as product, i}
+      {@render item(product, i)}
+    {/each}
+    ```
+
+## Migration and Component Lifecycle
+
+16. **Use `mount()` instead of `new Component()`** — components are now functions, not classes.
+
+    ```javascript
+    import { mount } from 'svelte';
+    const app = mount(App, { target: document.body });
+    ```
+
+17. **Use `unmount()` instead of `$destroy()`** to remove components.
+
+    ```javascript
+    import { unmount } from 'svelte';
+    unmount(app);
+    ```
+
+## Code Organization and Naming
+
+18. **Name variables clearly** to indicate their purpose.
+
+    ```svelte
+    let isLoading = $state(true);  // ✅ Boolean
+    let userData = $state({});     // ✅ Object
+    ```
+
+19. **Prefer declarative patterns** over imperative code when possible.
+
+    ```svelte
+    <!-- ✅ Declarative -->
+    {#if isLoggedIn}
+      <UserDashboard />
+    {:else}
+      <LoginForm />
+    {/if}
+
+    <!-- ❌ Imperative -->
+    <div>
+      {$effect(() => {
+        container.innerHTML = isLoggedIn 
+          ? userDashboardHTML 
+          : loginFormHTML;
+      })}
+    </div>
+    ```
+
+20. **Extract reusable logic** into `.svelte.js` or `.svelte.ts` files to share reactive code between components.
+
+    ```javascript
+    // counter.svelte.js
+    export function createCounter(initial = 0) {
+      let count = $state(initial);
+      const increment = () => count++;
+      const decrement = () => count--;
+      return { count, increment, decrement };
+    }
+    ```
+
+## References
+
+* [Svelte 5 Runes RFC](https://github.com/sveltejs/rfcs/pull/52)
+* [Svelte 5 Migration Guide](https://github.com/sveltejs/svelte/milestones)
+
+```
+
+Let me know if you’d like the same treatment for your other `.cursor/rules` files!
+```

@@ -1,0 +1,220 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Svelte 5 Content Projection Guidelines
+
+## Key Principle: Use Snippets and Render Tags, Not Slots
+
+In our Svelte 5 project, we **exclusively use snippets and render tags** for content projection instead of the legacy slot system. This provides better TypeScript support, more flexible content distribution, and aligns with Svelte 5's modern patterns.
+
+## ❌ Patterns to Avoid
+
+1. **Do not use the `<slot>` element** in any component:
+
+   ```svelte
+   <!-- ❌ AVOID: Using slots -->
+   <div class="card">
+     <slot name="header"></slot>
+     <div class="content">
+       <slot></slot>
+     </div>
+     <slot name="footer"></slot>
+   </div>
+   ```
+
+2. **Do not use `<svelte:fragment slot="...">` syntax** for passing content:
+
+   ```svelte
+   <!-- ❌ AVOID: Using slot attributes -->
+   <Card>
+     <svelte:fragment slot="header">
+       <h2>Card Title</h2>
+     </svelte:fragment>
+     <p>Card content goes here</p>
+   </Card>
+   ```
+
+3. **Do not use `let:` bindings** for slot props:
+
+   ```svelte
+   <!-- ❌ AVOID: Using slot props -->
+   <List items={myItems}>
+     <svelte:fragment slot="item" let:item let:index>
+       <li>{index}: {item.name}</li>
+     </svelte:fragment>
+   </List>
+   ```
+
+## ✅ Patterns to Use Instead
+
+1. **Define snippets with the `#snippet` block** in parent components:
+
+   ```svelte
+   <!-- ✅ CORRECT: Using snippets in the parent -->
+   <Card>
+     {#snippet header()}
+       <h2>Card Title</h2>
+     {/snippet}
+     
+     <p>Main content</p>
+     
+     {#snippet footer()}
+       <div class="card-actions">
+         <button>Save</button>
+       </div>
+     {/snippet}
+   </Card>
+   ```
+
+2. **Render snippets with `{@render}` tags** in child components:
+
+   ```svelte
+   <!-- ✅ CORRECT: Using render in the child component -->
+   <script lang="ts">
+     const { 
+       header = () => null, 
+       footer = () => null,
+       children = () => null 
+     } = $props<{
+       header?: () => any;
+       footer?: () => any;
+       children: () => any;
+     }>();
+   </script>
+   
+   <div class="card">
+     <div class="card-header">
+       {@render header()}
+     </div>
+     
+     <div class="card-content">
+       {@render children()}
+     </div>
+     
+     <div class="card-footer">
+       {@render footer()}
+     </div>
+   </div>
+   ```
+
+3. **Pass data to snippets using parameters** for dynamic content:
+
+   ```svelte
+   <!-- ✅ CORRECT: Using parameterized snippets -->
+   <List items={products}>
+     {#snippet item(product, index)}
+       <li class="product-item">
+         <span class="index">{index + 1}.</span>
+         <span class="name">{product.name}</span>
+         <span class="price">${product.price.toFixed(2)}</span>
+       </li>
+     {/snippet}
+   </List>
+   ```
+
+   ```svelte
+   <!-- The List component implementation -->
+   <script lang="ts">
+     const { items = [], item } = $props<{
+       items: Array<any>;
+       item: (item: any, index: number) => any;
+     }>();
+   </script>
+   
+   <ul class="list">
+     {#each items as item, i}
+       {@render item(item, i)}
+     {/each}
+   </ul>
+   ```
+
+## TypeScript Integration
+
+4. **Use the Snippet type for proper type checking**:
+
+   ```svelte
+   <script lang="ts">
+     import type { Snippet } from 'svelte';
+     
+     const { 
+       header, 
+       item 
+     } = $props<{
+       header: Snippet;
+       item: Snippet<[Product, number]>; // Types for product and index
+     }>();
+   </script>
+   ```
+
+5. **Type snippet parameters explicitly**:
+
+   ```svelte
+   <!-- Parent component -->
+   {#snippet row(user: User, isActive: boolean)}
+     <tr class={isActive ? 'active' : ''}>
+       <td>{user.name}</td>
+       <td>{user.email}</td>
+     </tr>
+   {/snippet}
+   ```
+
+## Migration Guide
+
+If you encounter legacy slot-based components:
+
+1. Replace all `<slot>` elements with `{@render variableName()}` tags
+2. Replace slot props with snippet parameters
+3. Update component consumers to use `{#snippet}` blocks instead of slot attributes
+
+### Example Migration:
+
+Before (with slots):
+```svelte
+<!-- Component.svelte -->
+<div>
+  <slot name="header"></slot>
+  <slot></slot>
+</div>
+
+<!-- Usage -->
+<Component>
+  <h1 slot="header">Title</h1>
+  <p>Content</p>
+</Component>
+```
+
+After (with snippets and render):
+```svelte
+<!-- Component.svelte -->
+<script lang="ts">
+  const { header = () => null, children = () => null } = $props<{
+    header?: () => any;
+    children: () => any;
+  }>();
+</script>
+
+<div>
+  {@render header()}
+  {@render children()}
+</div>
+
+<!-- Usage -->
+<Component>
+  {#snippet header()}
+    <h1>Title</h1>
+  {/snippet}
+  <p>Content</p>
+</Component>
+```
+
+## Benefits of This Approach
+
+- **Type safety**: Better TypeScript integration and validation
+- **Parameterization**: More flexible passing of data to templates
+- **Performance**: Potentially better runtime performance
+- **Readability**: Clearer content projection patterns
+- **Consistency**: Alignment with modern Svelte 5 patterns
+
+By consistently following these guidelines, we ensure our codebase remains modern, maintainable, and takes full advantage of Svelte 5's capabilities.

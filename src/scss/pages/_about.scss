@@ -1,0 +1,70 @@
+@use '../core/variables' as *;
+@use '../core/mixins' as *;
+
+/* About page specific styles */
+
+// Icon styling
+.icon-container {
+  @include flex-center;
+  
+  svg {
+    width: 100%;
+    height: 100%;
+    color: $scotia-blue;
+    stroke-width: 1.5;
+  }
+  
+  @include sm {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+.contact-icon {
+  svg {
+    width: 100%;
+    height: 100%;
+    stroke-width: 1.5;
+  }
+}
+
+// Service cards (specific to about page)
+.service-card {
+  @include card;
+  height: 100%;
+  transition: transform $transition-normal, box-shadow $transition-normal;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: $shadow-lg;
+  }
+}
+
+// Testimonial styling
+.testimonial-quote {
+  font-style: italic;
+  position: relative;
+  z-index: 1;
+}
+
+// Hero banner specific to about page
+.about-hero-banner {
+  width: 100%;
+  border-radius: $border-radius-lg;
+  box-shadow: $shadow-sm;
+  
+  @include sm {
+    padding: $spacing-4 $spacing-2;
+  }
+  
+  @include md {
+    padding: $spacing-6 $spacing-4;
+  }
+}
+
+// Table styling specific to about page
+.about-table-zebra {
+  tr:nth-child(even) {
+    background-color: rgba($black, 0.03);
+  }
+} 

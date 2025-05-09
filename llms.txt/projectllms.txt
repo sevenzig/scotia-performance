@@ -1,0 +1,128 @@
+
+# Scotia Performance Website - LLMs.txt
+
+## Current Structure
+```
+scotiaperformanceweb/
+├── index.html                    # Main homepage
+├── css/
+│   ├── styles.css                # Main styles
+│   ├── header.css                # Header styles
+│   └── maintenance.css           # Service-specific styles
+├── js/
+│   ├── components.js             # Template loading logic
+│   ├── megamenu.js               # Mega menu functionality
+│   ├── taglines.js               # Rotating taglines
+│   ├── businessHours.js          # Business hours logic
+│   ├── maps.js                   # Map integration
+│   ├── accessibility.js          # Accessibility features
+│   ├── header.js                 # Header behavior
+│   └── main.js                   # Main script
+├── services/
+│   ├── maintenance/
+│   │   └── index.html            # Maintenance services page
+│   ├── performance/
+│   │   └── index.html            # Performance services page
+│   ├── repair/
+│   │   └── index.html            # Repair services page
+│   └── tires-wheels/
+│       └── index.html            # Tires & wheels services page
+├── about/
+│   └── index.html                # About page
+└── gallery/
+    └── index.html                # Gallery page
+```
+
+## Component Templates
+- Megamenu (header navigation)
+- Footer
+- Hero section
+
+## Planned SvelteKit Structure
+```
+scotiaperformanceweb/
+├── src/
+│   ├── routes/
+│   │   ├── +layout.svelte        # Main layout (header/footer)
+│   │   ├── +page.svelte          # Homepage
+│   │   ├── services/
+│   │   │   ├── +layout.svelte    # Services layout
+│   │   │   ├── +page.svelte      # Services overview
+│   │   │   ├── maintenance/
+│   │   │   │   └── +page.svelte  # Maintenance page
+│   │   │   ├── performance/
+│   │   │   │   └── +page.svelte  # Performance page
+│   │   │   ├── repair/
+│   │   │   │   └── +page.svelte  # Repair page
+│   │   │   └── tires-wheels/
+│   │   │       └── +page.svelte  # Tires & wheels page
+│   │   ├── about/
+│   │   │   └── +page.svelte      # About page
+│   │   └── gallery/
+│   │       └── +page.svelte      # Gallery page
+│   ├── lib/
+│   │   ├── components/
+│   │   │   ├── Header.svelte     # Header component
+│   │   │   ├── Footer.svelte     # Footer component
+│   │   │   ├── Megamenu.svelte   # Mega menu component
+│   │   │   ├── Hero.svelte       # Hero section component
+│   │   │   ├── ServiceCard.svelte # Service card component
+│   │   │   └── ReviewCard.svelte # Review card component
+│   │   ├── data/
+│   │   │   ├── businessHours.ts  # Business hours data
+│   │   │   ├── services.ts       # Services data
+│   │   │   ├── taglines.ts       # Taglines data
+│   │   │   └── reviews.ts        # Reviews data
+│   │   └── utils/
+│   │       ├── accessibility.ts  # Accessibility utilities
+│   │       └── maps.ts           # Maps integration
+│   └── styles/
+│       ├── core/
+│       │   ├── _variables.scss   # Variables
+│       │   ├── _reset.scss       # CSS reset
+│       │   └── _mixins.scss      # Mixins
+│       ├── layout/
+│       │   ├── _grid.scss        # Grid system
+│       │   └── _containers.scss  # Container styles
+│       ├── components/
+│       │   ├── _buttons.scss     # Button styles
+│       │   ├── _cards.scss       # Card styles
+│       │   ├── _megamenu.scss    # Mega menu styles
+│       │   └── _footer.scss      # Footer styles
+│       └── main.scss             # Main SCSS file
+└── static/
+    ├── favicon.ico
+    ├── favicon.svg
+    ├── favicon-96x96.png
+    └── site.webmanifest
+```
+
+## Key URLs
+- Main site: /
+- Services:
+  - Performance & Tuning: /services/performance
+  - Auto Repair: /services/repair
+  - Maintenance: /services/maintenance
+  - Tires & Wheels: /services/tires-wheels
+- About: /about
+- Gallery: /gallery
+
+## Contact Information
+- Phone: (518) 374-6111
+- Address: 24 Sacandaga Rd, Scotia, NY 12302
+- Service Area: Scotia, Schenectady, Glenville, Rotterdam, Niskayuna
+
+## Main Components to Convert
+1. Header with mega menu navigation
+2. Footer with contact and quick links
+3. Service cards grid
+4. Diagnostic information cards
+5. Customer review cards
+6. Hero section with business hours
+
+## Conversion Goals
+1. Maintain current design and functionality
+2. Implement proper component architecture with SvelteKit
+3. Use SCSS for modular styling (root/core/component layers)
+4. Fix CORS issues with integrated components
+5. Improve maintainability and developer experience

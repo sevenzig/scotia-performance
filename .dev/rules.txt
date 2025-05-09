@@ -1,0 +1,397 @@
+# Effective Guidelines for Using Cursor AI
+
+## Core Principles
+
+1. **Maintain a Clear Context Window**
+   - Keep relevant code visible in the editor when asking for assistance
+   - Provide explicit file references when discussing code from multiple files
+   - Use project notes to document architecture decisions and business requirements
+   - Add summary comments at the top of complex files to help Cursor quickly infer structure
+   - Label code sections with descriptive comments (e.g., `// Authentication logic`)
+
+2. **Be Explicit About Dependencies**
+   - Document all external dependencies in a central place (requirements.txt, package.json, etc.)
+   - Specify exact versions of libraries you're using when asking for help
+   - Include relevant import statements in your queries
+   - Create a dependencies.md file describing critical library interactions and constraints
+
+3. **Establish Error-Resolution Protocols**
+   - Address one error at a time, fully fixing it before moving to the next
+   - Document error cycles to recognize and break out of error loops
+   - Create regression tests for fixed issues to prevent reintroduction
+   - Implement a lightweight triage system (high/medium/low priority) for errors
+   - Maintain an error resolution journal with steps taken for each fix
+
+4. **Validate AI Suggestions Against Documentation**
+   - Cross-check Cursor's answers against official documentation, especially for library usage
+   - Trust your developer intuition when AI suggestions seem incorrect
+   - Verify generated code against example code from official sources
+   - Keep a curated list of trusted documentation sources for your tech stack
+
+5. **Manage Session Isolation Awareness**
+   - Remember that Cursor has limited memory across sessions
+   - Re-establish necessary context when re-opening files or switching tasks
+   - Use consistent terminology across separate interactions
+   - Create session summaries to quickly re-establish context in future sessions
+
+## Practical Implementation Guidelines
+
+### For Project Setup
+
+1. **Create a Project Configuration File**
+   - Include environment information (Python/Node version, OS, etc.)
+   - List primary dependencies with version constraints
+   - Document known limitations or edge cases
+   - Define shared standards for Cursor queries if working in a team
+   - Include project-specific vocabulary and terminology glossary
+
+2. **Maintain a Project Journal**
+   - Log major architecture decisions with rationale
+   - Track errors encountered and their solutions
+   - Note areas where Cursor consistently struggles
+   - Tag and version successful prompts for reuse (e.g., `[ArchReview-Auth-v2]`)
+   - Document context requirements for different parts of your codebase
+
+3. **Implement Error Tracking**
+   - Create an "error cycles" document to track recurring issues
+   - Document error patterns (error A → fix → error B → fix → error A)
+   - Develop comprehensive solutions that address root causes
+   - Establish fallback mechanisms for when Cursor suggestions fail
+   - Map dependency relationships that frequently cause conflicts
+
+4. **Create Prompt Library**
+   - Version-control effective prompts for common scenarios
+   - Share successful prompts across team members
+   - Document which prompts work best for specific types of problems
+   - Group prompts by domain (auth, database, UI, etc.) for easier reference
+   - Include examples of unsuccessful prompts with analysis
+
+### For Daily Use
+
+1. **Crafting Effective Queries**
+   - Be specific: "Fix the authentication middleware in auth.js that's causing 401 errors" instead of "My auth doesn't work"
+   - Provide contextual information: "The database query in users.py fails when handling null values"
+   - Include any error messages or stack traces
+   - Clarify desired outcome: "I want a minimal fix, not a full refactor"
+   - Tag complex or reusable prompts with identifiers: `[FeatureReq-AuthFlow-v1]`
+   - Structure multi-part requests with numbered steps and clear expectations
+
+2. **Incremental Verification**
+   - Test each suggested change before moving to the next problem
+   - Run regression tests after implementing solutions
+   - Verify one function at a time when multiple functions are modified
+   - Cross-check Cursor's solutions against documentation when uncertain
+   - Document verification steps for complex changes
+
+3. **Breaking Error Cycles**
+   - When detecting an error loop, step back and analyze dependencies
+   - Document the conflict explicitly: "Fixing X breaks Y because they both depend on Z"
+   - Ask for holistic solutions: "Here's an error cycle between component A and B. How can I redesign this?"
+   - Provide interface contracts that must be maintained in the solution
+   - Create a dependency graph for affected components
+
+4. **Strategic Use of Ctrl+K**
+   - Use Ctrl+K for precise, targeted tasks rather than vague requests
+   - Highlight specific code blocks before using Ctrl+K for better context
+   - Combine with explicit contextual information for best results
+   - Limit Ctrl+K scope to manageable chunks (< 200 LOC when possible)
+   - Preface Ctrl+K usage with a clear objective statement
+
+## Advanced Error Prevention
+
+1. **Type Safety**
+   - Use strong typing (TypeScript, Python type hints) to prevent common errors
+   - Ask Cursor to add or improve type definitions
+   - Verify type consistency across module boundaries
+   - Create type interfaces for shared data structures
+   - Document expected types in comments for complex parameters
+
+2. **Testing Strategy**
+   - Request test cases along with implementation
+   - Create tests that specifically target previous error cases
+   - Use test-driven development when implementing complex features
+   - Implement property-based testing for critical functions
+   - Create validation functions for complex data structures
+
+3. **Architecture Guidance**
+   - Periodically ask for architecture reviews of specific components
+   - Request suggestions for decoupling tightly coupled components
+   - Use Cursor to document architectural patterns in your codebase
+   - Create architectural decision records (ADRs) for major design choices
+   - Reference established design patterns in your queries
+
+## Troubleshooting Common Cursor Limitations
+
+1. **Context Window Limitations**
+   - When dealing with large codebases, provide summaries of relevant components
+   - Split complex changes into smaller, logical units (max 200-300 lines per change)
+   - Use file links to point to specific pieces of code (with line numbers)
+   - Keep logically grouped code together in the editor to improve AI understanding
+   - Use summary comments at file/class/function levels to aid in comprehension
+   - Create a project map document with brief descriptions of key files/components
+   - Use consistent naming conventions to help Cursor infer relationships
+
+2. **Dependency Conflicts**
+   - Create a visual dependency graph for complex relationships
+   - Document conflicting requirements explicitly
+   - Ask for compatibility assessment before adding new dependencies
+   - Request Cursor to simulate dependency trees or show version conflicts
+   - Maintain a "dependency decision" document explaining version choices
+   - Isolate conflicting dependencies into separate modules when possible
+   - Track dependency version changes and associated bugs
+
+3. **Handling Abstraction Layers**
+   - Make abstraction boundaries explicit in documentation
+   - Verify that solutions respect established interfaces
+   - Ask for solutions that minimize changes to stable APIs
+   - Reiterate interface contracts in comments or context blocks
+   - Document the "why" behind abstraction decisions
+   - Create interface diagrams for complex subsystems
+   - Test interface compliance separately from implementation details
+
+4. **Session Continuity Issues**
+   - Begin new sessions with brief context reminders
+   - Use consistent terminology across sessions
+   - Reference previous solutions with your prompt identifiers
+   - Maintain a local knowledge base of Cursor's successes and failures
+   - Create session-restart templates for common tasks
+   - Document session context requirements by component
+   - Use git commit messages to track AI-assisted changes
+
+5. **Hallucination Prevention**
+   - Specify constraints explicitly ("Only use libraries already in package.json")
+   - Request verification steps when you suspect hallucinations
+   - Break complex requests into verifiable sub-tasks
+   - Always check generated imports against your actual dependencies
+   - Cross-reference AI suggestions with documentation
+   - Create a hallucination log to identify patterns
+   - Implement sanity checks for critical AI-generated code
+
+6. **Model Confusion Management**
+   - Recognize signs of model confusion (inconsistent responses, contradictory advice)
+   - Reset context and reformulate questions when confusion occurs
+   - Use explicit, unambiguous terminology (avoid pronouns and vague references)
+   - Provide concrete examples when introducing new concepts
+   - Document domains where Cursor consistently struggles with your codebase
+   - Create guidance templates for effectively explaining complex concepts
+   - Maintain a glossary of project-specific terms and their definitions
+
+7. **Resource Handling Issues**
+   - Explicitly request cleanup code for resources (file handles, network connections)
+   - Verify memory management in generated code (especially for C/C++/Rust)
+   - Create standardized resource management patterns for your project
+   - Double-check asynchronous code for correct promise/callback handling
+   - Review generated code for potential memory leaks
+   - Document common resource handling patterns in your codebase
+   - Create wrappers for critical resources that ensure proper cleanup
+
+8. **Pattern Recognition Failures**
+   - Document code patterns that Cursor struggles to understand
+   - Break complex patterns into simpler, more recognizable components
+   - Provide explicit pattern examples when asking for similar implementations
+   - Create a pattern library with canonical examples from your codebase
+   - Use consistent naming conventions to strengthen pattern recognition
+   - Document anti-patterns to avoid in your codebase
+   - Create template solutions for common patterns
+
+## Sample Prompts for Effective Cursor Use
+
+1. **Breaking Error Cycles**:
+   ```
+   [PromptID: BugLoop-AuthSession-v2]
+
+   I'm stuck in a regression loop between auth.js and session.js:
+   - Fixing user validation in auth.js (line 47) breaks session persistence in session.js (line 23)
+   - Fixing session.js then invalidates the login logic in auth.js
+
+   Goals:
+   - Identify root cause
+   - Propose a solution that resolves both issues and respects interface contracts
+   - Suggest tests to prevent this loop from recurring
+
+   Relevant Code:
+   [code blocks]
+
+   Context:
+   - We use Express middleware with session-based auth
+   - auth.js handles JWT verification; session.js manages Redis session store
+
+   Please identify the root cause and suggest a solution that fixes both issues simultaneously.
+   ```
+
+2. **Architecture Review**:
+   ```
+   [PromptID: ArchReview-DataLayer-v1]
+
+   I need a review of my data access layer:
+   - Current implementation: [code]
+   - Current issues: [list issues]
+   - Interface requirements that MUST be maintained: [list requirements]
+   
+   Desired outcome:
+   - Improvements for maintainability
+   - Solutions for recurring connection errors
+   - Minimal changes to public APIs
+
+   Context:
+   - We're using PostgreSQL with Sequelize ORM
+   - This component is used by 5 other services
+   
+   Could you suggest improvements that would make this more maintainable and reduce the recurring errors we're seeing with database connections?
+   ```
+
+3. **Feature Implementation**:
+   ```
+   [PromptID: Feature-UserProfile-v1]
+
+   I need to implement a new feature:
+   - Requirements: [list requirements]
+   - Existing code: [relevant code]
+   - Constraints: Must work with our current authentication system and database schema
+   
+   Desired outcome:
+   - Clean implementation with error handling
+   - Unit and integration tests
+   - Documentation for the new endpoints/functions
+
+   I prefer minimal changes to existing interfaces unless absolutely necessary.
+   
+   Please suggest an implementation approach with proper error handling and tests.
+   ```
+
+4. **Validation Against Documentation**:
+   ```
+   [PromptID: Validation-ReactHooks-v1]
+
+   I'm implementing a custom React hook based on your previous suggestion:
+   
+   [code from Cursor's previous suggestion]
+   
+   However, I'm concerned about potential memory leaks. Can you:
+   1. Review this implementation against React's official documentation on hooks
+   2. Identify any anti-patterns or potential issues
+   3. Suggest improvements that align with React best practices
+   
+   Specifically, I want to ensure we're properly cleaning up event listeners and subscriptions.
+   ```
+
+5. **Resolving Model Confusion**:
+   ```
+   [PromptID: Confusion-TypeSystem-v1]
+   
+   Cursor seems confused about our type system implementation. Let me reset context:
+   
+   - We use TypeScript with custom type guards
+   - Our type hierarchy is: BaseEntity -> User/Product/Order
+   - We have utility functions that perform runtime type checking
+   
+   Current issue:
+   - Cursor is suggesting incompatible type annotations
+   - Solutions keep mixing our internal types with library types
+   
+   Relevant code and type definitions:
+   [code blocks]
+   
+   Please explain how to correctly type these functions while maintaining our existing type system architecture.
+   ```
+
+6. **Handling Context Limitations**:
+   ```
+   [PromptID: LargeContext-AuthFlow-v1]
+   
+   I need help with our authentication flow that spans multiple files. Since this exceeds context limits, I'll structure my request:
+   
+   Component overview:
+   1. auth.service.ts - Core authentication logic (500 LOC)
+   2. user.repository.ts - Database interactions (300 LOC)
+   3. auth.middleware.ts - Request validation (200 LOC)
+   
+   Specific problem:
+   - Token refresh fails when user has multiple active sessions
+   - Error occurs in auth.service.ts line 247, but involves user.repository.ts
+   
+   For this session, focus ONLY on the token refresh logic in auth.service.ts lines 220-270:
+   [relevant code block]
+   
+   How should I modify this refresh logic to properly handle multiple sessions?
+   ```
+
+## Team Collaboration with Cursor
+
+1. **Shared Prompt Standards**
+   - Establish team conventions for prompt formatting and tagging
+   - Create a shared repository of effective prompts for common scenarios
+   - Document which prompt patterns work best for your specific codebase
+   - Implement prompt templates for standard tasks
+   - Create a prompt review process for critical systems
+
+2. **Knowledge Transfer**
+   - Document successful Cursor interactions for team learning
+   - Share insights about where Cursor excels or struggles in your specific domain
+   - Create team-specific guidelines based on your technology stack
+   - Build a centralized prompt library with context requirements
+   - Schedule regular knowledge sharing sessions for Cursor techniques
+
+3. **Quality Control**
+   - Implement peer review of Cursor-generated solutions
+   - Create a fallback protocol when Cursor suggestions aren't optimal
+   - Develop a checklist for validating AI-generated code before committing
+   - Establish criteria for when NOT to use Cursor
+   - Document QA procedures for AI-assisted code
+
+4. **Collaborative Troubleshooting**
+   - Create a shared log of Cursor limitations encountered
+   - Develop team-specific workarounds for common limitations
+   - Establish a process for escalating difficult AI assistance situations
+   - Document patterns that consistently cause issues across team members
+   - Create debugging guides for common AI-generated errors
+
+## Continuous Improvement
+
+1. **Track AI Performance**
+   - Note which types of queries Cursor handles well vs. poorly
+   - Experiment with different prompt structures for challenging problems
+   - Keep a record of hallucinations or incorrect suggestions for pattern recognition
+   - Monitor changes in Cursor's capabilities with updates
+   - Create benchmarks for evaluating AI assistance quality
+
+2. **Refine Your Approach**
+   - Periodically review and update your prompt library
+   - Adapt your interaction style based on observed results
+   - Develop domain-specific prompt templates for your project's unique needs
+   - Create component-specific context guides
+   - Evaluate effectiveness of different prompt styles across team members
+
+3. **Measure AI Impact**
+   - Track time saved using Cursor vs. traditional methods
+   - Monitor error rates in AI-generated code vs. manually written code
+   - Document quality and completeness metrics for different approaches
+   - Identify project areas where Cursor provides highest/lowest value
+   - Create ROI metrics for AI assistance
+
+## Cursor Recovery Strategies
+
+1. **When Cursor Seems "Stuck"**
+   - Implement a three-strike rule (try reformulating 3 times, then use alternative approach)
+   - Create smaller, focused tasks instead of complex requests
+   - Reset context completely and start fresh with core requirements
+   - Switch to a different aspect of the problem and return later
+   - Document recovery patterns that work for specific types of confusion
+
+2. **For Persistent Hallucinations**
+   - Establish a fact-verification protocol for critical requirements
+   - Create explicit constraint lists for code generation
+   - Break work into smaller verification steps
+   - Establish boundary conditions and expectations explicitly
+   - Maintain a "reality check" document for frequently hallucinated features
+
+3. **For Knowledge Cutoff Issues**
+   - Maintain a library of current documentation references
+   - Create primers for technologies released after Cursor's training cutoff
+   - Document syntax changes in languages/frameworks over time
+   - Establish library compatibility guides for newer versions
+   - Provide explicit implementation examples for newer features
+
+By following these enhanced guidelines, you'll significantly improve the quality of code generated by Cursor 
+and avoid many common pitfalls associated with AI-assisted programming. Remember that effective AI collaboration 
+is an iterative process—regularly refine your approach based on what works best for your specific projects and team.

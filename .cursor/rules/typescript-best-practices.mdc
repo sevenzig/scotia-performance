@@ -1,0 +1,512 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+I'll expand and improve the TypeScript best practices file with more detailed guidance, additional rules, and practical examples specifically for Svelte 5 development.
+
+```mdc
+---
+name: "TypeScript Best Practices for Svelte 5"
+kind: "Auto Attached"
+description: "Comprehensive guidelines for using TypeScript effectively with Svelte 5 runes and components"
+includes: "**/*.{ts,svelte}"
+---
+
+# TypeScript Best Practices for Svelte 5
+
+## Type Fundamentals
+
+1. Enable strict TypeScript mode in tsconfig.json for maximum type safety:
+   ```json
+   {
+     "compilerOptions": {
+       "strict": true,
+       "moduleResolution": "NodeNext",
+       "module": "NodeNext",
+       "isolatedModules": true
+     }
+   }
+   ```
+
+2. Use explicit return types for functions, especially for component exports:
+   ```ts
+   export function calculateTotal(items: CartItem[]): number {
+     return items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+   }
+   ```
+
+3. Create dedicated type files for shared types in `src/lib/types` directory:
+   ```ts
+   // src/lib/types/user.ts
+   export interface User {
+     id: string;
+     name: string;
+     email: string;
+     preferences: UserPreferences;
+   }
+   
+   export interface UserPreferences {
+     theme: 'light' | 'dark' | 'system';
+     notifications: boolean;
+   }
+   ```
+
+## Svelte 5 Component Types
+
+4. Define component props with clear interfaces using $props rune:
+   ```svelte
+   <script lang="ts">
+     const { 
+       user, 
+       isEditable = false, 
+       onSave 
+     } = $props<{
+       user: User;
+       isEditable?: boolean;
+       onSave: (updatedUser: User) => Promise<void>;
+     }>();
+   </script>
+   ```
+
+5. Apply consistent prop destructuring patterns for better readability:
+   ```svelte
+   <script lang="ts">
+     const { 
+       items = [], 
+       selected, 
+       onSelect 
+     } = $props<{
+       items: Item[];
+       selected?: Item;
+       onSelect: (item: Item) => void;
+     }>();
+   </script>
+   ```
+
+6. Use the Svelte `Snippet` type for typing snippets:
+   ```svelte
+   <script lang="ts">
+     import type { Snippet } from 'svelte';
+     
+     const { 
+       header, 
+       item, 
+       footer 
+     } = $props<{
+       header: Snippet;
+       item: Snippet<[Item]>;
+       footer?: Snippet;
+     }>();
+   </script>
+   ```
+
+7. Type `$state` variables explicitly, especially for complex structures:
+   ```svelte
+   <script lang="ts">
+     interface FormState {
+       values: Record<string, string>;
+       errors: Record<string, string | undefined>;
+       isSubmitting: boolean;
+     }
+     
+     let form = $state<FormState>({
+       values: {},
+       errors: {},
+       isSubmitting: false
+     });
+   </script>
+   ```
+
+8. Use `$derived` with type annotations for clarity:
+   ```svelte
+   <script lang="ts">
+     let items = $state<CartItem[]>([]);
+     
+     let total = $derived<number>(
+       items.reduce((sum, item) => sum + item.price * item.quantity, 0)
+     );
+     
+     let hasItems = $derived<boolean>(items.length > 0);
+   </script>
+   ```
+
+## Advanced Component Typing
+
+9. Use the Component type instead of SvelteComponent in TypeScript:
+   ```ts
+   import type { Component } from 'svelte';
+   import MyComponent from './MyComponent.svelte';
+   
+   // Correctly typed component reference
+   const component: Component<{prop: string}> = MyComponent;
+   ```
+
+10. Extract component prop types for reuse:
+    ```ts
+    import type { ComponentProps } from 'svelte';
+    import Button from '$lib/components/Button.svelte';
+    
+    // Extract Button's props for reuse
+    type ButtonProps = ComponentProps<typeof Button>;
+    
+    // Reuse the type in another component
+    function createButton(props: ButtonProps): void {
+      // ...
+    }
+    ```
+
+11. Type event handlers with precise event types:
+    ```svelte
+    <script lang="ts">
+      function handleInput(event: Event & { currentTarget: EventTarget & HTMLInputElement }) {
+        const value = event.currentTarget.value;
+        // TypeScript knows value is a string
+      }
+    </script>
+    
+    <input oninput={handleInput} />
+    ```
+
+12. Use discriminated unions for state management:
+    ```ts
+    type AsyncState<T> = 
+      | { status: 'idle' }
+      | { status: 'loading' }
+      | { status: 'success'; data: T }
+      | { status: 'error'; error: Error };
+    
+    let userState = $state<AsyncState<User>>({ status: 'idle' });
+    ```
+
+## Type Safety and Error Prevention
+
+13. Use non-nullable assertions only when you're certain:
+    ```ts
+    // Avoid unless you're sure
+    const element = document.querySelector('.my-element')!;
+    
+    // Better approach
+    const element = document.querySelector('.my-element');
+    if (!element) throw new Error('Element not found');
+    ```
+
+14. Create custom type guards for complex type narrowing:
+    ```ts
+    function isUser(obj: unknown): obj is User {
+      return (
+        typeof obj === 'object' && 
+        obj !== null && 
+        'id' in obj && 
+        'name' in obj
+      );
+    }
+    
+    // Usage
+    if (isUser(data)) {
+      // TypeScript knows data is a User here
+      console.log(data.name);
+    }
+    ```
+
+15. Use readonly modifiers for immutable data:
+    ```ts
+    function processItems(items: readonly Item[]): number {
+      // TypeScript will prevent mutations to items
+      return items.reduce((sum, item) => sum + item.value, 0);
+    }
+    ```
+
+16. Define enums or union types for limited options:
+    ```ts
+    type Theme = 'light' | 'dark' | 'system';
+    
+    function setTheme(theme: Theme) {
+      // TypeScript ensures only valid themes are passed
+    }
+    ```
+
+## Project-Specific Patterns
+
+17. Follow the project's directory structure for types:
+    ```
+    src/lib/types/           # Central shared types
+    src/lib/features/*/types # Feature-specific types
+    ```
+
+18. Declare global runes types in app.d.ts:
+    ```ts
+    // src/app.d.ts
+    declare global {
+      // State management
+      const $state: <T>(initialValue?: T) => T;
+      const $derived: <T>(expression: T) => T;
+      const $derived: { by<T>(fn: () => T): T };
+      const $effect: (callback: () => (() => void) | void) => void;
+      
+      // Component props
+      const $props: <T>(defaults?: Partial<T>) => T;
+      const $props: { id(): string };
+      
+      // For bindable props
+      const $bindable: <T>(initialValue?: T) => T;
+    }
+    ```
+
+19. Add comprehensive JSDoc comments for better editor tooltips:
+    ```ts
+    /**
+     * Authenticates a user with the provided credentials
+     * @param email - The user's email address
+     * @param password - The user's password
+     * @returns A promise that resolves to the authenticated user or null if authentication fails
+     * @throws {AuthError} When the authentication service is unavailable
+     */
+    async function authenticate(email: string, password: string): Promise<User | null> {
+      // ...
+    }
+    ```
+
+20. Use path aliases consistently according to project conventions:
+    ```ts
+    // Preferred: Using the $lib alias
+    import { Button } from '$lib/components';
+    import { formatDate } from '$lib/utils/dateUtils';
+    
+    // Avoid: Using relative paths
+    import Button from '../../../../lib/components/Button.svelte';
+    ```
+
+## SvelteKit-Specific TypeScript Practices
+
+21. Type load function data with type safety:
+    ```ts
+    import type { PageLoad } from './$types';
+    
+    export const load: PageLoad = async ({ params, fetch }) => {
+      const response = await fetch(`/api/products/${params.id}`);
+      const product = await response.json();
+      
+      return {
+        product
+      };
+    };
+    ```
+
+22. Add strong typing for form actions:
+    ```ts
+    import { fail } from '@sveltejs/kit';
+    import type { Actions } from './$types';
+    
+    export const actions: Actions = {
+      register: async ({ request }) => {
+        const data = await request.formData();
+        const email = data.get('email')?.toString();
+        
+        if (!email) {
+          return fail(400, { email, missing: true });
+        }
+        
+        // Process form...
+        return { success: true };
+      }
+    };
+    ```
+
+23. Use generics with stores for type-safe reactivity:
+    ```ts
+    import { writable } from 'svelte/store';
+    
+    interface CartState {
+      items: CartItem[];
+      total: number;
+    }
+    
+    const initialState: CartState = {
+      items: [],
+      total: 0
+    };
+    
+    const cart = writable<CartState>(initialState);
+    ```
+
+24. Create type definitions for $env module augmentation:
+    ```ts
+    // src/app.d.ts
+    declare global {
+      namespace App {
+        interface Env {
+          PUBLIC_API_URL: string;
+          SECRET_API_KEY: string;
+        }
+      }
+    }
+    
+    export {};
+    ```
+
+## Performance and Optimization
+
+25. Use const assertions for literal values:
+    ```ts
+    const CONFIG = {
+      maxItems: 10,
+      apiEndpoint: '/api/v1',
+      flags: {
+        enableFeatureX: true
+      }
+    } as const;
+    
+    // Now CONFIG.apiEndpoint is '/api/v1', not string
+    ```
+
+26. Optimize type imports for better IDE performance:
+    ```ts
+    // Instead of importing everything
+    import * as types from '$lib/types';
+    
+    // Import only what you need
+    import { User } from '$lib/types/user';
+    import { Product } from '$lib/types/product';
+    ```
+
+27. Use branded types for type-safe identifiers:
+    ```ts
+    type UserId = string & { __brand: 'UserId' };
+    type OrderId = string & { __brand: 'OrderId' };
+    
+    function getUser(id: UserId) {
+      // ...
+    }
+    
+    // Won't compile: Type 'OrderId' is not assignable to type 'UserId'
+    // getUser(orderId);
+    ```
+
+28. Use proper TypeScript with optimization flags in your build:
+    ```js
+    // vite.config.js (excerpt)
+    build: {
+      target: 'esnext',
+      minify: 'terser',
+      // TypeScript optimizations
+      rollupOptions: {
+        output: {
+          manualChunks: (id) => {
+            // Chunking strategy that respects types
+          }
+        }
+      }
+    }
+    ```
+
+## Real-World Component Example
+
+Here's a real-world example that follows our project's TypeScript patterns:
+
+```svelte
+<script lang="ts">
+  // Button props using Svelte 5 runes syntax
+  const { 
+    variant = 'primary',
+    size = 'md',
+    type = 'button',
+    disabled = false,
+    fullWidth = false,
+    loading = false,
+    onClick = undefined,
+    children = () => ""
+  } = $props<{
+    variant?: 'primary' | 'secondary' | 'outline' | 'text';
+    size?: 'sm' | 'md' | 'lg';
+    type?: 'button' | 'submit' | 'reset';
+    disabled?: boolean;
+    fullWidth?: boolean;
+    loading?: boolean;
+    onClick?: (event: MouseEvent) => void;
+    children?: () => any;
+  }>();
+
+  // State using $state rune with let for mutability
+  let isHovered = $state(false);
+  
+  // Derived state using $derived rune
+  const buttonStyles = $derived({
+    backgroundColor: isHovered && !disabled && variant === 'primary' 
+      ? '#154880' 
+      : null,
+    opacity: disabled ? 0.6 : 1,
+    width: fullWidth ? '100%' : 'auto'
+  });
+  
+  // Event handlers
+  function handleMouseEnter() {
+    isHovered = true;
+  }
+  
+  function handleMouseLeave() {
+    isHovered = false;
+  }
+  
+  function handleClick(event: MouseEvent) {
+    if (!disabled && !loading && onClick) {
+      onClick(event);
+    }
+  }
+</script>
+
+<button
+  {type}
+  class={`btn btn-${variant} btn-${size} ${fullWidth ? 'btn-full' : ''} ${loading ? 'btn-loading' : ''}`}
+  disabled={disabled || loading}
+  onclick={handleClick}
+  onmouseenter={handleMouseEnter}
+  onmouseleave={handleMouseLeave}
+  style={`
+    background-color: ${buttonStyles.backgroundColor || ''}; 
+    opacity: ${buttonStyles.opacity}; 
+    width: ${buttonStyles.width};
+  `}
+>
+  {#if loading}
+    <span class="loading-spinner"></span>
+  {/if}
+  {@render children()}
+</button>
+```
+
+## Testing Type Safety
+
+29. Add typed test utilities for component testing:
+    ```ts
+    // src/lib/test-utils.ts
+    import type { Component } from 'svelte';
+    import { render } from '@testing-library/svelte';
+    
+    export function renderComponent<Props>(
+      component: Component<Props>,
+      props: Props
+    ) {
+      return render(component, { props });
+    }
+    ```
+
+30. Type your test expectations:
+    ```ts
+    // Button.test.ts
+    import { renderComponent } from '$lib/test-utils';
+    import Button from './Button.svelte';
+    import { fireEvent } from '@testing-library/svelte';
+    
+    test('button click handler is called', async () => {
+      const handleClick = vi.fn();
+      
+      const { getByRole } = renderComponent(Button, {
+        children: () => 'Click me',
+        onClick: handleClick
+      });
+      
+      await fireEvent.click(getByRole('button'));
+      expect(handleClick).toHaveBeenCalledTimes(1);
+    });
+    ```

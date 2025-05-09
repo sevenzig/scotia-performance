@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Scotia Performance - Professional auto repair services in Scotia, NY. ASE certified mechanics specializing in brake service, engine repair, transmission service, and more.">
+    <title>Scotia Performance | Auto Repair Scotia NY</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Almarai:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    
+    <!-- Component Templates -->
+    <script type="text/html" id="megamenu-template">
+        <header class="site-header" id="siteHeader">
+            <a href="/" class="logo">Scotia Performance</a>
+
+            <nav class="desktop-nav">
+                <div class="services-menu-container">
+                    <!-- Toggle Button -->
+                    <button class="nav-link services-toggle" aria-expanded="false" aria-controls="services-mega-menu">
+                        Automotive Services
+                    </button>
+
+                    <!-- Mega Menu Container -->
+                    <div id="services-mega-menu" class="mega-menu" hidden>
+                        <!-- Menu Content -->
+                        <div class="mega-menu-content">
+                            <!-- Performance & Tuning -->
+                            <div class="menu-section">
+                                <h3><a href="/services/performance">Performance & Tuning</a></h3>
+                                <ul>
+                                    <li><a href="/services/performance/ecu-tuning">ECU Tuning</a></li>
+                                    <li><a href="/services/performance/dyno-tuning">Dyno Tuning</a></li>
+                                    <li><a href="/services/performance/exhaust-systems">Exhaust Systems</a></li>
+                                    <li><a href="/services/performance/forced-induction">Forced Induction</a></li>
+                                    <li><a href="/services/performance/engine-building">Engine Building</a></li>
+                                </ul>
+                            </div>
+
+                            <!-- Auto Repair -->
+                            <div class="menu-section">
+                                <h3><a href="/services/repair">Auto Repair</a></h3>
+                                <ul>
+                                    <li><a href="/services/repair/brake-repair">Brake Repair</a></li>
+                                    <li><a href="/services/repair/engine-repair">Engine Repair</a></li>
+                                    <li><a href="/services/repair/transmission-repair">Transmission Repair</a></li>
+                                    <li><a href="/services/repair/ac-service">AC Service</a></li>
+                                    <li><a href="/services/repair/electrical-repair">Electrical Repair</a></li>
+                                </ul>
+                            </div>
+
+                            <!-- Maintenance -->
+                            <div class="menu-section">
+                                <h3><a href="/services/maintenance">Maintenance</a></h3>
+                                <ul>
+                                    <li><a href="/services/maintenance/oil-change">Oil Change Services</a></li>
+                                    <li><a href="/services/maintenance/brake-maintenance">Brake Maintenance</a></li>
+                                    <li><a href="/services/maintenance/scheduled-maintenance">Scheduled Maintenance</a></li>
+                                    <li><a href="/services/maintenance/state-inspection">State Inspection</a></li>
+                                    <li><a href="/services/maintenance/wheel-alignment">Wheel Alignment</a></li>
+                                </ul>
+                            </div>
+
+                            <!-- Tires & Wheels -->
+                            <div class="menu-section">
+                                <h3><a href="/services/tires-wheels">Tires & Wheels</a></h3>
+                                <ul>
+                                    <li><a href="/services/tires-wheels/tire-sales">Tire Sales</a></li>
+                                    <li><a href="/services/tires-wheels/wheel-alignment">Wheel Alignment</a></li>
+                                    <li><a href="/services/tires-wheels/tire-rotation">Tire Rotation</a></li>
+                                    <li><a href="/services/tires-wheels/wheel-balancing">Wheel Balancing</a></li>
+                                    <li><a href="/services/tires-wheels/tpms-service">TPMS Service</a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Menu Footer -->
+                        <div class="mega-menu-footer">
+                            <div class="info-card">
+                                <div class="info-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <polyline points="12 6 12 12 16 14"></polyline>
+                                    </svg>
+                                    <span class="text" id="hours-text"></span>
+                                </div>
+                                <div class="info-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                                        <circle cx="12" cy="10" r="3"></circle>
+                                    </svg>
+                                    <a href="#" class="text address-link">24 Sacandaga Rd, Scotia</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rest of nav items -->
+                <a href="/about" class="nav-link">About</a>
+                <a href="/gallery" class="nav-link">Gallery</a>
+                <a href="tel:5183746111" class="header-cta">Call Us</a>
+            </nav>
+
+            <button class="nav-toggle" aria-label="Toggle Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </header>
+
+        <div class="cta-bottom">
+            <a href="tel:5183746111" class="cta-button">
+                Schedule Service: (518) 374-6111
+            </a>
+        </div>
+
+        <div class="mobile-menu" id="mobileMenu">
+            <div class="mobile-menu-content">
+                <div class="menu-sections-grid">
+                    <div class="menu-section">
+                        <h3><a href="/services/performance">Performance & Tuning</a></h3>
+                        <ul>
+                            <li><a href="/services/engine-tuning">ECU Tuning</a></li>
+                            <li><a href="/services/dyno-tuning">Dyno Tuning</a></li>
+                            <li><a href="/services/exhaust">Exhaust Systems</a></li>
+                            <li><a href="/services/performance" class="see-all">See All Performance Services</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="menu-section">
+                        <h3><a href="/services/repair">Auto Repair</a></h3>
+                        <ul>
+                            <li><a href="/services/brake-repair">Brake Repair</a></li>
+                            <li><a href="/services/engine-repair">Engine Repair</a></li>
+                            <li><a href="/services/transmission">Transmission Repair</a></li>
+                            <li><a href="/services/repair" class="see-all">See All Repair Services</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="menu-section">
+                        <h3><a href="/services/maintenance">Maintenance</a></h3>
+                        <ul>
+                            <li><a href="/services/oil-change">Oil Change Services</a></li>
+                            <li><a href="/services/brake-maintenance">Brake Maintenance</a></li>
+                            <li><a href="/services/scheduled-maintenance">Scheduled Maintenance</a></li>
+                            <li><a href="/services/maintenance" class="see-all">See All Maintenance Services</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="menu-section">
+                        <h3><a href="/services">Quick Links</a></h3>
+                        <ul>
+                            <li><a href="/services/tires-wheels">Tires & Wheels</a></li>
+                            <li><a href="/about">About</a></li>
+                            <li><a href="/gallery">Gallery</a></li>
+                            <li><a href="/services" class="see-all">View All Services</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Bottom Navigation -->
+                <div class="bottom-nav">
+                    <a href="#" id="mobile-menu-hours-text"></a>
+                    <a href="#">24 Sacandaga Rd, Scotia</a>
+                </div>
+            </div>
+        </div>
+    </script>
+    
+    <script type="text/html" id="hero-template">
+        <section class="hero">
+            <div class="container">
+                <div class="info-card">
+                    <div class="info-item">
+                        <span id="hours-text">Open today until 5PM</span>
+                    </div>
+                    <div class="info-item">
+                        <a href="#">24 Sacandaga Rd, Scotia, NY 12302</a>
+                    </div>
+                </div>
+                <div class="hero-content">
+                    <h1>Scotia Performance Auto</h1>
+                    <h2>Professional Auto Service & Repair</h2>
+                    <a href="tel:+15183746111" class="cta-button">Schedule Service</a>
+                </div>
+            </div>
+        </section>
+    </script>
+    
+    <script type="text/html" id="footer-template">
+        <footer class="site-footer">
+            <div class="container">
+                <div class="footer-grid">
+                    <div class="footer-section">
+                        <h3>Contact Us</h3>
+                        <p>Scotia Performance Auto</p>
+                        <p>24 Sacandaga Rd, Scotia, NY 12302</p>
+                        <p><a href="tel:+15183746111">(518) 374-6111</a></p>
+                    </div>
+                    <div class="footer-section">
+                        <h3>Service Area</h3>
+                        <p>Scotia, Schenectady, Glenville, Rotterdam, Niskayuna, and surrounding areas.</p>
+                    </div>
+                    <div class="footer-section">
+                        <h3>Quick Links</h3>
+                        <ul>
+                            <li><a href="#services">Services</a></li>
+                            <li><a href="#help">Diagnostic Help</a></li>
+                            <li><a href="#reviews">Reviews</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="copyright">
+                    <p>&copy; 2024 Scotia Performance Auto. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+    </script>
+</head>
+
+<body>
+    <!-- Megamenu Component -->
+    <div id="megamenu-container"></div>
+
+    <!-- Hero Component -->
+    <div id="hero-container"></div>
+
+    <div class="tagline" id="rotating-tagline"></div>
+
+    <!-- Main Content -->
+    <main>
+        <section class="services" id="services">
+            <div class="container">
+                <h2>Services We Offer</h2>
+                <div class="services-grid">
+                    <div class="service-card">
+                        <h3>Brake Service</h3>
+                        <p>Complete brake system diagnostics,
+                            repair and replacement. Includes pads,
+                            rotors,
+                            calipers,
+                            and brake lines.
+                        </p>
+                    </div>
+                    <div class="service-card">
+                        <h3>Engine Diagnostics & Repair</h3>
+                        <p>Computer diagnostics, troubleshooting, and repair for all engine issues. Check engine light
+                            specialists.
+                        </p>
+                    </div>
+                    <div class="service-card">
+                        <h3>Transmission Service</h3>
+                        <p>Automatic and manual transmission repair,
+                            fluid services,
+                            and diagnostics for all makes and models.
+                        </p>
+                    </div>
+                    <div class="service-card">
+                        <h3>Oil Changes</h3>
+                        <p>Regular maintenance with conventional,
+                            synthetic blend,
+                            or full synthetic oil. Includes multi-point inspection.
+                        </p>
+                    </div>
+                    <div class="service-card">
+                        <h3>Suspension Work</h3>
+                        <p>Shocks,
+                            struts,
+                            alignment services,
+                            and complete suspension system repairs for a smoother ride.
+                        </p>
+                    </div>
+                    <div class="service-card">
+                        <h3>Tire Service</h3>
+                        <p>Tire rotation,
+                            balancing,
+                            repairs,
+                            and replacement. All major tire brands available.
+                        </p>
+                    </div>
+                    <div class="service-card">
+                        <h3>State Inspections</h3>
+                        <p>NYS certified inspection station. Quick and thorough vehicle safety inspections.</p>
+                    </div>
+                    <div class="service-card">
+                        <h3>AC Service</h3>
+                        <p>AC system diagnosis,
+                            recharge,
+                            and repair. Keep your vehicle cool and comfortable.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="help-section" id="help">
+            <div class="container">
+                <h2>Helpful Diagnostic Information</h2>
+                <div class="diagnostic-grid">
+                    <div class="diagnostic-card">
+                        <h3>Vehicle Details</h3>
+                        <ul>
+                            <li><strong>Essential:</strong> Make,
+                                model,
+                                and year
+                            </li>
+                            <li><strong>Optional:</strong> Current mileage reading</li>
+                        </ul>
+                    </div>
+                    <div class="diagnostic-card">
+                        <h3>Issue Description</h3>
+                        <ul>
+                            <li>Detailed description of symptoms</li>
+                            <li>Timeline of when issues began</li>
+                            <li>Frequency of occurrence</li>
+                            <li>Warning indicators (lights/sounds)</li>
+                        </ul>
+                    </div>
+                    <div class="diagnostic-card">
+                        <h3>Operating Conditions</h3>
+                        <ul>
+                            <li>Engine temperature state</li>
+                            <li>Driving environment (city/highway)</li>
+                            <li>Weather conditions during issues</li>
+                            <li>Vehicle speed during occurrence</li>
+                        </ul>
+                    </div>
+                    <div class="diagnostic-card">
+                        <h3>Maintenance Background</h3>
+                        <ul>
+                            <li>Recent repair history</li>
+                            <li>Regular maintenance records</li>
+                            <li>Previous related issues</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="reviews" id="reviews">
+            <div class="container">
+                <h2>What Our Customers Say</h2>
+                <div class="reviews-grid">
+                    <div class="review-card">
+                        <div class="stars">★★★★★</div>
+                        <p>"Professional respectable operation run at peak productivity. Amazingly service. Honest. A garage
+                            with morals to not rip you off."
+                        </p>
+                        <div class="reviewer">- Oak Owl</div>
+                        <div class="review-date">2024</div>
+                    </div>
+                    <div class="review-card">
+                        <div class="stars">★★★★★</div>
+                        <p>"I only wish I had found these mechanics years ago! Grant, Rob, and the crew are not only great
+                            mechanics who go above and beyond to help you. They are professional,
+                            knowledgeable,
+                            honest,
+                            friendly,
+                            and empathetic to your needs."
+                        </p>
+                        <div class="reviewer">- Angel H.</div>
+                        <div class="review-date">2023</div>
+                    </div>
+                    <div class="review-card">
+                        <div class="stars">★★★★★</div>
+                        <p>"Grant and his group of mechanics are so great at what they do. No matter what they have going on
+                            they always stop what they are doing to answer my questions and help me with my problems. Can't
+                            say
+                            enough about their service and the pride they take in everything they do."
+                        </p>
+                        <div class="reviewer">- Kevin P.</div>
+                        <div class="review-date">2023</div>
+                    </div>
+                    <div class="review-card">
+                        <div class="stars">★★★★★</div>
+                        <p>"Great shop they have been working on my F-150 have been doing an amazing job trying to get it
+                            back
+                            up and running. Very satisfied with their customer service. Had some problems after repairs were
+                            made but since parts were under warranty they even fixed it again at no additional charge."
+                        </p>
+                        <div class="reviewer">- Dheeraj S.</div>
+                        <div class="review-date">2023</div>
+                    </div>
+                    <div class="review-card">
+                        <div class="stars">★★★★★</div>
+                        <p>"We live out of state and my college-age daughter broke down on the thruway about 30 minutes
+                            away.
+                            Scotia Performance was recommended to us and we are so grateful. They got her back on the road
+                            quickly."
+                        </p>
+                        <div class="reviewer">- Nicole L.</div>
+                        <div class="review-date">2023</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Component -->
+    <div id="footer-container"></div>
+
+    <!-- Scripts -->
+    <script src="js/components.js"></script>
+    <script src="js/megamenu.js"></script>
+    <script src="js/taglines.js"></script>
+    <script src="js/businessHours.js"></script>
+    <script src="js/maps.js"></script>
+    <script src="js/accessibility.js"></script>
+    <script src="js/header.js"></script>
+    <script src="js/main.js"></script>
+    
+    <!-- Troubleshooting -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM fully loaded');
+            
+            // Check if componentsLoaded event fires
+            document.addEventListener('componentsLoaded', function() {
+                console.log('Components loaded event received');
+            });
+            
+            // Check for megamenu elements after a delay
+            setTimeout(function() {
+                const megamenuContainer = document.getElementById('megamenu-container');
+                const siteHeader = document.getElementById('siteHeader');
+                const servicesToggle = document.querySelector('.services-toggle');
+                const megaMenu = document.getElementById('services-mega-menu');
+                
+                console.log('Checking megamenu elements after 2 seconds:');
+                console.log('- megamenu-container:', megamenuContainer ? 'Found' : 'Not found');
+                console.log('- siteHeader:', siteHeader ? 'Found' : 'Not found');
+                console.log('- services-toggle:', servicesToggle ? 'Found' : 'Not found');
+                console.log('- services-mega-menu:', megaMenu ? 'Found' : 'Not found');
+                
+                // If megamenu is not loaded, try manual initialization
+                if (!siteHeader && megamenuContainer) {
+                    console.log('Attempting to manually load megamenu component');
+                    fetch('components/megamenu.html')
+                        .then(response => response.text())
+                        .then(html => {
+                            megamenuContainer.innerHTML = html;
+                            console.log('Manually loaded megamenu content');
+                            // Force re-initialize megamenu
+                            if (typeof initializeMegaMenu === 'function') {
+                                console.log('Manually reinitializing megamenu');
+                                initializeMegaMenu();
+                            }
+                        })
+                        .catch(error => console.error('Manual megamenu load failed:', error));
+                }
+            }, 2000);
+        });
+    </script>
+</body>
+
+</html>

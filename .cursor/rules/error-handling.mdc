@@ -1,0 +1,501 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Error Handling Guidelines for Scotia Performance
+
+## Core Principles
+
+- **User Experience**: Prioritize graceful degradation and clear feedback
+- **Debuggability**: Ensure errors are properly logged and traceable
+- **Recoverability**: Allow the application to continue functioning when possible
+- **Appropriate Levels**: Handle errors at the right level of abstraction
+
+## Client-Side Error Handling
+
+### 1. Component-Level Error Boundaries
+
+Use Svelte's built-in error boundary component to catch and handle errors:
+
+```svelte
+<script>
+  import ErrorFallback from '$lib/components/ErrorFallback.svelte';
+  
+  function handleError(error, componentName) {
+    console.error(`Error in ${componentName}:`, error);
+    // Optional: report to error tracking service
+  }
+</script>
+
+<svelte:boundary on:error={(e) => handleError(e.error, 'ProductList')}>
+  <ProductList products={products} />
+</svelte:boundary>
+```
+
+### 2. Async Operation Handling
+
+Always wrap async operations in try/catch blocks with appropriate error states:
+
+```svelte
+<script>
+  import { onMount } from 'svelte';
+  
+  let data = $state(null);
+  let loading = $state(true);
+  let error = $state(null);
+  
+  async function fetchData() {
+    loading = true;
+    error = null;
+    
+    try {
+      const response = await fetch('/api/data');
+      
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
+      }
+      
+      data = await response.json();
+    } catch (err) {
+      error = err;
+      console.error('Failed to fetch data:', err);
+    } finally {
+      loading = false;
+    }
+  }
+  
+  onMount(fetchData);
+</script>
+
+{#if loading}
+  <LoadingSpinner />
+{:else if error}
+  <ErrorMessage 
+    message="Failed to load data" 
+    details={error.message}
+    onRetry={fetchData} 
+  />
+{:else}
+  <DataDisplay {data} />
+{/if}
+```
+
+### 3. Safe Data Access
+
+Use optional chaining and nullish coalescing for safer data access:
+
+```js
+// Unsafe
+const userName = data.user.profile.name;
+
+// Safe
+const userName = data?.user?.profile?.name ?? 'Unknown User';
+```
+
+## SvelteKit-Specific Error Handling
+
+### 1. Route Error Pages
+
+Create specialized error pages for different routes:
+
+```
+src/routes/
+├── +error.svelte           # Root error page
+└── admin/
+    └── +error.svelte       # Admin-specific error page
+```
+
+```svelte
+<!-- In +error.svelte -->
+<script>
+  import { page } from '$app/stores';
+  import ErrorDisplay from '$lib/components/ErrorDisplay.svelte';
+  
+  // Access the error information
+  $: ({ status, message } = $page.error || { status: 500, message: 'Unknown error' });
+</script>
+
+<ErrorDisplay {status} {message} />
+```
+
+### 2. Load Function Error Handling
+
+Use SvelteKit's error and redirect helpers for navigation:
+
+```js
+// In +page.js or +page.server.js
+import { error, redirect } from '@sveltejs/kit';
+
+export async function load({ params, fetch }) {
+  try {
+    const productId = params.id;
+    const response = await fetch(`/api/products/${productId}`);
+    
+    if (response.status === 404) {
+      // Handle not found with specific error
+      throw error(404, {
+        message: `Product with ID ${productId} not found`,
+        code: 'PRODUCT_NOT_FOUND'
+      });
+    }
+    
+    if (!response.ok) {
+      // Handle other API errors
+      throw error(response.status, 'Failed to load product data');
+    }
+    
+    return {
+      product: await response.json()
+    };
+  } catch (err) {
+    // If it's already a SvelteKit error, rethrow it
+    if (err.status && err.message) {
+      throw err;
+    }
+    
+    // Otherwise wrap in a generic error
+    console.error('Load function error:', err);
+    throw error(500, 'An unexpected error occurred');
+  }
+}
+```
+
+### 3. API Route Error Handling
+
+Handle errors in API routes consistently:
+
+```js
+// In +server.js
+import { json } from '@sveltejs/kit';
+
+export async function GET({ params }) {
+  try {
+    // Your logic here
+    const data = await fetchSomeData(params.id);
+    return json(data);
+  } catch (err) {
+    console.error(`API error in GET /api/resource/${params.id}:`, err);
+    
+    // Return an appropriate status code and error message
+    return new Response(
+      JSON.stringify({
+        error: 'Failed to fetch resource',
+        message: err.message
+      }),
+      {
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+  }
+}
+```
+
+## Form Validation and Handling
+
+### 1. Form Validation Errors
+
+Handle form validation with clear feedback:
+
+```svelte
+<script>
+  const formData = $state({
+    name: '',
+    email: ''
+  });
+  
+  const errors = $state({
+    name: '',
+    email: ''
+  });
+  
+  function validateForm() {
+    let isValid = true;
+    
+    // Reset errors
+    errors.name = '';
+    errors.email = '';
+    
+    // Validate name
+    if (!formData.name.trim()) {
+      errors.name = 'Name is required';
+      isValid = false;
+    }
+    
+    // Validate email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      errors.email = 'Valid email is required';
+      isValid = false;
+    }
+    
+    return isValid;
+  }
+  
+  function handleSubmit() {
+    if (validateForm()) {
+      // Submit form
+    }
+  }
+</script>
+
+<form on:submit|preventDefault={handleSubmit}>
+  <div class="form-group">
+    <label for="name">Name</label>
+    <input 
+      id="name"
+      type="text"
+      bind:value={formData.name}
+      class={errors.name ? 'input-error' : ''}
+    />
+    {#if errors.name}
+      <div class="error-message">{errors.name}</div>
+    {/if}
+  </div>
+  
+  <!-- Similar pattern for other fields -->
+  
+  <button type="submit">Submit</button>
+</form>
+```
+
+### 2. Form Actions Error Handling
+
+Handle errors in SvelteKit form actions:
+
+```js
+// In +page.server.js
+export const actions = {
+  submit: async ({ request }) => {
+    const formData = await request.formData();
+    
+    try {
+      // Validate and process form data
+      const result = await processFormData(formData);
+      
+      // Return success state
+      return { success: true, data: result };
+    } catch (err) {
+      // Return error state
+      console.error('Form action error:', err);
+      
+      return {
+        success: false,
+        error: err.message || 'Form submission failed'
+      };
+    }
+  }
+};
+```
+
+## Error UI Components
+
+### 1. Reusable Error Components
+
+Create a library of reusable error UI components:
+
+```svelte
+<!-- src/lib/components/ErrorMessage.svelte -->
+<script>
+  export let message = 'An error occurred';
+  export let details = '';
+  export let onRetry = null;
+</script>
+
+<div class="error-container">
+  <div class="error-icon">⚠️</div>
+  <h3 class="error-title">{message}</h3>
+  
+  {#if details}
+    <p class="error-details">{details}</p>
+  {/if}
+  
+  {#if onRetry}
+    <button class="retry-button" onclick={onRetry}>
+      Try Again
+    </button>
+  {/if}
+</div>
+
+<style>
+  .error-container {
+    padding: 1rem;
+    border: 1px solid #f8d7da;
+    background-color: #fff5f5;
+    border-radius: 0.25rem;
+    text-align: center;
+  }
+  
+  /* Additional styles */
+</style>
+```
+
+### 2. Error State Management
+
+Create consistent patterns for managing loading and error states:
+
+```js
+// In a component
+let data = $state(null);
+let error = $state(null);
+let loading = $state(false);
+
+async function loadData() {
+  loading = true;
+  error = null;
+  
+  try {
+    data = await fetchData();
+  } catch (err) {
+    error = err;
+  } finally {
+    loading = false;
+  }
+}
+```
+
+## Error Logging and Monitoring
+
+### 1. Client-Side Error Logging
+
+Implement a robust error logging service:
+
+```js
+// src/lib/services/errorReporting.js
+export function reportError(error, context = {}) {
+  // In development, log to console
+  if (import.meta.env.DEV) {
+    console.error('ERROR:', error, context);
+    return;
+  }
+  
+  // In production, send to error tracking service
+  try {
+    // Example: Send to a service like Sentry
+    // Sentry.captureException(error, { extra: context });
+    
+    // Or send to your own API endpoint
+    fetch('/api/error-report', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: error.message,
+        stack: error.stack,
+        context,
+        url: window.location.href,
+        timestamp: new Date().toISOString()
+      })
+    }).catch(e => console.error('Failed to report error:', e));
+  } catch (e) {
+    console.error('Error while reporting error:', e);
+  }
+}
+```
+
+### 2. Global Error Handlers
+
+Set up a global error handler for uncaught exceptions:
+
+```js
+// In src/lib/errorHandling.js
+export function setupGlobalErrorHandlers() {
+  // Handle uncaught promises
+  window.addEventListener('unhandledrejection', (event) => {
+    console.error('Unhandled promise rejection:', event.reason);
+    // Report to error tracking service
+    reportError(event.reason);
+  });
+  
+  // Handle general JS errors
+  window.addEventListener('error', (event) => {
+    console.error('Global error:', event.error);
+    // Report to error tracking service
+    reportError(event.error);
+  });
+}
+
+// In +layout.svelte
+import { onMount } from 'svelte';
+import { setupGlobalErrorHandlers } from '$lib/errorHandling';
+
+onMount(() => {
+  if (typeof window !== 'undefined') {
+    setupGlobalErrorHandlers();
+  }
+});
+```
+
+## Advanced Error Handling Techniques
+
+### 1. Retry Logic
+
+Implement retry logic for transient failures:
+
+```js
+export async function retryFetch(url, options = {}, retries = 3, delay = 1000) {
+  try {
+    return await fetch(url, options);
+  } catch (err) {
+    if (retries <= 1) throw err;
+    
+    await new Promise(resolve => setTimeout(resolve, delay));
+    return retryFetch(url, options, retries - 1, delay * 1.5);
+  }
+}
+```
+
+### 2. Error Utils Module
+
+Create a dedicated error utilities module:
+
+```js
+// src/lib/utils/errorUtils.js
+
+// Check if an error is a network error
+export function isNetworkError(error) {
+  return (
+    error.message === 'Network Error' ||
+    error.message === 'Failed to fetch' ||
+    error instanceof TypeError && error.message.includes('fetch')
+  );
+}
+
+// Format error message for user display
+export function formatErrorMessage(error) {
+  if (isNetworkError(error)) {
+    return 'Unable to connect to the server. Please check your internet connection.';
+  }
+  
+  if (error.status === 404) {
+    return 'The requested resource was not found.';
+  }
+  
+  if (error.status === 403) {
+    return 'You do not have permission to access this resource.';
+  }
+  
+  return error.message || 'An unknown error occurred.';
+}
+```
+
+## Best Practices and Anti-patterns
+
+### Best Practices
+
+- ✅ **Centralize error handling logic** in dedicated utilities
+- ✅ **Be specific about errors** - different errors need different handling
+- ✅ **Provide recovery options** when possible (retry, alternative flows)
+- ✅ **Consider offline scenarios** and network errors
+- ✅ **Include context information** in error reports
+- ✅ **Use appropriate error codes** for different error types
+
+### Anti-patterns
+
+- ❌ **Empty catch blocks** that swallow errors without handling
+- ❌ **Generic error messages** that don't help users understand the problem
+- ❌ **Exposing sensitive information** in error messages
+- ❌ **Inconsistent error handling** across different parts of the app
+- ❌ **Handling all errors the same way** regardless of type or severity

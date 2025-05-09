@@ -1,0 +1,79 @@
+.about-card {
+  background-color: white;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+  height: 100%;
+
+  &__body {
+    padding: var(--spacing-4);
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-3);
+  }
+
+  &__title {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--scotia-gray);
+    margin: 0;
+  }
+
+  &__ratings {
+    display: flex;
+    align-items: center;
+  }
+
+  &__stars {
+    color: #FFB800;
+    margin-right: var(--spacing-2);
+    font-size: var(--font-size-sm);
+  }
+
+  &__reviews {
+    font-size: var(--font-size-sm);
+  }
+
+  &__status {
+    padding: var(--spacing-2);
+    margin: var(--spacing-2) 0;
+    border-radius: var(--border-radius-md);
+    display: flex;
+    align-items: center;
+    font-size: var(--font-size-sm);
+
+    &--open {
+      background-color: rgba(16, 185, 129, 0.1);
+    }
+
+    &--closed {
+      background-color: rgba(239, 68, 68, 0.1);
+    }
+  }
+
+  &__status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: var(--spacing-1);
+
+    &--open {
+      background-color: #10B981;
+    }
+
+    &--closed {
+      background-color: #EF4444;
+    }
+  }
+
+  &__text {
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--spacing-2);
+    color: var(--scotia-gray);
+    line-height: 1.5;
+  }
+} 

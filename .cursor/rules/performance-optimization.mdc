@@ -1,0 +1,572 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Performance Optimization Guide
+
+## Overview
+
+This guide provides techniques for optimizing the performance of the Scotia Performance SvelteKit application. These optimizations focus on improving both perceived and actual performance by addressing bundle size, rendering performance, network efficiency, and server-side optimizations.
+
+## Performance Analysis Tools
+
+Before optimizing, measure your application's performance to identify bottlenecks:
+
+### 1. Built-in Performance Scripts
+
+```bash
+# Run bundle analysis to identify large dependencies
+bun run analyze
+
+# Run the performance analysis script
+bun run analyze:performance
+
+# Optimize images in the project
+bun run optimize:images
+```
+
+### 2. Browser DevTools
+
+- **Lighthouse**: Run audits in Chrome DevTools for comprehensive analysis
+- **Performance Panel**: Record and analyze runtime performance
+- **Network Panel**: Monitor request size, timing, and waterfall
+
+### 3. SvelteKit-Specific Tools
+
+- **Vite Bundle Visualizer**: Already integrated via `rollup-plugin-visualizer`
+  ```js
+  // Run with analyze flag to generate a visual bundle report
+  bun run build --mode=analyze
+  ```
+
+## Code Splitting & Lazy Loading
+
+### 1. Dynamic Component Imports
+
+Split large components to reduce initial bundle size:
+
+```js
+// Before: Direct import loads everything at once
+import HeavyComponent from '$lib/components/HeavyComponent.svelte';
+
+// After: Dynamic import only loads when needed
+import { onMount } from 'svelte';
+
+let HeavyComponent;
+onMount(async () => {
+  const module = await import('$lib/components/HeavyComponent.svelte');
+  HeavyComponent = module.default;
+});
+```
+
+### 2. Route-Based Code Splitting
+
+SvelteKit automatically splits code by route, but you can enhance this:
+
+```js
+// In +page.js or +layout.js
+export const load = async () => {
+  // Parallel loading of data and components
+  const [dataPromise, componentPromise] = await Promise.all([
+    fetchData(),
+    import('$lib/components/LazyComponent.svelte')
+  ]);
+  
+  return {
+    data: await dataPromise,
+    component: (await componentPromise).default
+  };
+};
+```
+
+### 3. Viewport-Based Lazy Loading
+
+Only load components when they enter the viewport:
+
+```svelte
+<script>
+  import { LazyLoad } from '$lib/components/LazyLoad.svelte';
+  
+  // Usage with dynamic import
+  let TestimonialCarousel;
+  
+  function loadTestimonials() {
+    import('$lib/components/TestimonialCarousel.svelte')
+      .then(module => {
+        TestimonialCarousel = module.default;
+      });
+  }
+</script>
+
+<LazyLoad onVisible={loadTestimonials} height="400px">
+  {#if TestimonialCarousel}
+    <svelte:component this={TestimonialCarousel} />
+  {:else}
+    <div class="loading-placeholder">Loading testimonials...</div>
+  {/if}
+</LazyLoad>
+```
+
+## Svelte 5 State Management Optimizations
+
+### 1. Minimize State Updates
+
+```svelte
+<script>
+  // Before: Updating the entire object
+  const car = $state({
+    make: 'Honda',
+    model: 'Civic',
+    year: 2022,
+    features: ['Bluetooth', 'Backup Camera', 'Lane Assist']
+  });
+  
+  // 🔴 Bad: This causes everything to re-render
+  function addFeature(feature) {
+    car.features = [...car.features, feature];
+  }
+  
+  // ✅ Better: Use $state.raw() for large objects with infrequent updates
+  const carRaw = $state.raw({
+    make: 'Honda',
+    model: 'Civic',
+    year: 2022,
+    features: ['Bluetooth', 'Backup Camera', 'Lane Assist']
+  });
+  
+  // Only causes re-render for components that use features
+  function addFeatureOptimized(feature) {
+    carRaw.features = [...carRaw.features, feature];
+  }
+</script>
+```
+
+### 2. Localize State
+
+Keep state as close as possible to where it's used:
+
+```svelte
+<!-- 🔴 Bad: Global state for component-specific data -->
+<script>
+  // In a store.js file
+  export const formData = $state({
+    name: '',
+    email: '',
+    message: ''
+  });
+</script>
+
+<!-- ✅ Better: Component-scoped state -->
+<script>
+  // In ContactForm.svelte
+  const formData = $state({
+    name: '',
+    email: '',
+    message: ''
+  });
+</script>
+```
+
+### 3. Optimize Derived Values
+
+```svelte
+<script>
+  import { derived } from 'svelte';
+  
+  const items = $state([
+    { id: 1, name: 'Item 1', price: 10, quantity: 2 },
+    { id: 2, name: 'Item 2', price: 15, quantity: 1 },
+    // Potentially hundreds of items
+  ]);
+  
+  // 🔴 Bad: Recalculates on every render, even when unrelated state changes
+  function getTotalCost() {
+    return items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  }
+  
+  // ✅ Better: Only recalculates when dependencies change
+  const totalCost = $derived(
+    items.reduce((sum, item) => sum + (item.price * item.quantity), 0)
+  );
+  
+  // ✅ Even better for complex calculations
+  const totalCostByCategory = $derived.by(() => {
+    // Complex grouping and calculation logic
+    const result = {};
+    
+    for (const item of items) {
+      // ... expensive computation
+    }
+    
+    return result;
+  });
+</script>
+```
+
+### 4. Proper Cleanup in Effects
+
+```svelte
+<script>
+  import { onDestroy } from 'svelte';
+  
+  const count = $state(0);
+  let interval;
+  
+  // 🔴 Bad: No cleanup, causes memory leaks
+  $effect(() => {
+    interval = setInterval(() => {
+      count++;
+    }, 1000);
+  });
+  
+  // ✅ Better: Return cleanup function from effect
+  $effect(() => {
+    interval = setInterval(() => {
+      count++;
+    }, 1000);
+    
+    return () => {
+      clearInterval(interval);
+    };
+  });
+</script>
+```
+
+## DOM Optimization
+
+### 1. Event Delegation
+
+For lists with many interactive elements:
+
+```svelte
+<script>
+  const items = $state([
+    { id: 1, name: 'Item 1' },
+    { id: 2, name: 'Item 2' },
+    // Potentially hundreds of items
+  ]);
+  
+  // 🔴 Bad: Attaching event handler to each button
+  function handleClick(id) {
+    // Handle click for specific item
+  }
+</script>
+
+<!-- 🔴 Bad: Separate handler for each item -->
+<ul>
+  {#each items as item (item.id)}
+    <li>
+      {item.name}
+      <button onclick={() => handleClick(item.id)}>View</button>
+    </li>
+  {/each}
+</ul>
+
+<!-- ✅ Better: Use event delegation -->
+<script>
+  function handleListClick(e) {
+    // Find closest button if that's what was clicked
+    const button = e.target.closest('button');
+    if (!button) return;
+    
+    // Get the item ID from the data attribute
+    const id = Number(button.dataset.id);
+    if (id) {
+      // Handle the click
+    }
+  }
+</script>
+
+<ul onclick={handleListClick}>
+  {#each items as item (item.id)}
+    <li>
+      {item.name}
+      <button data-id={item.id}>View</button>
+    </li>
+  {/each}
+</ul>
+```
+
+### 2. Virtualized Lists
+
+For extremely long lists, implement virtualization:
+
+```svelte
+<script>
+  import { VirtualList } from '$lib/components/VirtualList.svelte';
+  
+  const items = $state(Array.from({ length: 10000 }, (_, i) => ({
+    id: i,
+    name: `Item ${i}`
+  })));
+  
+  function renderItem(item) {
+    return `<li>${item.name}</li>`;
+  }
+</script>
+
+<VirtualList 
+  items={items}
+  height="500px"
+  itemHeight={50}
+  renderItem={renderItem}
+/>
+```
+
+## Asset Optimization
+
+### 1. Image Optimization
+
+```svelte
+<script>
+  import { ResponsiveImage } from '$lib/components/ResponsiveImage.svelte';
+</script>
+
+<!-- 🔴 Bad: Unoptimized image -->
+<img src="/images/large-photo.jpg" alt="Large unoptimized image">
+
+<!-- ✅ Better: Optimized responsive image -->
+<ResponsiveImage
+  src="/images/large-photo.jpg"
+  alt="Optimized responsive image"
+  width={800}
+  height={600}
+  sizes="(max-width: 768px) 100vw, 800px"
+  loading="lazy"
+  placeholder="data:image/jpeg;base64,/9j..."
+/>
+```
+
+Use the built-in image optimization script:
+
+```bash
+# Optimize all images in static and public directories
+bun run optimize:images
+```
+
+### 2. Font Loading Optimization
+
+```html
+<!-- Add to app.html -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" href="/fonts/CustomFont.woff2" as="font" type="font/woff2" crossorigin>
+
+<style>
+  /* Use font-display to prevent FOIT */
+  @font-face {
+    font-family: 'CustomFont';
+    src: url('/fonts/CustomFont.woff2') format('woff2');
+    font-display: swap;
+    font-weight: 400;
+    font-style: normal;
+  }
+</style>
+```
+
+### 3. Critical CSS Extraction
+
+Inline critical CSS in the document head:
+
+```js
+// In hooks.server.js or src/routes/+layout.server.js
+import { criticalCss } from '$lib/utils/critical-css';
+
+export async function handle({ event, resolve }) {
+  const response = await resolve(event);
+  
+  // Only process HTML responses
+  if (response.headers.get('content-type')?.includes('text/html')) {
+    let html = await response.text();
+    
+    // Insert critical CSS
+    const criticalStyles = await criticalCss(event.url.pathname);
+    html = html.replace('</head>', `<style id="critical-css">${criticalStyles}</style></head>`);
+    
+    return new Response(html, {
+      status: response.status,
+      headers: response.headers
+    });
+  }
+  
+  return response;
+}
+```
+
+## Network Optimization
+
+### 1. HTTP Caching
+
+Configure caching headers in your deployment config:
+
+```js
+// Example for Netlify (netlify.toml)
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+```
+
+### 2. Preloading and Prefetching
+
+```svelte
+<!-- In +layout.svelte -->
+<script>
+  import { prefetch } from '$app/navigation';
+  
+  // Prefetch common routes
+  onMount(() => {
+    prefetch('/services');
+    prefetch('/about');
+  });
+</script>
+
+<!-- Preload critical assets -->
+<svelte:head>
+  <link rel="preload" href="/images/hero-image.webp" as="image" type="image/webp">
+</svelte:head>
+```
+
+### 3. Streaming for Large Responses
+
+```js
+// In +page.server.js
+export const load = async () => {
+  return {
+    // This will be streamed, allowing the page to render
+    // while this data is still loading
+    products: new Promise(async (resolve) => {
+      const products = await fetchLargeProductList();
+      resolve(products);
+    })
+  };
+};
+```
+
+## Server-Side Optimizations
+
+### 1. Edge Functions for API Routes
+
+Move API routes to edge functions for lower latency:
+
+```js
+// In src/routes/api/data/+server.js
+export const config = {
+  runtime: 'edge'
+};
+
+export async function GET({ request }) {
+  // Handle the request at the edge
+  return new Response(JSON.stringify({ data: 'Fast response from edge' }), {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+}
+```
+
+### 2. Incremental Static Regeneration
+
+```js
+// In +page.server.js
+export const config = {
+  isr: {
+    expiration: 60 // Regenerate every 60 seconds
+  }
+};
+
+export async function load() {
+  return {
+    products: await fetchProducts()
+  };
+}
+```
+
+### 3. Web Workers for CPU-Intensive Tasks
+
+```js
+// In src/lib/workers/heavy-computation.js
+self.onmessage = async ({ data }) => {
+  // Perform CPU-intensive calculation
+  const result = await performExpensiveCalc(data);
+  self.postMessage(result);
+};
+
+// In a Svelte component
+<script>
+  import { onMount } from 'svelte';
+  
+  let result = $state(null);
+  let worker;
+  
+  onMount(() => {
+    worker = new Worker(
+      new URL('$lib/workers/heavy-computation.js', import.meta.url),
+      { type: 'module' }
+    );
+    
+    worker.onmessage = ({ data }) => {
+      result = data;
+    };
+    
+    return () => {
+      worker.terminate();
+    };
+  });
+  
+  function runHeavyTask() {
+    worker.postMessage({ input: 'some complex data' });
+  }
+</script>
+
+<button onclick={runHeavyTask}>Run Heavy Calculation</button>
+{#if result}
+  <div>Result: {result}</div>
+{/if}
+```
+
+## Measuring Impact
+
+After implementing optimizations, measure the impact:
+
+1. **Core Web Vitals**:
+   - Largest Contentful Paint (LCP): < 2.5s
+   - First Input Delay (FID): < 100ms
+   - Cumulative Layout Shift (CLS): < 0.1
+
+2. **Bundle Size**:
+   - Before vs. After gzipped bundle size
+   - Number of chunks and their sizes
+
+3. **Page Load Metrics**:
+   - Time to First Byte (TTFB)
+   - Time to Interactive (TTI)
+   - Total Blocking Time (TBT)
+
+## Common Performance Pitfalls
+
+- ❌ **Over-optimization**: Focus on measuring before optimizing
+- ❌ **Synchronous operations** in component initialization
+- ❌ **Nested subscriptions** without proper cleanup
+- ❌ **Expensive operations** in frequently called lifecycle functions
+- ❌ **Unoptimized images** and assets
+- ❌ **Third-party scripts** loading synchronously
+- ❌ **Unnecessary re-renders** due to prop changes or state updates
+
+## Additional Resources
+
+- [SvelteKit Documentation on Performance](mdc:https:/kit.svelte.dev/docs/performance)
+- [Svelte 5 Runes Documentation](mdc:https:/svelte.dev/blog/runes)
+- [Web.dev Performance Guide](mdc:https:/web.dev/learn/performance)
+- [Core Web Vitals](mdc:https:/web.dev/vitals)

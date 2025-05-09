@@ -1,0 +1,55 @@
+/* 
+ * Main application CSS - minimal file since most styles are in SCSS
+ * Only Svelte-specific overrides and fallbacks should be here
+ */
+
+/* Import the compiled SCSS */
+@import './app.scss'; /* Keep as @import since this is a CSS file importing a compiled SCSS file */
+
+/* Fallback styles in case SCSS doesn't load correctly */
+:root {
+  /* Critical variables as fallback */
+  --white: #FFFFFF;
+  --black: #000000;
+  --scotia-blue: #1A5DAD;
+  --scotia-red: #E63946;
+  --scotia-gray: #3D3D3D;
+}
+
+/* Critical accessibility styles */
+:focus-visible {
+  outline: 2px solid var(--scotia-blue);
+  outline-offset: 2px;
+}
+
+/* Critical resets that must apply even if SCSS fails */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Almarai', sans-serif;
+}
+
+/* Necessary for legacy browsers */
+@supports not (--css: variables) {
+  body {
+    color: #3D3D3D;
+    font-family: 'Almarai', sans-serif;
+  }
+  
+  a {
+    color: #1A5DAD;
+  }
+  
+  .btn-primary, button.btn-primary {
+    background-color: #1A5DAD;
+    color: #FFFFFF;
+  }
+  
+  .btn-secondary, button.btn-secondary {
+    background-color: #E63946;
+    color: #FFFFFF;
+  }
+}

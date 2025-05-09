@@ -1,0 +1,199 @@
+---
+description: Best practices for organizing routes and layouts in SvelteKit
+globs: 
+alwaysApply: false
+---
+---
+name: "SvelteKit Routing Patterns"
+kind: "Agent Requested"
+description: "Best practices for organizing routes and layouts in SvelteKit"
+includes: "src/routes/**/*"
+---
+
+# SvelteKit Routing Patterns (Svelte 5)
+
+## Routing Conventions
+
+1. **Use `+page.svelte` for route pages** and `+layout.svelte` for shared layout.
+   ```svelte
+   <!-- src/routes/about/+page.svelte -->
+   <h1>About</h1>
+````
+
+2. **Use `+layout.svelte` with `{@render children()}`** to render nested pages.
+
+   ```svelte
+   <!-- src/routes/+layout.svelte -->
+   <nav>...</nav>
+   {@render children()}
+   <footer>...</footer>
+   ```
+
+3. **Use `+page.js` for client-side data loading**.
+
+   ```js
+   // src/routes/blog/+page.js
+   export async function load() {
+     const res = await fetch('/api/posts');
+     const posts = await res.json();
+     return { posts };
+   }
+   ```
+
+4. **Use `+page.server.js` for server-only loading logic** (e.g., DB queries, auth).
+
+   ```js
+   // src/routes/dashboard/+page.server.js
+   export async function load({ locals }) {
+     if (!locals.user) {
+       throw redirect(302, '/login');
+     }
+     return { user: locals.user };
+   }
+   ```
+
+5. **Define `+error.svelte` per route group** to handle localized errors.
+
+   ```svelte
+   <!-- src/routes/blog/+error.svelte -->
+   <h1>Error loading blog</h1>
+   <p>{error.message}</p>
+   ```
+
+## Layout Organization
+
+6. **Create a root `+layout.svelte`** in `src/routes/` for site-wide structure.
+
+   ```svelte
+   <!-- src/routes/+layout.svelte -->
+   <Header />
+   {@render children()}
+   <Footer />
+   ```
+
+7. **Use `(group)` folders to group routes** without affecting the URL path.
+
+   ```
+   src/routes/
+   ├── (admin)/
+   │   ├── users/+page.svelte
+   │   └── settings/+page.svelte
+   ```
+
+## API and Actions
+
+8. **Define REST-like endpoints in `+server.js` files**.
+
+   ```js
+   // src/routes/api/posts/+server.js
+   export async function GET() {
+     return json([{ id: 1, title: 'Post 1' }]);
+   }
+   ```
+
+9. **Use the `enhance()` action** from `$app/forms` for progressive enhancement.
+
+   ```svelte
+   <form use:enhance>
+     <input name="email" />
+     <button>Subscribe</button>
+   </form>
+   ```
+
+## Navigation and Stores
+
+10. **Use `$app/navigation`** for programmatic navigation.
+
+```js
+import { goto } from '$app/navigation';
+goto('/dashboard');
+```
+
+11. **Use `$page` and `$app/stores`** for reactive access to route and session data.
+
+```svelte
+<script>
+  import { page } from '$app/stores';
+</script>
+
+<h1>Current: {$page.url.pathname}</h1>
+```
+
+## Type Safety and Guards
+
+12. **Use TypeScript in load functions** for typed props and returned data.
+
+```ts
+// src/routes/profile/+page.ts
+import type { PageLoad } from './$types';
+
+export const load: PageLoad = async ({ fetch }) => {
+  const res = await fetch('/api/user');
+  return { user: await res.json() };
+};
+```
+
+13. **Protect routes with redirects** inside `load()` or `load.server()`.
+
+```ts
+// src/routes/dashboard/+page.server.ts
+import { redirect } from '@sveltejs/kit';
+
+export function load({ locals }) {
+  if (!locals.user) throw redirect(302, '/login');
+  return { user: locals.user };
+}
+```
+
+## Data Flow and Rendering
+
+14. **Access route data via the `data` prop** passed to `+page.svelte`.
+
+```svelte
+<!-- src/routes/blog/+page.svelte -->
+<script>
+  export let data;
+</script>
+
+<ul>
+  {#each data.posts as post}
+    <li>{post.title}</li>
+  {/each}
+</ul>
+```
+
+15. **Use nested layouts to share data and structure** across route segments.
+
+```svelte
+<!-- src/routes/dashboard/+layout.svelte -->
+<Sidebar />
+<main>{@render children()}</main>
+```
+
+16. **Use `{@render}` for all content projection**, including layout and component composition.
+
+```svelte
+<!-- BaseCard.svelte -->
+<div class="card">
+  <div class="header">{@render header()}</div>
+  <div class="body">{@render children()}</div>
+</div>
+
+<!-- Usage -->
+<BaseCard>
+  {#snippet header()}
+    <h2>Card Header</h2>
+  {/snippet}
+  <p>Main content</p>
+</BaseCard>
+```
+
+---
+
+This file reflects modern SvelteKit + Svelte 5 idioms, especially:
+
+* Full adoption of the **runes API** (e.g. `{@render}`, not `<slot>`).
+* Proper use of **typed load functions**.
+* Avoiding `on:click` and `export let` in favor of rune-based communication where applicable.
+
+Let me know if you'd like a separate file for common layout strategies or dynamic route patterns.

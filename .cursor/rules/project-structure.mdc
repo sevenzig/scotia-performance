@@ -1,0 +1,348 @@
+---
+description: Guidelines for organizing SvelteKit project files and directories
+globs: 
+alwaysApply: false
+---
+# Scotia Performance SvelteKit Project Structure
+
+## Directory Organization
+
+The project follows a modular organization pattern that balances SvelteKit conventions with domain-specific needs:
+
+```
+scotia-performance-dev/
+├── src/                      # Source code root
+│   ├── lib/                  # Shared library code
+│   │   ├── components/       # Reusable UI components
+│   │   ├── layouts/          # Page layout components
+│   │   ├── services/         # Data services and API clients
+│   │   ├── utils/            # Utility functions
+│   │   ├── types/            # TypeScript type definitions
+│   │   └── stores/           # Svelte stores
+│   ├── routes/               # SvelteKit routes (pages)
+│   │   ├── about/            # About page route
+│   │   ├── services/         # Service pages
+│   │   │   ├── maintenance/  # Nested service routes
+│   │   │   ├── performance/
+│   │   │   ├── repair/
+│   │   │   └── tires-wheels/
+│   │   └── components/       # Component showcase route
+│   └── scss/                 # SCSS styles
+│       ├── components/       # Component-specific styles
+│       ├── core/             # Core SCSS variables and mixins
+│       └── pages/            # Page-specific styles
+├── static/                   # Static assets (images, fonts, etc.)
+│   └── images/               # Image assets
+├── scripts/                  # Build and utility scripts
+└── .cursor/                  # Cursor editor settings and rules
+    └── rules/                # Project guidelines
+```
+
+## Core Principles
+
+### 1. Module Organization
+
+Place files in appropriate directories based on their logical function:
+
+- **Components (`src/lib/components/`)**: Reusable UI elements used across multiple pages
+  - Example: `Button.svelte`, `ServiceCard.svelte`, `Testimonials.svelte`
+  - Use consistent naming: PascalCase for component files
+  - Group related components together (e.g., all hero-related components)
+
+- **Routes (`src/routes/`)**: SvelteKit page routes
+  - Follow SvelteKit's routing conventions using directory structure
+  - Use standard SvelteKit files: `+page.svelte`, `+layout.svelte`, `+page.server.js`
+  - Keep route-specific components within their route directories
+
+- **Services (`src/lib/services/`)**: Data access and business logic
+  - Example: `BusinessHoursService.ts`, `SchemaService.ts` 
+  - Use service-oriented naming: `[Domain]Service.ts`
+  - Define clear interfaces for service methods
+
+- **Utilities (`src/lib/utils/`)**: Helper functions and shared logic
+  - Example: `imageOptimizer.js`, `performanceMonitor.js`
+  - Keep functions focused on specific tasks
+  - Prefer pure functions when possible
+
+### 2. TypeScript Integration
+
+- **Types (`src/lib/types/`)**: Shared type definitions
+  - Define interfaces, types, and enums for consistency
+  - Export types from a central `index.ts` file when appropriate
+  - Use descriptive naming that reflects domain concepts
+
+- **Type usage**: Apply TypeScript types consistently
+  - Add type annotations to function parameters and return values
+  - Define prop types for Svelte components
+  - Use generics for flexible, type-safe utilities
+
+### 3. Style Organization
+
+- **SCSS Structure**: Organize SCSS files by purpose
+  - `core/`: Variables, mixins, functions, and base styles
+  - `components/`: Component-specific styles
+  - `pages/`: Page-specific styles
+  - Maintain a clear import order in `main.scss`
+
+- **Style encapsulation**: Prefer component-scoped styles
+  - Use Svelte's built-in style encapsulation
+  - Use BEM naming for custom CSS classes
+  - Apply global styles sparingly and deliberately
+
+### 4. Asset Management
+
+- **Static assets**: Place in appropriate static directories
+  - `static/images/`: Image files
+  - `static/fonts/`: Custom fonts
+  - Use the optimized directory for processed assets
+  - Follow consistent naming conventions
+
+- **Dynamic assets**: Manage with appropriate tools
+  - Use SvelteKit endpoints for dynamic content delivery
+  - Cache appropriately based on content type
+  - Optimize for performance using lazy loading
+
+## Import Conventions
+
+### 1. Path Aliases
+
+Use SvelteKit's path aliases for cleaner imports:
+
+```js
+// Preferred: Using the $lib alias
+import Button from '$lib/components/Button.svelte';
+import { formatDate } from '$lib/utils/dateUtils';
+
+// Avoid: Using relative paths
+import Button from '../../../../lib/components/Button.svelte';
+```
+
+### 2. Module Index Files
+
+Create index files to simplify imports from directories:
+
+```js
+// In src/lib/components/index.ts
+export { default as Button } from './Button.svelte';
+export { default as ServiceCard } from './ServiceCard.svelte';
+
+// In a component file
+import { Button, ServiceCard } from '$lib/components';
+```
+
+### 3. Import Organization
+
+Organize imports logically within files:
+
+```js
+// 1. External library imports
+import { onMount } from 'svelte';
+import { fade } from 'svelte/transition';
+
+// 2. SvelteKit imports
+import { page } from '$app/stores';
+import { base } from '$app/paths';
+
+// 3. Project imports
+import { Button } from '$lib/components';
+import { formatDate } from '$lib/utils/dateUtils';
+
+// 4. Style imports (if needed)
+import './styles.scss';
+```
+
+## Component Patterns
+
+### 1. Component Organization
+
+Structure components with consistent patterns:
+
+```svelte
+<script lang="ts">
+  // 1. Imports
+  import { fade } from 'svelte/transition';
+  
+  // 2. Props
+  export let title: string;
+  export let variant: 'primary' | 'secondary' = 'primary';
+  
+  // 3. State management
+  const count = $state(0);
+  
+  // 4. Derived values
+  $derived.by(() => {
+    // Complex derivations
+  });
+  
+  // 5. Lifecycle and effects
+  $effect(() => {
+    // Side effects
+    return () => {
+      // Cleanup
+    };
+  });
+  
+  // 6. Event handlers
+  function handleClick() {
+    count++;
+  }
+</script>
+
+<!-- Component template -->
+<div class="component {variant}" transition:fade>
+  <h2>{title}</h2>
+  <button onclick={handleClick}>Clicked {count} times</button>
+</div>
+
+<!-- Scoped styles -->
+<style lang="scss">
+  .component {
+    // Base styles
+    
+    &.primary {
+      // Variant-specific styles
+    }
+    
+    &.secondary {
+      // Variant-specific styles
+    }
+  }
+</style>
+```
+
+### 2. Container/Presentational Pattern
+
+Split complex components into container and presentational parts:
+
+- **Container components**: Manage data and state
+- **Presentational components**: Focus on rendering UI based on props
+
+Example:
+```
+src/routes/services/
+├── +page.svelte             # Container component
+└── ServiceList.svelte       # Presentational component
+```
+
+## Route Organization
+
+### 1. Route Files
+
+Use SvelteKit's standard route files appropriately:
+
+- **`+page.svelte`**: Page component
+- **`+page.js`**: Client-side data loading
+- **`+page.server.js`**: Server-side data loading
+- **`+layout.svelte`**: Layout component for the route and its children
+- **`+layout.js`**: Shared data loading for layout
+- **`+layout.server.js`**: Server-side data for layout
+- **`+server.js`**: API endpoints
+
+### 2. Route Grouping
+
+Group related routes in dedicated directories:
+
+```
+src/routes/
+├── services/         # Service pages
+│   ├── +page.svelte  # Services overview page
+│   ├── +layout.svelte  # Shared layout for service pages
+│   ├── maintenance/  # Maintenance service pages
+│   ├── performance/  # Performance service pages
+│   └── repair/       # Repair service pages
+```
+
+### 3. Route-Specific Components
+
+Keep route-specific components close to their routes:
+
+```
+src/routes/about/
+├── +page.svelte               # Main page component
+├── TeamSection.svelte         # About page specific component
+└── HistoryTimeline.svelte     # About page specific component
+```
+
+## Configuration Files
+
+### 1. Root Configuration
+
+Keep framework configuration files at the root level:
+
+- **`svelte.config.js`**: SvelteKit configuration
+- **`vite.config.js`**: Vite bundler configuration
+- **`tailwind.config.js`**: Tailwind CSS configuration
+- **`tsconfig.json`**: TypeScript configuration
+- **`.prettierrc`**: Code formatting rules
+- **`.eslintrc.js`**: Linting rules
+
+### 2. Environment Variables
+
+Manage environment variables appropriately:
+
+- Use `.env` files for environment-specific variables
+- Follow the pattern: `.env`, `.env.local`, `.env.development`, `.env.production`
+- Document required environment variables in the README
+
+## Best Practices
+
+### 1. Shared Feature Organization
+
+For complex features that span multiple routes:
+
+```
+src/lib/features/booking/
+├── components/         # Feature-specific components
+│   ├── BookingForm.svelte
+│   └── AppointmentCalendar.svelte
+├── services/           # Feature-specific services
+│   └── bookingService.ts
+├── types/              # Feature-specific types
+│   └── booking.types.ts
+└── utils/              # Feature-specific utilities
+    └── dateUtils.ts
+```
+
+### 2. Testing Structure
+
+Organize tests alongside their implementation:
+
+```
+src/lib/utils/
+├── dateUtils.ts        # Implementation
+└── dateUtils.test.ts   # Test file
+```
+
+For component tests:
+```
+src/lib/components/
+├── Button.svelte       # Component implementation
+└── Button.test.ts      # Component test
+```
+
+### 3. Documentation
+
+Include documentation files at appropriate levels:
+
+- **`README.md`**: General project documentation
+- **`CHANGELOG.md`**: Documentation of version changes
+- **`src/lib/components/README.md`**: Component library documentation
+- **`src/scss/USAGE.md`**: SCSS usage guidelines
+
+### 4. Scripts
+
+Store utility scripts in the `scripts/` directory:
+
+- Use consistent naming: `[action]-[target].js`
+- Include documentation for script usage
+- Make scripts available through package.json commands
+
+## Anti-patterns to Avoid
+
+- ❌ **Deeply nested component imports**: Use alias imports instead
+- ❌ **Mixing unrelated code in the same file**: Keep files focused on a single responsibility
+- ❌ **Inconsistent naming conventions**: Stick to established patterns
+- ❌ **Global state for component-specific data**: Keep state as local as possible
+- ❌ **Tight coupling between unrelated components**: Use services or stores for communication
+- ❌ **Large monolithic files**: Split into smaller, focused components
+- ❌ **Duplicated logic across routes**: Extract shared logic to services or utilities

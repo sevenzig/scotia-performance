@@ -1,0 +1,426 @@
+@use 'sass:color';
+@use '../core/variables' as *;
+@use '../core/mixins' as *;
+
+/* =========================================
+   UI Elements - Typography, Buttons, Forms
+   ========================================= */
+
+/* ------ Typography ------ */
+/* Headings */
+h1, .h1 {
+  margin-bottom: $spacing-4;
+  color: $scotia-blue;
+  @include heading-1;
+}
+
+h2, .h2 {
+  margin-bottom: $spacing-3;
+  color: $scotia-blue;
+  @include heading-2;
+}
+
+h3, .h3 {
+  margin-bottom: $spacing-2;
+  color: $scotia-blue;
+  @include heading-3;
+}
+
+h4, .h4 {
+  font-family: $font-primary;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  margin-bottom: $spacing-2;
+  color: $scotia-gray;
+}
+
+h5, .h5 {
+  font-family: $font-primary;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  margin-bottom: $spacing-1;
+  color: $scotia-gray;
+}
+
+h6, .h6 {
+  font-family: $font-primary;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  margin-bottom: $spacing-1;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: $scotia-gray;
+}
+
+/* Body text */
+p {
+  @include body-text;
+  margin-bottom: $spacing-4;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+/* Text styles */
+.text-sm { font-size: $font-size-sm; }
+.text-lg { font-size: $font-size-lg; }
+.text-xl { font-size: $font-size-xl; }
+.text-bold { font-weight: $font-weight-bold; }
+.text-semibold { font-weight: $font-weight-semibold; }
+.text-medium { font-weight: $font-weight-medium; }
+.text-normal { font-weight: $font-weight-normal; }
+
+/* Text colors */
+.text-primary { color: $scotia-blue; }
+.text-secondary { color: $scotia-red; }
+.text-dark { color: $scotia-gray; }
+.text-light { color: $light-gray; }
+.text-white { color: $white; }
+
+/* Text alignment */
+.text-left { text-align: left; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+
+@include md {
+  .md\:text-left { text-align: left; }
+  .md\:text-center { text-align: center; }
+  .md\:text-right { text-align: right; }
+}
+
+/* Lists */
+ul.bullet-list {
+  list-style: disc;
+  padding-left: $spacing-5;
+  margin-bottom: $spacing-4;
+  
+  li {
+    margin-bottom: $spacing-2;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+ol.numbered-list {
+  list-style: decimal;
+  padding-left: $spacing-5;
+  margin-bottom: $spacing-4;
+  
+  li {
+    margin-bottom: $spacing-2;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+/* Links */
+.link {
+  color: $scotia-blue;
+  text-decoration: none;
+  transition: color $transition-normal;
+  font-weight: $font-weight-medium;
+  
+  &:hover {
+    color: color.adjust($scotia-blue, $lightness: -15%);
+    text-decoration: underline;
+  }
+  
+  &--secondary {
+    color: $scotia-red;
+    
+    &:hover {
+      color: color.adjust($scotia-red, $lightness: -15%);
+    }
+  }
+}
+
+/* Highlights */
+.highlight {
+  background-color: rgba($scotia-blue, 0.1);
+  padding: 0 $spacing-1;
+  border-radius: $border-radius-sm;
+}
+
+/* ------ Buttons ------ */
+.btn {
+  @include button-reset;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-2 $spacing-4;
+  border-radius: $border-radius-md;
+  font-family: $font-primary;
+  font-weight: $font-weight-medium;
+  font-size: $font-size-base;
+  line-height: 1.5;
+  text-align: center;
+  transition: all $transition-normal;
+  cursor: pointer;
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  &:focus {
+    outline: 2px solid rgba($scotia-blue, 0.5);
+    outline-offset: 2px;
+  }
+}
+
+/* Button variants */
+.btn-primary {
+  background-color: $scotia-blue;
+  color: $white;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: $font-weight-semibold;
+  
+  &:hover:not(:disabled) {
+    background-color: color.adjust($scotia-blue, $lightness: -10%);
+    transform: translateY(-2px);
+  }
+  
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+}
+
+.btn-secondary {
+  background-color: $white;
+  color: $scotia-blue;
+  border: 1px solid $scotia-blue;
+  
+  &:hover:not(:disabled) {
+    background-color: color.adjust($scotia-blue, $lightness: -5%);
+    transform: translateY(-2px);
+  }
+  
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+}
+
+/* Button sizes and variations */
+.cta-button {
+  @extend .btn;
+  @extend .btn-primary;
+  padding: $spacing-3 $spacing-6;
+  font-weight: $font-weight-semibold;
+  font-size: $font-size-lg;
+  
+  @include md {
+    padding: $spacing-3 $spacing-8;
+  }
+}
+
+.btn-sm {
+  padding: $spacing-1 $spacing-3;
+  font-size: $font-size-sm;
+}
+
+.btn-lg {
+  padding: $spacing-3 $spacing-5;
+  font-size: $font-size-lg;
+}
+
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-2;
+  
+  svg, img {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.btn-call {
+  @extend .btn;
+  @extend .btn-primary;
+  @extend .btn-icon;
+  background-color: $scotia-red;
+  
+  &:hover:not(:disabled) {
+    background-color: color.adjust($scotia-red, $lightness: -10%);
+  }
+}
+
+.btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-2;
+  
+  @include md {
+    flex-wrap: nowrap;
+  }
+}
+
+/* ------ Forms ------ */
+.form {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+
+  &--wide {
+    max-width: 800px;
+  }
+}
+
+.form-group {
+  margin-bottom: $spacing-4;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.form-label {
+  display: block;
+  margin-bottom: $spacing-1;
+  font-family: $font-primary;
+  font-weight: $font-weight-medium;
+  color: $scotia-gray;
+  
+  &.required::after {
+    content: "*";
+    color: $scotia-red;
+    margin-left: $spacing-1;
+  }
+}
+
+.form-control {
+  width: 100%;
+  padding: $spacing-2 $spacing-3;
+  font-family: $font-secondary;
+  font-size: $font-size-base;
+  line-height: 1.5;
+  color: $scotia-gray;
+  background-color: $white;
+  border: 1px solid rgba($scotia-gray, 0.3);
+  border-radius: $border-radius-md;
+  transition: border-color $transition-normal, box-shadow $transition-normal;
+  
+  &:focus {
+    border-color: $scotia-blue;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba($scotia-blue, 0.1);
+  }
+  
+  &.error {
+    border-color: $scotia-red;
+    
+    &:focus {
+      box-shadow: 0 0 0 3px rgba($scotia-red, 0.1);
+    }
+  }
+  
+  &:disabled {
+    background-color: rgba($light-gray, 0.5);
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+/* Input types */
+input[type="text"].form-control,
+input[type="email"].form-control,
+input[type="password"].form-control,
+input[type="number"].form-control,
+input[type="tel"].form-control {
+  height: 42px;
+}
+
+textarea.form-control {
+  min-height: 100px;
+  resize: vertical;
+}
+
+select.form-control {
+  height: 42px;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%233D3D3D' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right $spacing-3 center;
+  padding-right: $spacing-6;
+}
+
+/* Checkboxes and radios */
+.form-check {
+  display: flex;
+  align-items: center;
+  margin-bottom: $spacing-2;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+  
+  &-input {
+    margin-right: $spacing-2;
+    width: 18px;
+    height: 18px;
+    
+    &:focus {
+      outline: 2px solid rgba($scotia-blue, 0.3);
+      outline-offset: 2px;
+    }
+  }
+  
+  &-label {
+    font-family: $font-secondary;
+    color: $scotia-gray;
+    cursor: pointer;
+  }
+}
+
+/* Form feedback */
+.form-feedback {
+  display: block;
+  margin-top: $spacing-1;
+  font-size: $font-size-sm;
+  
+  &.error {
+    color: $scotia-red;
+  }
+  
+  &.success {
+    color: #10b981; /* Green color */
+  }
+}
+
+/* Form actions */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: $spacing-3;
+  margin-top: $spacing-6;
+}
+
+/* Form layouts */
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -#{$spacing-2};
+  
+  .form-group {
+    flex: 0 0 100%;
+    padding: 0 $spacing-2;
+    
+    @include md {
+      flex: 0 0 50%;
+    }
+  }
+  
+  &--3-col {
+    .form-group {
+      @include lg {
+        flex: 0 0 33.33%;
+      }
+    }
+  }
+} 

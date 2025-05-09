@@ -1,0 +1,89 @@
+@use 'sass:color';
+@use 'variables' as *;
+
+/* Modern CSS Reset */
+*, 
+*::before, 
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Set core body defaults */
+html, 
+body {
+  height: 100%;
+  scroll-behavior: smooth;
+  text-rendering: optimizeSpeed;
+  line-height: 1.5;
+}
+
+body {
+  font-family: $font-secondary;
+  font-size: $font-size-base;
+  color: $scotia-gray;
+  background-color: $white;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Remove list styles */
+ul, 
+ol {
+  list-style: none;
+}
+
+/* Inherit fonts for inputs and buttons */
+input, 
+button, 
+textarea, 
+select {
+  font: inherit;
+}
+
+/* Make images easier to work with */
+img, 
+picture, 
+svg {
+  max-width: 100%;
+  display: block;
+}
+
+/* Remove all animations and transitions for people that prefer not to see them */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Default anchor styling */
+a {
+  color: $scotia-blue;
+  text-decoration: none;
+  transition: color $transition-normal;
+  
+  &:hover {
+    color: color.adjust($scotia-blue, $lightness: -15%);
+  }
+}
+
+/* Accessible focus styles */
+:focus {
+  outline: 2px solid $scotia-blue;
+  outline-offset: 2px;
+}
+
+/* Remove the outline from mouse inputs */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Maintain focus styles for keyboard navigation */
+:focus-visible {
+  outline: 2px solid $scotia-blue;
+  outline-offset: 2px;
+} 

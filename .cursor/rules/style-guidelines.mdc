@@ -1,0 +1,346 @@
+---
+description: Best practices for using SCSS and Tailwind together in Svelte components
+globs: 
+alwaysApply: false
+---
+# SCSS and Tailwind Integration Guidelines
+
+## Core Principles
+
+- **Consistency**: Follow established patterns for predictable code
+- **Performance**: Minimize CSS output and optimize for rendering
+- **Maintainability**: Write clear, documented styles that are easy to update
+- **Reusability**: Create abstractions for common patterns, not one-offs
+
+## Directory Structure
+
+```
+src/
+├── app.scss              # Main SCSS entry point
+├── lib/
+│   ├── styles/           # Global styles and SCSS utilities
+│   │   ├── _mixins.scss  # Reusable SCSS mixins
+│   │   ├── _variables.scss  # Custom properties and variables
+│   │   └── _animations.scss # Global animations
+├── scss/                 # Project-wide SCSS
+│   ├── core/             # Foundation styles
+│   ├── components/       # Reusable component styles
+│   ├── layouts/          # Layout-specific styles
+│   └── utilities/        # Custom utility classes
+```
+
+## Framework Usage Guidelines
+
+### 1. When to Use Tailwind
+
+- **Use Tailwind** for:
+  - Rapid UI development and prototyping
+  - Common styling patterns (spacing, colors, typography)
+  - Responsive layouts and utility needs
+  - One-off component styling where custom CSS would be unnecessary
+
+```html
+<!-- Good: Using Tailwind for common patterns -->
+<div class="flex items-center p-4 gap-2 text-gray-800 bg-white rounded-lg shadow-md">
+  <Icon class="w-5 h-5 text-blue-600" />
+  <span class="font-medium">Notification message</span>
+</div>
+```
+
+### 2. When to Use SCSS
+
+- **Use SCSS** for:
+  - Complex selectors and nested relationships
+  - Component-specific theme variations
+  - Animation sequences
+  - Styling patterns that repeat frequently
+  - Dynamic styling based on props
+
+```scss
+// Good: Using SCSS for complex selectors
+.card {
+  &__header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    
+    &--highlighted {
+      background-color: theme('colors.blue.50');
+    }
+  }
+}
+```
+
+### 3. Integration Techniques
+
+- **@apply Usage**: Group Tailwind utilities when creating reusable components
+
+```scss
+// Good: Using @apply for repeated patterns
+.btn-primary {
+  @apply py-2 px-4 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75;
+}
+```
+
+- **theme() Function**: Access Tailwind theme values in SCSS
+
+```scss
+// Good: Using theme() for consistency
+.custom-element {
+  color: theme('colors.blue.600');
+  margin-top: theme('spacing.4');
+}
+```
+
+## Naming Conventions
+
+### 4. BEM Methodology for Custom Components
+
+Follow the Block-Element-Modifier pattern for custom components:
+- Block: The standalone component (`.card`)
+- Element: Parts of the block (`.card__title`)
+- Modifier: Variations of a block/element (`.card--featured`)
+
+```html
+<!-- Good: BEM naming convention -->
+<div class="card card--featured">
+  <h2 class="card__title">Title</h2>
+  <div class="card__content">Content</div>
+</div>
+```
+
+### 5. Tailwind Class Organization
+
+Order Tailwind classes by category for better readability:
+
+1. Layout (display, position)
+2. Sizing (width, height)
+3. Spacing (margin, padding)
+4. Typography
+5. Visual (colors, borders)
+6. Interactive states
+
+```html
+<!-- Good: Organized Tailwind classes -->
+<button class="
+  flex items-center justify-center
+  w-full h-12
+  px-4 py-2 
+  text-sm font-medium
+  bg-blue-600 text-white rounded-lg
+  hover:bg-blue-700 focus:ring-2
+">
+  Submit
+</button>
+```
+
+## Svelte-Specific Patterns
+
+### 6. Scoped vs Global Styles
+
+- Use Svelte's scoped styles for component-specific styling
+- Use `:global()` selector only when necessary (third-party lib overrides)
+
+```svelte
+<style lang="scss">
+  /* Scoped to this component */
+  .component { 
+    background-color: #fff;
+    
+    /* Global style (use sparingly) */
+    :global(.third-party-element) {
+      margin: 0;
+    }
+  }
+</style>
+```
+
+### 7. Dynamic Styling with Props
+
+Use props to control component styling variations:
+
+```svelte
+<script>
+  export let variant = 'primary';
+  export let size = 'md';
+  
+  // Svelte 5 approach with runes
+  $effect(() => {
+    // Reactive styling logic
+  });
+</script>
+
+<style lang="scss">
+  .btn {
+    &--primary {
+      background-color: theme('colors.blue.600');
+    }
+    &--secondary {
+      background-color: theme('colors.gray.200');
+    }
+  }
+</style>
+
+<button class="btn btn--{variant} btn--{size}">
+  <slot />
+</button>
+```
+
+### 8. Conditional Classes in Svelte 5
+
+Use structured inline class conditionals or helper functions for dynamic classes:
+
+```svelte
+<!-- Using inline conditionals -->
+<div class="{baseClasses} {variant === 'primary' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'}">
+  Content
+</div>
+
+<!-- Better: Using clsx or similar utility -->
+<div class={clsx(
+  'rounded-lg p-4',
+  variant === 'primary' && 'bg-blue-600 text-white',
+  variant === 'secondary' && 'bg-gray-200 text-gray-800',
+  size === 'sm' && 'text-sm',
+  disabled && 'opacity-50 cursor-not-allowed'
+)}>
+  Content
+</div>
+```
+
+## Performance Optimizations
+
+### 9. Minimize Style Duplication
+
+- Prefer Tailwind's utility classes over custom CSS for common patterns
+- Extract repeated patterns into SCSS mixins or Tailwind components
+
+```scss
+// Good: Using mixins for repeated patterns
+@mixin card-shadow {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.card {
+  @include card-shadow;
+}
+```
+
+### 10. CSS Custom Properties for Theming
+
+- Use CSS custom properties for values that might change with theming
+- Keep custom properties scoped to where they're needed
+
+```scss
+// Global theme variables
+:root {
+  --primary-color: theme('colors.blue.600');
+  --primary-hover: theme('colors.blue.700');
+}
+
+// Component-specific variables
+.card {
+  --card-padding: 1.5rem;
+  padding: var(--card-padding);
+  color: var(--primary-color);
+}
+```
+
+## Common Patterns and Best Practices
+
+### 11. Media Queries
+
+- Use Tailwind's responsive prefixes for most responsive design needs
+- Use SCSS media query mixins for complex responsive behaviors
+
+```scss
+// SCSS mixin for media queries
+@mixin md {
+  @media (min-width: 768px) {
+    @content;
+  }
+}
+
+.element {
+  font-size: 14px;
+  
+  @include md {
+    font-size: 16px;
+  }
+}
+```
+
+### 12. Animations and Transitions
+
+- Keep animation definitions in separate SCSS files
+- Use Tailwind's transition utilities for simple transitions
+
+```scss
+// In _animations.scss
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+// In component
+.notification {
+  animation: fadeIn 0.3s ease-in-out;
+}
+```
+
+### 13. Third-Party Component Styling
+
+- Override third-party styles with `:global()` selectors
+- Create wrapper components with consistent styling conventions
+
+```svelte
+<style lang="scss">
+  .datepicker-wrapper {
+    :global(.third-party-datepicker) {
+      border-radius: theme('borderRadius.lg');
+      
+      :global(.day-cell) {
+        color: theme('colors.gray.800');
+      }
+    }
+  }
+</style>
+```
+
+### 14. Design Tokens and Theme Consistency
+
+- Use Tailwind's theme system as the source of truth for design tokens
+- Extend the Tailwind theme for custom design tokens
+
+```js
+// tailwind.config.js
+module.exports = {
+  theme: {
+    extend: {
+      colors: {
+        'scotia-blue': '#1A5DAD',
+        'scotia-accent': '#FF6B35',
+      },
+      spacing: {
+        'section': '4rem',
+      }
+    }
+  }
+}
+```
+
+### 15. Code Splitting and Lazy Loading
+
+- Use dynamic imports for styles in lazy-loaded components
+- Consider code splitting for large style sheets
+
+```js
+// Lazy loading a component with its styles
+const HeavyComponent = () => import('./HeavyComponent.svelte');
+```
+
+## Anti-patterns to Avoid
+
+- ❌ **Avoid** mixing different styling methodologies in a single component
+- ❌ **Avoid** deeply nested SCSS beyond 3 levels
+- ❌ **Avoid** using `!important` (use specificity or BEM modifiers instead)
+- ❌ **Avoid** one-off utility classes (use Tailwind instead)
+- ❌ **Avoid** unnecessary wrapping elements just for styling

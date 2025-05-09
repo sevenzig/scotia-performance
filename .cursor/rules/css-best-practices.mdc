@@ -1,0 +1,471 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# CSS Best Practices
+
+This guide covers best practices for CSS architecture and implementation in the Scotia Performance project, complementing our [SCSS and Tailwind Integration Guidelines](mdc:style-guidelines.mdc).
+
+## Architectural Principles
+
+### Component-Based CSS Architecture
+
+1. **Single Responsibility Principle**
+   - Each CSS component should do one thing well and not affect unrelated elements
+   - Split complex components into smaller, composable parts
+
+2. **Open/Closed Principle**
+   - CSS components should be open for extension but closed for modification
+   - Use modifier classes to extend functionality without editing the original component
+
+3. **Encapsulation**
+   - Keep styles scoped to their component using Svelte's style encapsulation
+   - Avoid leaking styles that affect child components
+
+```svelte
+<!-- Good: Encapsulated component styles -->
+<style>
+  /* These styles only affect this component */
+  .card {
+    border-radius: 0.5rem;
+  }
+</style>
+```
+
+## CSS Specificity Management
+
+4. **Keep Specificity Low**
+   - Aim for low specificity selectors to maintain flexibility
+   - Avoid deep nesting beyond 2-3 levels
+   - Prefer classes over element or attribute selectors
+
+```scss
+/* Bad: High specificity with deep nesting */
+.card .content .title span {
+  color: red;
+}
+
+/* Good: Low specificity with classes */
+.card__title-text {
+  color: red;
+}
+```
+
+5. **Specificity Escalation Strategy**
+   - Establish a clear pattern for increasing specificity when needed
+   - Use BEM modifiers for most variations
+   - Use data attributes for state variations
+   - Use `:where()` to reset specificity when working with third-party libraries
+
+```scss
+/* Base component */
+.btn { /* base styles */ }
+
+/* Variations - BEM modifiers */
+.btn--primary { /* variation styles */ }
+
+/* States - using data attributes */
+.btn[data-state="loading"] { /* state styles */ }
+```
+
+## CSS Optimization
+
+6. **Selector Efficiency**
+   - Optimize selectors for browser efficiency
+   - Avoid universal selectors (`*`) in frequently rendered components
+   - Minimize descendant selectors
+
+```scss
+/* Less efficient */
+.sidebar * { /* styles */ }
+
+/* More efficient */
+.sidebar-item { /* styles */ }
+```
+
+7. **Reduce Redundancy**
+   - Use Tailwind's utilities for common patterns
+   - Extract repeated declarations into SCSS mixins or variables
+   - Consider using @apply for grouped Tailwind utilities that repeat
+
+```scss
+/* Define once, use often */
+@mixin focus-ring {
+  outline: none;
+  box-shadow: 0 0 0 2px theme('colors.blue.300');
+}
+
+.form-input {
+  @include focus-ring;
+}
+```
+
+8. **Critical CSS**
+   - Prioritize "above the fold" content styles
+   - Consider extracting critical CSS for key routes
+   - Use Svelte's built-in CSS optimizations
+
+## SCSS Best Practices
+
+9. **Variables and Maps**
+   - Define clear category-based variable namespaces
+   - Use SCSS maps for related values
+   - Reference Tailwind's theme values when possible
+
+```scss
+// Using maps for related values
+$breakpoints: (
+  'sm': 640px,
+  'md': 768px,
+  'lg': 1024px,
+  'xl': 1280px,
+);
+
+// Using Tailwind theme values
+$primary-color: theme('colors.scotia-blue');
+```
+
+10. **Mixins and Functions**
+    - Create targeted mixins with clear purposes
+    - Document parameters and usage
+    - Use functions for calculations
+
+```scss
+/// Generate a fluid typography value between min and max sizes
+/// @param {Number} $min-size - The minimum size in pixels
+/// @param {Number} $max-size - The maximum size in pixels
+/// @param {Number} $min-width - The minimum viewport width (defaults to 640px)
+/// @param {Number} $max-width - The maximum viewport width (defaults to 1280px)
+@mixin fluid-type($min-size, $max-size, $min-width: 640px, $max-width: 1280px) {
+  font-size: #{$min-size}px;
+  
+  @media (min-width: #{$min-width}px) {
+    font-size: calc(#{$min-size}px + #{$max-size - $min-size} * ((100vw - #{$min-width}px) / #{$max-width - $min-width}));
+  }
+  
+  @media (min-width: #{$max-width}px) {
+    font-size: #{$max-size}px;
+  }
+}
+
+.heading {
+  @include fluid-type(18, 32);
+}
+```
+
+11. **Partials and Organization**
+    - Follow a consistent file structure for SCSS partials
+    - Group related styles into logical partials
+    - Import in order of dependency
+
+```scss
+// _buttons.scss
+@import 'variables';
+@import 'mixins';
+
+.btn {
+  // Button styles that use variables and mixins
+}
+```
+
+## Tailwind Best Practices
+
+12. **Custom Tailwind Plugins**
+    - Create plugins for project-specific patterns that repeat
+    - Extend Tailwind thoughtfully with design system components
+    - Maintain documentation for custom plugins
+
+```js
+// tailwind.config.js
+const plugin = require('tailwindcss/plugin')
+
+module.exports = {
+  plugins: [
+    plugin(function({ addComponents, theme }) {
+      const buttons = {
+        '.btn-scotia': {
+          padding: `${theme('spacing.2')} ${theme('spacing.4')}`,
+          backgroundColor: theme('colors.scotia-blue'),
+          color: theme('colors.white'),
+          borderRadius: theme('borderRadius.lg'),
+          '&:hover': {
+            backgroundColor: theme('colors.scotia-blue-dark'),
+          },
+        },
+      }
+      addComponents(buttons)
+    }),
+  ],
+}
+```
+
+13. **Tailwind Class Organization**
+    - Group related utilities together
+    - Use a consistent ordering pattern
+    - Consider tools like prettier-plugin-tailwindcss for automatic sorting
+
+```html
+<!-- Organized: Layout, sizing, spacing, typography, appearance, state -->
+<button class="
+  flex items-center justify-center
+  w-auto h-10
+  px-4 py-2
+  text-sm font-medium
+  bg-scotia-blue text-white rounded-lg
+  hover:bg-scotia-blue-dark focus:ring-2
+">
+  Submit
+</button>
+```
+
+14. **Responsive Design Strategy**
+    - Use mobile-first approach consistently
+    - Define breakpoint usage standards
+    - Limit breakpoint complexity
+
+```html
+<!-- Mobile first with targeted breakpoints -->
+<div class="
+  grid grid-cols-1 gap-4
+  md:grid-cols-2
+  lg:grid-cols-3
+">
+  <!-- Content -->
+</div>
+```
+
+## SVG and Icon Handling
+
+15. **SVG Optimization**
+    - Use optimized SVGs (SVGO)
+    - Implement consistent icon sizing strategy
+    - Consider sprite sheets for frequently used icons
+
+```svelte
+<!-- Icon component approach -->
+<script>
+  import Icon from '$lib/components/Icon.svelte';
+</script>
+
+<Icon name="arrow-right" class="w-5 h-5 text-scotia-blue" />
+```
+
+## Dark Mode Implementation
+
+16. **Consistent Dark Mode Strategy**
+    - Use Tailwind's dark mode utilities consistently
+    - Create a clear color mapping between light and dark modes
+    - Test contrast ratios in both modes
+
+```html
+<!-- Consistent dark mode implementation -->
+<div class="
+  bg-white text-gray-900
+  dark:bg-gray-800 dark:text-gray-100
+">
+  Content
+</div>
+```
+
+## Performance and Loading
+
+17. **Lazy Loaded Styles**
+    - Lazy load non-critical styles with dynamic components
+    - Consider route-based style splitting
+    - Implement font loading strategy with fallbacks
+
+```js
+// Lazy loaded component with styles
+const HeavyComponent = () => import('./HeavyComponent.svelte');
+```
+
+18. **Animation Performance**
+    - Prefer transforms and opacity for animations
+    - Use `will-change` sparingly and intentionally
+    - Consider reduced motion preferences
+
+```scss
+.animated-element {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-5px);
+    opacity: 0.8;
+  }
+  
+  @media (prefers-reduced-motion) {
+    transition: none;
+  }
+}
+```
+
+## CSS Custom Properties
+
+19. **Theming with Custom Properties**
+    - Define a clear scoping strategy for custom properties
+    - Use semantic naming (--color-primary vs --blue-500)
+    - Provide fallbacks for older browsers
+
+```css
+:root {
+  /* Global theme tokens */
+  --color-primary: theme('colors.scotia-blue');
+  --color-primary-dark: theme('colors.scotia-blue-dark');
+  --spacing-section: 4rem;
+}
+
+.card {
+  /* Component-specific properties */
+  --card-padding: 1.5rem;
+  padding: var(--card-padding);
+  color: var(--color-primary, #1A5DAD); /* Fallback */
+}
+```
+
+20. **Dynamic Theming**
+    - Use custom properties for values that change dynamically
+    - Update properties with JavaScript when needed
+    - Consider user preferences
+
+```js
+// Setting theme dynamically
+document.documentElement.style.setProperty('--color-primary', userPreference.primaryColor);
+```
+
+## CSS-in-JS Interactions
+
+21. **Style Management with JavaScript**
+    - Use dataset attributes for JavaScript interactions
+    - Prefer class toggling over inline styles
+    - Maintain separation of concerns
+
+```svelte
+<script>
+  let isActive = false;
+</script>
+
+<button 
+  class={isActive ? 'btn btn--active' : 'btn'}
+  data-state={isActive ? 'active' : 'inactive'}
+  on:click={() => isActive = !isActive}
+>
+  Toggle
+</button>
+```
+
+## Debugging and Quality Assurance
+
+22. **CSS Debugging**
+    - Use clear naming to ease debugging
+    - Add temporary debug outlines when needed
+    - Consider browser DevTools custom setup
+
+```scss
+/* During development */
+.debug * {
+  outline: 1px solid rgba(255, 0, 0, 0.2);
+}
+
+/* Layout debugging utility class */
+.show-layout {
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(0, 0, 0, 0.1),
+    rgba(0, 0, 0, 0.1) 10px,
+    rgba(0, 0, 0, 0.05) 10px,
+    rgba(0, 0, 0, 0.05) 20px
+  );
+}
+```
+
+23. **Cross-Browser Testing**
+    - Establish minimum browser support targets
+    - Implement graceful degradation
+    - Document known rendering differences
+
+## Accessibility Considerations
+
+24. **Focus States**
+    - Implement clear, consistent focus indicators
+    - Never disable focus outlines without alternatives
+    - Test keyboard navigation thoroughly
+
+```scss
+/* Consistent focus styles */
+.interactive:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px white, 0 0 0 4px theme('colors.scotia-blue');
+}
+```
+
+25. **Color and Contrast**
+    - Maintain WCAG AA compliance minimum (4.5:1 for normal text)
+    - Use tools to verify contrast ratios
+    - Provide sufficient color difference for color blindness
+
+## Documentation and Comments
+
+26. **Code Comments**
+    - Document complex selectors or calculations
+    - Explain the "why" not the "what"
+    - Use consistent comment formatting
+
+```scss
+// Simple comment for basic explanation
+
+/**
+ * Complex comment for more detailed explanation
+ * with multiple lines and important details
+ */
+
+/* ==========================================================================
+   Section comment for major sections
+   ========================================================================== */
+```
+
+27. **Living Styleguide**
+    - Document components in a centralized location
+    - Include usage examples and variations
+    - Keep documentation updated with changes
+
+## Tooling and Workflow
+
+28. **Linting and Formatting**
+    - Use Stylelint for SCSS linting
+    - Configure Prettier for consistent formatting
+    - Integrate with CI/CD pipelines
+
+29. **Build Process Optimization**
+    - Optimize CSS for production (minification, purging)
+    - Implement proper source maps for development
+    - Track CSS bundle size
+
+30. **Refactoring Strategies**
+    - Implement gradual CSS modernization
+    - Document technical debt
+    - Plan for periodic style cleanup sprints
+
+## Anti-patterns to Avoid
+
+- ❌ **Avoid** `!important` unless absolutely necessary (specificity emergencies)
+- ❌ **Avoid** mixing multiple spacing/sizing units (stick to rem/em/px consistently)
+- ❌ **Avoid** browser hacks without documentation
+- ❌ **Avoid** selectors that target elements by HTML structure rather than purpose
+- ❌ **Avoid** duplicate media queries for the same breakpoint
+- ❌ **Avoid** overriding Tailwind utilities with custom CSS
+- ❌ **Avoid** semantic class names that don't match visual representation
+- ❌ **Avoid** magic numbers without explanation
+- ❌ **Avoid** non-standard vendor prefixes (use autoprefixer)
+- ❌ **Avoid** complex CSS animations that could be implemented better with JavaScript
+
+## Quick Reference
+
+| Pattern | Usage |
+|---------|-------|
+| BEM | `.block__element--modifier` |
+| Tailwind | `class="p-4 text-lg text-scotia-blue"` |
+| SCSS Nesting | `.parent { &__child { } }` |
+| CSS Variables | `var(--color-primary)` |
+| Media Queries | `@media (min-width: 768px) { }` |
+| Color Functions | `rgba(theme('colors.scotia-blue'), 0.5)` |

@@ -1,0 +1,505 @@
+@use './scss/main' as *;
+
+/* 
+ * Critical path CSS - Keep this section small to improve initial render time
+ */
+
+/* Only include core variables and base styles needed for initial render */
+:root {
+  --primary-color: #1b3147;
+  --accent-color: #3d5a80;
+  --text-light: #ffffff;
+  --border-color: #e0e5eb;
+  --scotia-blue: #1e3a8a;
+  --scotia-red: #7f1d1d;
+  --scotia-gray: #334155;
+  --white: #ffffff;
+  --border-radius-lg: 0.5rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-5: 1.25rem;
+  --spacing-8: 2rem;
+  --font-size-lg: 1.125rem;
+  --font-weight-bold: 700;
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --transition-normal: 0.3s;
+}
+
+/* Base Reset */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  overflow-x: hidden !important;
+  width: 100%;
+  position: relative;
+  margin: 0;
+  padding: 0;
+  font-family: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Container class - always needed */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Critical Header Styles */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: var(--scotia-blue);
+  padding: 1rem;
+  transition: padding 0.3s ease;
+}
+
+.site-header.scrolled {
+  padding: 0.5rem 1rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Critical Navigation */
+.desktop-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .desktop-nav {
+    display: none;
+  }
+}
+
+/* Mobile menu essential styles */
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 100%;
+  height: 100vh;
+  background-color: var(--scotia-blue);
+  z-index: 99;
+  transition: right 0.3s ease;
+  overflow-y: auto;
+}
+
+.mobile-menu.active {
+  right: 0;
+}
+
+/* Non-critical styles loaded after initial page load */
+@media (prefers-reduced-motion: no-preference) {
+  /* Hero Section - moved inside media query to respect user preferences */
+  .hero {
+    min-height: 90vh;
+    padding: 5rem 1rem 3rem;
+    background-color: var(--scotia-blue);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .hero-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    text-align: center;
+    max-width: 800px;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+  
+  /* Animation classes - only load for users who don't prefer reduced motion */
+  .fade-in {
+    animation: fadeIn var(--transition-normal) ease-in;
+  }
+  
+  .slide-in {
+    animation: slideIn var(--transition-normal) ease-out;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes slideIn {
+    from {
+      transform: translateY(20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+}
+
+/* These styles aren't needed for initial paint, load them asynchronously */
+.info-card {
+  width: 100%;
+  max-width: 400px;
+  background: rgba(27, 49, 71, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-5);
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-3) 0;
+  color: var(--white);
+  gap: var(--spacing-3);
+  font-size: var(--font-size-lg);
+}
+
+.info-item:first-child {
+  margin-bottom: var(--spacing-2);
+}
+
+.info-item .text {
+  color: var(--white);
+  text-align: left;
+  font-size: var(--font-size-lg);
+}
+
+/* Buttons - Custom styles beyond the component styles */
+.cta-button {
+  width: 90%;
+  max-width: 300px;
+  padding: var(--spacing-5) var(--spacing-8);
+  border-radius: var(--border-radius-lg);
+  background: var(--scotia-red);
+  color: var(--white);
+  border: none;
+  font-size: var(--font-size-lg);
+  line-height: 1.4;
+  text-decoration: none;
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  font-weight: var(--font-weight-bold);
+  box-shadow: var(--shadow-md);
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.cta-button:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+  text-decoration: none;
+}
+
+/* State classes for Svelte components */
+.is-active {
+  border-color: var(--scotia-blue);
+  background-color: rgba(26, 93, 173, 0.05);
+}
+
+.is-error {
+  border-color: var(--scotia-red);
+  color: var(--scotia-red);
+}
+
+.is-success {
+  border-color: #4CAF50;
+  color: #4CAF50;
+}
+
+/* Import fonts */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Almarai:wght@300;400;700&display=swap');
+
+/* Additional CSS Variables */
+:root {
+  /* Any project-specific variables not in core variables */
+  --primary-color: #1b3147;
+  --accent-color: #3d5a80;
+  --text-light: #ffffff;
+  --border-color: #e0e5eb;
+}
+
+/* Enhanced styles not covered in main.scss */
+
+/* Hero Section */
+.hero {
+  min-height: 90vh;
+  padding: 5rem 1rem 3rem;
+  background-color: var(--scotia-blue);
+  background-image: linear-gradient(rgba(27, 49, 71, 0.8), rgba(27, 49, 71, 0.7)), url('https://phelddagrif.farm/garage-background.jpg');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  text-align: center;
+  max-width: 800px;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.info-card {
+  width: 100%;
+  max-width: 400px;
+  background: rgba(27, 49, 71, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-5);
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-3) 0;
+  color: var(--white);
+  gap: var(--spacing-3);
+  font-size: var(--font-size-lg);
+}
+
+.info-item:first-child {
+  margin-bottom: var(--spacing-2);
+}
+
+.info-item .text {
+  color: var(--white);
+  text-align: left;
+  font-size: var(--font-size-lg);
+}
+
+/* Buttons - Custom styles beyond the component styles */
+.cta-button {
+  width: 90%;
+  max-width: 300px;
+  padding: var(--spacing-5) var(--spacing-8);
+  border-radius: var(--border-radius-lg);
+  background: var(--scotia-red);
+  color: var(--white);
+  border: none;
+  font-size: var(--font-size-lg);
+  line-height: 1.4;
+  text-decoration: none;
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  font-weight: var(--font-weight-bold);
+  box-shadow: var(--shadow-md);
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.cta-button:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+  text-decoration: none;
+}
+
+/* Svelte-specific utilities */
+.svelte-component-wrapper {
+  width: 100%;
+}
+
+.text-center-svelte {
+  text-align: center;
+}
+
+.flex-center-svelte {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.margin-auto-svelte {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Animation classes */
+.fade-in {
+  animation: fadeIn var(--transition-normal) ease-in;
+}
+
+.slide-in {
+  animation: slideIn var(--transition-normal) ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* State classes for Svelte components */
+.is-active {
+  border-color: var(--scotia-blue);
+  background-color: rgba(26, 93, 173, 0.05);
+}
+
+.is-error {
+  border-color: var(--scotia-red);
+  color: var(--scotia-red);
+}
+
+.is-success {
+  border-color: #4CAF50;
+  color: #4CAF50;
+}
+
+/* Icon styles for Svelte components */
+.icon-svelte {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.icon-svelte svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Typography */
+h1, h2, h3 {
+  font-family: 'Montserrat', sans-serif;
+}
+
+h1 {
+  color: white;
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.2;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  margin: 1rem 0;
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  color: var(--text-color);
+  position: relative;
+  display: inline-block;
+  margin-bottom: 2rem;
+  line-height: 1.3;
+  font-weight: 600;
+  font-size: 2rem;
+}
+
+h2:after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  width: 60px;
+  height: 4px;
+  background: var(--secondary-color);
+  border-radius: 2px;
+}
+
+h3 {
+  font-size: 1.25rem;
+  color: var(--primary-color);
+  margin-bottom: 1.25rem;
+  line-height: 1.3;
+}
+
+a {
+  color: var(--accent-color);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Sections */
+section {
+  padding: 6rem 0;
+  overflow: hidden;
+}
+
+/* Media Queries */
+@media screen and (max-width: 768px) {
+  body {
+    font-size: 16px;
+    line-height: 1.8;
+  }
+
+  .hero {
+    padding-top: 3.5rem;
+  }
+
+  .hero-content {
+    margin-top: var(--spacing-8);
+    gap: var(--spacing-4);
+  }
+
+  h2:after {
+    width: 40px;
+    height: 3px;
+  }
+
+  .container {
+    padding: 0 1.5rem;
+  }
+}
+
+@media screen and (max-width: 360px) {
+  body {
+    font-size: 15px;
+  }
+
+  .info-item {
+    font-size: var(--font-size-base);
+  }
+} 
