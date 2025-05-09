@@ -155,7 +155,7 @@ export default defineConfig(({ mode }) => {
 			include: ['@sveltejs/kit', 'svelte'],
 			exclude: ['src/lib/utils/imageOptimizer.js'],
 			esbuildOptions: {
-				platform: 'node',
+				platform: 'browser',
 				target: 'esnext',
 				supported: {
 					'top-level-await': true

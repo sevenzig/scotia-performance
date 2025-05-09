@@ -117,9 +117,71 @@ includes: "**/*.svelte"
     <button {onclick}>Click me</button>
     ```
 
+14. **Handle event modifiers in the function** instead of using Svelte's directive modifiers.
+
+    ```svelte
+    <!-- ❌ Legacy syntax with directive modifiers -->
+    <button on:click|stopPropagation={handleClick}>Click me</button>
+    
+    <!-- ✅ Preferred in Svelte 5 -->
+    <script>
+      function handleClick(event: MouseEvent) {
+        event.stopPropagation();
+        // Additional logic...
+      }
+    </script>
+    <button onclick={handleClick}>Click me</button>
+    ```
+
+15. **Real-world example for event handling** in a navigation component:
+
+    ```svelte
+    <!-- ❌ Legacy approach -->
+    <button 
+      class="services-toggle"
+      on:click|stopPropagation={toggleServicesMenu}
+    >
+      Automotive Services
+    </button>
+    
+    <!-- ✅ Svelte 5 approach -->
+    <script>
+      function toggleServicesMenu(event: MouseEvent) {
+        event.stopPropagation();
+        isServicesMenuOpen = !isServicesMenuOpen;
+      }
+    </script>
+    <button 
+      class="services-toggle"
+      onclick={toggleServicesMenu}
+    >
+      Automotive Services
+    </button>
+    ```
+
+16. **Working with TypeScript** in event handlers:
+
+    ```svelte
+    <script lang="ts">
+      // Properly typed event handler
+      function handleMouseEvent(event: MouseEvent) {
+        const target = event.target as HTMLElement;
+        // Work with target safely...
+      }
+      
+      // For form events
+      function handleSubmit(event: SubmitEvent) {
+        event.preventDefault();
+        // Process form...
+      }
+    </script>
+    <button onclick={handleMouseEvent}>Click</button>
+    <form onsubmit={handleSubmit}>...</form>
+    ```
+
 ## Content Distribution
 
-14. **Use snippets (`#snippet`) and render tags (`@render`) instead of slots.**
+17. **Use snippets (`#snippet`) and render tags (`@render`) instead of slots.**
 
     ```svelte
     <!-- ParentComponent.svelte -->
@@ -139,7 +201,7 @@ includes: "**/*.svelte"
     </div>
     ```
 
-15. **Pass parameters to snippets** for dynamic content.
+18. **Pass parameters to snippets** for dynamic content.
 
     ```svelte
     {#snippet item(product, index)}
@@ -153,14 +215,14 @@ includes: "**/*.svelte"
 
 ## Migration and Component Lifecycle
 
-16. **Use `mount()` instead of `new Component()`** — components are now functions, not classes.
+19. **Use `mount()` instead of `new Component()`** — components are now functions, not classes.
 
     ```javascript
     import { mount } from 'svelte';
     const app = mount(App, { target: document.body });
     ```
 
-17. **Use `unmount()` instead of `$destroy()`** to remove components.
+20. **Use `unmount()` instead of `$destroy()`** to remove components.
 
     ```javascript
     import { unmount } from 'svelte';
@@ -169,14 +231,14 @@ includes: "**/*.svelte"
 
 ## Code Organization and Naming
 
-18. **Name variables clearly** to indicate their purpose.
+21. **Name variables clearly** to indicate their purpose.
 
     ```svelte
     let isLoading = $state(true);  // ✅ Boolean
     let userData = $state({});     // ✅ Object
     ```
 
-19. **Prefer declarative patterns** over imperative code when possible.
+22. **Prefer declarative patterns** over imperative code when possible.
 
     ```svelte
     <!-- ✅ Declarative -->
@@ -196,7 +258,7 @@ includes: "**/*.svelte"
     </div>
     ```
 
-20. **Extract reusable logic** into `.svelte.js` or `.svelte.ts` files to share reactive code between components.
+23. **Extract reusable logic** into `.svelte.js` or `.svelte.ts` files to share reactive code between components.
 
     ```javascript
     // counter.svelte.js
@@ -210,10 +272,11 @@ includes: "**/*.svelte"
 
 ## References
 
-* [Svelte 5 Runes RFC](https://github.com/sveltejs/rfcs/pull/52)
-* [Svelte 5 Migration Guide](https://github.com/sveltejs/svelte/milestones)
+* [Svelte 5 Runes RFC](mdc:https:/github.com/sveltejs/rfcs/pull/52)
+* [Svelte 5 Migration Guide](mdc:https:/github.com/sveltejs/svelte/milestones)
+* [Svelte 5 Event Handling Documentation](mdc:https:/svelte.dev/docs/svelte-components#component-directives)
 
 ```
 
-Let me know if you’d like the same treatment for your other `.cursor/rules` files!
+Let me know if you'd like the same treatment for your other `.cursor/rules` files!
 ```

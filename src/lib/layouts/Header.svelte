@@ -16,10 +16,18 @@
     isServicesMenuOpen ? 'Close Services Menu' : 'Open Services Menu'
   );
   
+  // Toggle services mega menu
+  function handleServicesToggle(event: MouseEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    isServicesMenuOpen = !isServicesMenuOpen;
+    console.log("Services menu toggled. New state:", isServicesMenuOpen);
+  }
+  
   // Toggle mobile menu
-  function toggleMobileMenu() {
+  function handleMobileMenuToggle() {
     isMobileMenuOpen = !isMobileMenuOpen;
-    
+    console.log("Mobile menu toggled. New state:", isMobileMenuOpen);
     // Handle body scrolling
     if (typeof document !== 'undefined') {
       if (isMobileMenuOpen) {
@@ -30,14 +38,8 @@
     }
   }
   
-  // Toggle services mega menu
-  function toggleServicesMenu(event: MouseEvent) {
-    event.stopPropagation();
-    isServicesMenuOpen = !isServicesMenuOpen;
-  }
-  
   // Close menus when clicking outside
-  function handleClickOutside(event: MouseEvent) {
+  function handleClickOutside(event: Event) {
     const target = event.target as HTMLElement;
     
     if (typeof document !== 'undefined') {
@@ -46,7 +48,10 @@
       
       if (megaMenu && toggleButton) {
         if (!megaMenu.contains(target) && !toggleButton.contains(target)) {
-          isServicesMenuOpen = false;
+          if (isServicesMenuOpen) {
+            isServicesMenuOpen = false;
+            console.log("Clicked outside services menu. Closed. State:", isServicesMenuOpen);
+          }
         }
       }
     }
@@ -69,8 +74,11 @@
     // Only run in browser environment
     if (typeof document === 'undefined' || typeof window === 'undefined') return;
     
-    // Set up click listener
-    document.addEventListener('click', handleClickOutside);
+    console.log("Effect: Initial services menu state:", isServicesMenuOpen);
+    console.log("Effect: Initial mobile menu state:", isMobileMenuOpen);
+    
+    // Set up click listener for outside clicks
+    document.addEventListener('click', handleClickOutside as EventListener);
     
     // Set up scroll listener
     window.addEventListener('scroll', handleScroll);
@@ -84,10 +92,20 @@
     
     // Cleanup function
     return () => {
-      document.removeEventListener('click', handleClickOutside);
+      document.removeEventListener('click', handleClickOutside as EventListener);
       window.removeEventListener('scroll', handleScroll);
       clearInterval(interval);
     };
+  });
+  
+  // Effect to monitor services menu state changes for debugging
+  $effect(() => {
+    console.log("Effect: Services menu state changed:", isServicesMenuOpen);
+  });
+  
+  // Effect to monitor mobile menu state changes for debugging
+  $effect(() => {
+    console.log("Effect: Mobile menu state changed:", isMobileMenuOpen);
   });
 </script>
 
@@ -114,11 +132,12 @@
     <div class="services-menu-container">
       <!-- Toggle Button -->
       <button 
+        type="button"
         class="nav-link services-toggle" 
         aria-expanded={isServicesMenuOpen} 
         aria-controls="services-mega-menu"
         aria-label={servicesAriaLabel}
-        onclick={(event: MouseEvent) => toggleServicesMenu(event)}
+        onclick={handleServicesToggle}
       >
         Automotive Services
       </button>
@@ -128,7 +147,6 @@
         id="services-mega-menu" 
         class="mega-menu" 
         class:active={isServicesMenuOpen}
-        hidden={!isServicesMenuOpen}
       >
         <!-- Menu Content -->
         <div class="mega-menu-content">
@@ -213,10 +231,11 @@
 
   <!-- Mobile Navigation Toggle -->
   <button 
+    type="button"
     class="nav-toggle" 
     aria-label={menuAriaLabel}
     aria-expanded={isMobileMenuOpen}
-    onclick={() => toggleMobileMenu()}
+    onclick={handleMobileMenuToggle}
   >
     <span></span>
     <span></span>
@@ -450,8 +469,9 @@
     z-index: 98;
     
     &.active {
-      opacity: 1;
-      visibility: visible;
+      opacity: 1 !important;
+      visibility: visible !important;
+      display: block !important;
     }
   }
 
