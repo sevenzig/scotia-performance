@@ -154,10 +154,10 @@
           <div class="menu-section">
             <h3><a href="/services/performance">Performance & Tuning</a></h3>
             <ul>
-              <li><a href="/services/performance/ecu-tuning">ECU Tuning</a></li>
-              <li><a href="/services/performance/dyno-tuning">Dyno Tuning</a></li>
-              <li><a href="/services/performance/exhaust-systems">Exhaust Systems</a></li>
-              <li><a href="/services/performance/forced-induction">Forced Induction</a></li>
+              <li><a href="/services/performance/engine-performance">Engine Performance</a></li>
+              <li><a href="/services/performance/drivetrain-transmission">Drivetrain & Transmission</a></li>
+              <li><a href="/services/performance/suspension-handling">Suspension & Handling</a></li>
+              <li><a href="/services/performance/braking-systems">Braking Systems</a></li>
               <li><a href="/services/performance/engine-building">Engine Building</a></li>
             </ul>
           </div>
@@ -226,7 +226,7 @@
     <!-- Rest of nav items -->
     <a href="/about" class="nav-link">About</a>
     <a href="/gallery" class="nav-link">Gallery</a>
-    <a href="tel:5183746111" class="header-cta">Call Us</a>
+    <a href="tel:5182801698" class="header-cta">Call Us</a>
   </nav>
 
   <!-- Mobile Navigation Toggle -->
@@ -246,7 +246,7 @@
 <!-- Mobile bottom CTA -->
 <div class="cta-bottom">
   <a href="tel:5183746111" class="cta-button" aria-label="Schedule Service">
-    Schedule Service: (518) 374-6111
+    Schedule Service: (518) 280-1698
   </a>
 </div>
 
@@ -257,9 +257,9 @@
       <div class="menu-section">
         <h3><a href="/services/performance">Performance & Tuning</a></h3>
         <ul>
-          <li><a href="/services/performance/ecu-tuning">ECU Tuning</a></li>
-          <li><a href="/services/performance/dyno-tuning">Dyno Tuning</a></li>
-          <li><a href="/services/performance/exhaust-systems">Exhaust Systems</a></li>
+          <li><a href="/services/performance/engine-performance">Engine Performance</a></li>
+          <li><a href="/services/performance/drivetrain-transmission">Drivetrain & Transmission</a></li>
+          <li><a href="/services/performance/suspension-handling">Suspension & Handling</a></li>
           <li><a href="/services/performance" class="see-all">See All Performance Services</a></li>
         </ul>
       </div>

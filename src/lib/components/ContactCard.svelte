@@ -15,7 +15,7 @@
 
 <div class="card bg-base-100 shadow-md h-full">
   <div class="card-body p-4">
-    <h2 class="card-title text-lg mb-2">Contact Us</h2>
+    <h2 class="card-title text-lg mb-2" style="border: none; border-bottom: none; text-decoration: none; box-shadow: none;">Contact Us</h2>
     
     <div class="space-y-2">
       <p class="flex items-start gap-2 text-sm">
@@ -64,5 +64,22 @@
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+  
+  /* Remove any potential underlines */
+  .card-title {
+    border: none !important;
+    border-bottom: none !important;
+    text-decoration: none !important;
+    box-shadow: none !important;
+  }
+  
+  /* Target pseudo elements that might be creating underlines */
+  .card-title::after,
+  .card-title::before {
+    display: none !important;
+    content: none !important;
+    border: none !important;
+    background: none !important;
   }
 </style> 

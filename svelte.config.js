@@ -71,10 +71,14 @@ const config = {
 	// Ensure compilerOptions are properly set for Svelte 5 runes
 	compilerOptions: {
 		accessors: true,
-		immutable: true,
-		enableSourcemap: false,
 		runes: true,
-		namespace: 'html' // Add namespace to prevent HTML errors
+		hydratable: true,
+		compatibility: {
+			componentApi: 4
+		},
+		css: "injected",
+		namespace: 'html',
+		preserveComments: false
 	}
 };
 

@@ -14,7 +14,7 @@
           <h3>Contact Us</h3>
           <p>Scotia Performance Auto</p>
           <p>24 Sacandaga Rd, Scotia, NY 12302</p>
-          <p><a href="tel:+15183746111">(518) 374-6111</a></p>
+          <p><a href="tel:+15182801698">(518) 280-1698</a></p>
         </div>
         <div class="footer-section">
           <h3>Service Area</h3>

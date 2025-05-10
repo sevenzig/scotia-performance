@@ -5,11 +5,14 @@ node_modules
 .vercel
 .netlify
 .wrangler
-/.svelte-kit
-/build
+
+# Svelte-specific
+/node_modules/
+/.svelte-kit/
+/build/
+/package/
 
 # OS
-.DS_Store
 Thumbs.db
 
 # Env
@@ -17,6 +20,16 @@ Thumbs.db
 .env.*
 !.env.example
 !.env.test
+
+# Editor directories and files
+/.vscode/
+/.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
 # Vite
 vite.config.js.timestamp-*

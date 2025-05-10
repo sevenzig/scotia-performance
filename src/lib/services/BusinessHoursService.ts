@@ -116,7 +116,7 @@ export default class BusinessHoursService {
           message = "Opening today at 8AM";
         } else {
           if (day === 5) { // Friday
-            message = "Closed - Opens Saturday at 9AM";
+            message = "Closed - Opens Monday at 8AM";
           } else {
             message = "Closed - Opens tomorrow at 8AM";
           }
