@@ -106,7 +106,7 @@ export default class BusinessHoursService {
         
       default: // Weekdays (Monday to Friday)
         // Check if we're about to close (within 15 minutes of closing)
-        const closingHour = day === 5 ? 17 : 18; // 5PM on Friday, 6PM other weekdays
+        const closingHour = 17; // 5PM every weekday
         
         if (hours === (closingHour - 1) && minutes >= 45) {
           message = `Closing soon at ${closingHour - 12}PM`;
