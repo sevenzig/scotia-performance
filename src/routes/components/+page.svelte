@@ -89,28 +89,22 @@
         <div class="component-example">
           <h3 class="component-example__title">Status: Open</h3>
           <div class="component-example__container component-example__container--fixed-width">
-            <AboutCard currentStatus={garageStatus} />
+            <AboutCard />
           </div>
           <details class="component-example__code">
             <summary>View Code</summary>
-            <pre><code>{`<AboutCard currentStatus={{ 
-  isOpen: true, 
-  message: "We're currently open until 5:00 PM today" 
-}} />`}</code></pre>
+            <pre><code>{`<AboutCard />`}</code></pre>
           </details>
         </div>
         
         <div class="component-example">
           <h3 class="component-example__title">Status: Closed</h3>
           <div class="component-example__container component-example__container--fixed-width">
-            <AboutCard currentStatus={garageClosedStatus} />
+            <AboutCard />
           </div>
           <details class="component-example__code">
             <summary>View Code</summary>
-            <pre><code>{`<AboutCard currentStatus={{ 
-  isOpen: false, 
-  message: "We're currently closed. Opening tomorrow at 8:00 AM" 
-}} />`}</code></pre>
+            <pre><code>{`<AboutCard />`}</code></pre>
           </details>
         </div>
       </div>
