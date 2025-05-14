@@ -1,0 +1,53 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# AboutCard Component Usage
+
+Guidelines for correctly using the AboutCard component in the Scotia Performance application.
+
+<rule>
+name: about_card_no_props
+description: Ensures AboutCard component is used without props as it gets data from businessHoursService
+filters:
+  # Match Svelte files
+  - type: file_extension
+    pattern: "\\.svelte$"
+  # Match AboutCard usage
+  - type: content
+    pattern: "<AboutCard[^>]*>"
+
+actions:
+  - type: reject
+    conditions:
+      - pattern: "<AboutCard[^>]*currentStatus[^>]*>"
+        message: "AboutCard component should not receive props. It gets status directly from businessHoursService."
+
+  - type: suggest
+    message: |
+      The AboutCard component does not accept any props. It gets its status information directly from the businessHoursService singleton.
+      
+      Incorrect usage:
+      ```svelte
+      <AboutCard currentStatus={{ isOpen: true, message: "We're currently open" }} />
+      ```
+      
+      Correct usage:
+      ```svelte
+      <AboutCard />
+      ```
+      
+      If you need to customize the status message, modify the BusinessHoursService.ts file instead.
+
+examples:
+  - input: |
+      <AboutCard currentStatus={{ isOpen: true, message: "Custom message" }} />
+    output: |
+      <AboutCard />
+
+metadata:
+  priority: high
+  version: 1.0
+  error_type: "Type '{ isOpen: boolean; message: string; }' is not assignable to type 'never'"
+</rule>
