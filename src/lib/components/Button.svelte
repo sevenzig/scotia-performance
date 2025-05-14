@@ -20,27 +20,7 @@
     children?: () => any;
   }>();
 
-  // State using $state rune with let for mutability
-  let isHovered = $state(false);
-  
-  // Derived state using $derived rune
-  const buttonStyles = $derived({
-    backgroundColor: isHovered && !disabled && variant === 'primary' 
-      ? '#154880' 
-      : null,
-    opacity: disabled ? 0.6 : 1,
-    width: fullWidth ? '100%' : 'auto'
-  });
-
   // Event handlers with runes syntax
-  function handleMouseEnter() {
-    isHovered = true;
-  }
-  
-  function handleMouseLeave() {
-    isHovered = false;
-  }
-  
   function handleClick(event: MouseEvent) {
     if (!disabled && !loading && onClick) {
       onClick(event);
@@ -53,12 +33,9 @@
   class={`btn btn-${variant} btn-${size} ${fullWidth ? 'btn-full' : ''} ${loading ? 'btn-loading' : ''}`}
   disabled={disabled || loading}
   onclick={handleClick}
-  onmouseenter={handleMouseEnter}
-  onmouseleave={handleMouseLeave}
   style={`
-    background-color: ${buttonStyles.backgroundColor || ''}; 
-    opacity: ${buttonStyles.opacity}; 
-    width: ${buttonStyles.width};
+    width: ${fullWidth ? '100%' : 'auto'};
+    opacity: ${disabled ? 0.6 : 1};
   `}
 >
   {#if loading}
@@ -90,9 +67,19 @@
     color: var(--white);
   }
   
+  .btn-primary:hover:not(:disabled) {
+    background-color: #154880;
+  }
+  
   .btn-secondary {
     background-color: var(--scotia-red);
     color: var(--white);
+    border: none;
+  }
+  
+  /* This is the critical style for the secondary button hover */
+  .btn-secondary:hover:not(:disabled) {
+    background-color: #9b2c2c; /* Darker red */
   }
   
   .btn-outline {
