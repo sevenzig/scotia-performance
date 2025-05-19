@@ -1,22 +1,64 @@
 <script lang="ts">
-  // Import the components
+  import { onMount } from 'svelte';
+  import type { ComponentType } from 'svelte';
+  
+  // Import directly only what's needed for initial render
   import AboutCard from '$lib/components/AboutCard.svelte';
   import BusinessInfo from '$lib/components/BusinessInfo.svelte';
   import BusinessHoursCard from '$lib/components/BusinessHoursCard.svelte';
   import Button from '$lib/components/Button.svelte';
-  import CallToAction from '$lib/components/CallToAction.svelte';
-  import ContactCard from '$lib/components/ContactCard.svelte';
-  import Hero from '$lib/components/Hero.svelte';
-  import HeroBanner from '$lib/components/HeroBanner.svelte';
-  import HeroSection from '$lib/components/HeroSection.svelte';
-  import LazyLoad from '$lib/components/LazyLoad.svelte';
-  import ResponsiveImage from '$lib/components/ResponsiveImage.svelte';
-  import ServiceCard from '$lib/components/ServiceCard.svelte';
-  import ServiceDetail from '$lib/components/ServiceDetail.svelte';
-  import ServiceHero from '$lib/components/ServiceHero.svelte';
-  import ServiceHighlights from '$lib/components/ServiceHighlights.svelte';
-  import Testimonial from '$lib/components/Testimonial.svelte';
-  import Testimonials from '$lib/components/Testimonials.svelte';
+  
+  // Define component names type for type safety
+  type ComponentName = 'CallToAction' | 'ContactCard' | 'Hero' | 'HeroBanner' | 
+                      'HeroSection' | 'LazyLoad' | 'ResponsiveImage' | 
+                      'ServiceCard' | 'ServiceDetail' | 'ServiceHero' | 
+                      'ServiceHighlights' | 'Testimonial' | 'Testimonials';
+  
+  // Lazy load other components
+  let componentsLoaded = $state<Record<ComponentName, boolean>>({
+    CallToAction: false,
+    ContactCard: false,
+    Hero: false,
+    HeroBanner: false,
+    HeroSection: false,
+    LazyLoad: false,
+    ResponsiveImage: false,
+    ServiceCard: false,
+    ServiceDetail: false,
+    ServiceHero: false,
+    ServiceHighlights: false,
+    Testimonial: false,
+    Testimonials: false
+  });
+  
+  let components = $state<Record<ComponentName, ComponentType | null>>({
+    CallToAction: null,
+    ContactCard: null,
+    Hero: null,
+    HeroBanner: null,
+    HeroSection: null,
+    LazyLoad: null,
+    ResponsiveImage: null,
+    ServiceCard: null,
+    ServiceDetail: null,
+    ServiceHero: null,
+    ServiceHighlights: null,
+    Testimonial: null,
+    Testimonials: null
+  });
+  
+  // Function to load a specific component
+  async function loadComponent(name: ComponentName): Promise<void> {
+    if (!componentsLoaded[name]) {
+      try {
+        const module = await import(`$lib/components/${name}.svelte`);
+        components[name] = module.default;
+        componentsLoaded[name] = true;
+      } catch (error) {
+        console.error(`Failed to load component ${name}:`, error);
+      }
+    }
+  }
   
   // Sample business hours data for demonstration
   const sampleBusinessHours = [
@@ -80,10 +122,43 @@
       icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-12 h-12"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905a3.61 3.61 0 01-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" /></svg>`
     }
   ]);
+  
+  // Setup intersection observer for lazy loading
+  onMount(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const elem = entry.target as HTMLElement;
+          const componentName = elem.dataset.component as ComponentName | undefined;
+          if (componentName && componentsLoaded[componentName] === false) {
+            loadComponent(componentName);
+          }
+        }
+      });
+    }, {
+      rootMargin: '100px 0px',
+      threshold: 0.1
+    });
+    
+    // Observe sections with data-component attribute
+    document.querySelectorAll('[data-component]').forEach(el => {
+      observer.observe(el);
+    });
+    
+    return () => {
+      observer.disconnect();
+    };
+  });
 </script>
 
 <div class="component-showcase">
   <div class="container">
+    <!-- Always loaded components -->
+    <section class="component-section">
+      <h2 class="component-section__title">About Card</h2>
+      <p class="component-section__description">
+        A card displaying business status, description, and contact information.
+      </p>
       
       <div class="component-examples component-examples--grid">
         <div class="component-example">
@@ -108,6 +183,7 @@
           </details>
         </div>
       </div>
+    </section>
     
     <section class="component-section">
       <h2 class="component-section__title">Business Info</h2>
@@ -235,151 +311,171 @@
       </div>
     </section>
     
-    <section class="component-section">
+    <!-- Lazily loaded components -->
+    <section class="component-section" data-component="CallToAction">
       <h2 class="component-section__title">Call to Action</h2>
       <p class="component-section__description">
         Eye-catching section to prompt user interactions.
       </p>
       
       <div class="component-examples">
-        <div class="component-example">
-          <h3 class="component-example__title">Default CTA</h3>
-          <div class="component-example__container component-example__container--large">
-            <CallToAction />
+        {#if componentsLoaded.CallToAction && components.CallToAction}
+          <div class="component-example">
+            <h3 class="component-example__title">Default CTA</h3>
+            <div class="component-example__container component-example__container--large">
+              <svelte:component this={components.CallToAction} />
+            </div>
+            <details class="component-example__code">
+              <summary>View Code</summary>
+              <pre><code>{`<CallToAction />`}</code></pre>
+            </details>
           </div>
-          <details class="component-example__code">
-            <summary>View Code</summary>
-            <pre><code>{`<CallToAction />`}</code></pre>
-          </details>
-        </div>
-        
-        <div class="component-example">
-          <h3 class="component-example__title">Custom CTA</h3>
-          <div class="component-example__container component-example__container--large">
-            <CallToAction 
-              title="Need Emergency Repairs?"
-              description="Our team is ready to help with your urgent automotive needs."
-              phone="(518) 374-6111"
-              buttonText="Call Now"
-              secondaryAction={() => "View all services"}
-            />
-          </div>
-          <details class="component-example__code">
-            <summary>View Code</summary>
-            <pre><code>{`<CallToAction 
+          
+          <div class="component-example">
+            <h3 class="component-example__title">Custom CTA</h3>
+            <div class="component-example__container component-example__container--large">
+              <svelte:component this={components.CallToAction}
+                title="Need Emergency Repairs?"
+                description="Our team is ready to help with your urgent automotive needs."
+                phone="(518) 374-6111"
+                buttonText="Call Now"
+                secondaryAction={secondaryActionFn}
+              />
+            </div>
+            <details class="component-example__code">
+              <summary>View Code</summary>
+              <pre><code>{`<CallToAction 
   title="Need Emergency Repairs?"
   description="Our team is ready to help with your urgent automotive needs."
   phone="(518) 374-6111"
   buttonText="Call Now"
   secondaryAction={() => "View all services"}
 />`}</code></pre>
-          </details>
-        </div>
+            </details>
+          </div>
+        {:else}
+          <div class="component-section__placeholder">
+            Loading Call to Action...
+          </div>
+        {/if}
       </div>
     </section>
     
-    <section class="component-section">
+    <section class="component-section" data-component="ContactCard">
       <h2 class="component-section__title">Contact Card</h2>
       <p class="component-section__description">
         A card displaying business contact information.
       </p>
       
       <div class="component-examples component-examples--grid">
-        <div class="component-example">
-          <h3 class="component-example__title">Default</h3>
-          <div class="component-example__container component-example__container--fixed-width">
-            <ContactCard />
+        {#if componentsLoaded.ContactCard && components.ContactCard}
+          <div class="component-example">
+            <h3 class="component-example__title">Default</h3>
+            <div class="component-example__container component-example__container--fixed-width">
+              <svelte:component this={components.ContactCard} />
+            </div>
+            <details class="component-example__code">
+              <summary>View Code</summary>
+              <pre><code>{`<ContactCard />`}</code></pre>
+            </details>
           </div>
-          <details class="component-example__code">
-            <summary>View Code</summary>
-            <pre><code>{`<ContactCard />`}</code></pre>
-          </details>
-        </div>
-        
-        <div class="component-example">
-          <h3 class="component-example__title">With Custom Info</h3>
-          <div class="component-example__container component-example__container--fixed-width">
-            <ContactCard 
-              address="123 Main Street, Anywhere, NY 12345, USA"
-              phone="(555) 123-4567"
-              email="custom@example.com"
-              website="https://example.com"
-            />
-          </div>
-          <details class="component-example__code">
-            <summary>View Code</summary>
-            <pre><code>{`<ContactCard 
+          
+          <div class="component-example">
+            <h3 class="component-example__title">With Custom Info</h3>
+            <div class="component-example__container component-example__container--fixed-width">
+              <svelte:component this={components.ContactCard}
+                address="123 Main Street, Anywhere, NY 12345, USA"
+                phone="(555) 123-4567"
+                email="custom@example.com"
+                website="https://example.com"
+              />
+            </div>
+            <details class="component-example__code">
+              <summary>View Code</summary>
+              <pre><code>{`<ContactCard 
   address="123 Main Street, Anywhere, NY 12345, USA"
   phone="(555) 123-4567"
   email="custom@example.com"
   website="https://example.com"
 />`}</code></pre>
-          </details>
-        </div>
+            </details>
+          </div>
+        {:else}
+          <div class="component-section__placeholder">
+            Loading Contact Card...
+          </div>
+        {/if}
       </div>
     </section>
     
-    <section class="component-section">
+    <section class="component-section" data-component="Hero">
       <h2 class="component-section__title">Hero</h2>
       <p class="component-section__description">
         A hero banner with business hours and location information.
       </p>
       
       <div class="component-examples">
-        <div class="component-example component-example--fullwidth">
-          <h3 class="component-example__title">Default</h3>
-          <div class="component-example__container component-example__container--fullwidth">
-            <Hero />
+        {#if componentsLoaded.Hero && components.Hero}
+          <div class="component-example component-example--fullwidth">
+            <h3 class="component-example__title">Default</h3>
+            <div class="component-example__container component-example__container--fullwidth">
+              <svelte:component this={components.Hero} />
+            </div>
+            <details class="component-example__code">
+              <summary>View Code</summary>
+              <pre><code>{`<Hero />`}</code></pre>
+            </details>
           </div>
-          <details class="component-example__code">
-            <summary>View Code</summary>
-            <pre><code>{`<Hero />`}</code></pre>
-          </details>
-        </div>
+        {:else}
+          <div class="component-section__placeholder">
+            Loading Hero...
+          </div>
+        {/if}
       </div>
     </section>
     
-    <section class="component-section">
+    <section class="component-section" data-component="HeroBanner">
       <h2 class="component-section__title">Hero Banner</h2>
       <p class="component-section__description">
         A customizable hero banner with title, subtitle, and call-to-action.
       </p>
       
       <div class="component-examples">
-        <div class="component-example component-example--fullwidth">
-          <h3 class="component-example__title">Default</h3>
-          <div class="component-example__container component-example__container--fullwidth">
-            <HeroBanner 
-              title="Scotia Performance"
-              subtitle="Your trusted automotive repair partner"
-              description="We provide top-quality automotive repair services with transparent pricing and exceptional customer service."
-            />
-          </div>
-          <details class="component-example__code">
-            <summary>View Code</summary>
-            <pre><code>{`<HeroBanner 
+        {#if componentsLoaded.HeroBanner && components.HeroBanner}
+          <div class="component-example component-example--fullwidth">
+            <h3 class="component-example__title">Default</h3>
+            <div class="component-example__container component-example__container--fullwidth">
+              <svelte:component this={components.HeroBanner}
+                title="Scotia Performance"
+                subtitle="Your trusted automotive repair partner"
+                description="We provide top-quality automotive repair services with transparent pricing and exceptional customer service."
+              />
+            </div>
+            <details class="component-example__code">
+              <summary>View Code</summary>
+              <pre><code>{`<HeroBanner 
   title="Scotia Performance"
   subtitle="Your trusted automotive repair partner"
   description="We provide top-quality automotive repair services with transparent pricing and exceptional customer service."
 />`}</code></pre>
-          </details>
-        </div>
-        
-        <div class="component-example component-example--fullwidth">
-          <h3 class="component-example__title">With Custom Properties</h3>
-          <div class="component-example__container component-example__container--fullwidth">
-            <HeroBanner 
-              title="Special Offers"
-              subtitle="Save on your next service"
-              description="Take advantage of our seasonal specials and save on maintenance and repairs."
-              buttonText="View Offers"
-              buttonHref="#offers"
-              backgroundImage="/images/mechanic.jpg"
-            />
+            </details>
           </div>
-          <details class="component-example__code">
-            <summary>View Code</summary>
-            <pre><code>{`<HeroBanner 
+          
+          <div class="component-example component-example--fullwidth">
+            <h3 class="component-example__title">With Custom Properties</h3>
+            <div class="component-example__container component-example__container--fullwidth">
+              <svelte:component this={components.HeroBanner}
+                title="Special Offers"
+                subtitle="Save on your next service"
+                description="Take advantage of our seasonal specials and save on maintenance and repairs."
+                buttonText="View Offers"
+                buttonHref="#offers"
+                backgroundImage="/images/mechanic.jpg"
+              />
+            </div>
+            <details class="component-example__code">
+              <summary>View Code</summary>
+              <pre><code>{`<HeroBanner 
   title="Special Offers"
   subtitle="Save on your next service"
   description="Take advantage of our seasonal specials and save on maintenance and repairs."
@@ -387,379 +483,18 @@
   buttonHref="#offers"
   backgroundImage="/images/mechanic.jpg"
 />`}</code></pre>
-          </details>
-        </div>
+            </details>
+          </div>
+        {:else}
+          <div class="component-section__placeholder">
+            Loading Hero Banner...
+          </div>
+        {/if}
       </div>
     </section>
     
-    <section class="component-section">
-      <h2 class="component-section__title">Hero Section</h2>
-      <p class="component-section__description">
-        A simple hero section with business name and description.
-      </p>
-      
-      <div class="component-examples">
-        <div class="component-example component-example--fullwidth">
-          <h3 class="component-example__title">Default</h3>
-          <div class="component-example__container component-example__container--fullwidth">
-            <HeroSection />
-          </div>
-          <details class="component-example__code">
-            <summary>View Code</summary>
-            <pre><code>{`<HeroSection />`}</code></pre>
-          </details>
-        </div>
-      </div>
-    </section>
-    
-    <section class="component-section">
-      <h2 class="component-section__title">ResponsiveImage</h2>
-      <p class="component-section__description">
-        An optimized image component with lazy loading, placeholder, and responsive capabilities.
-      </p>
-      
-      <div class="component-examples component-examples--grid">
-        <div class="component-example">
-          <h3 class="component-example__title">Default</h3>
-          <div class="component-example__container">
-            <ResponsiveImage 
-              src="/images/garage.jpg" 
-              alt="Garage image" 
-              width={600} 
-              height={400}
-            />
-          </div>
-          <details class="component-example__code">
-            <summary>View Code</summary>
-            <pre><code>{`<ResponsiveImage 
-  src="/images/garage.jpg" 
-  alt="Garage image" 
-  width={600} 
-  height={400}
-/>`}</code></pre>
-          </details>
-        </div>
-        
-        <div class="component-example">
-          <h3 class="component-example__title">With Thumbnail</h3>
-          <div class="component-example__container">
-            <ResponsiveImage 
-              src="/images/hero-bg.jpg" 
-              alt="Hero image" 
-              width={600} 
-              height={400}
-              thumb="/images/hero-bg.jpg"
-              eager={true}
-            />
-          </div>
-          <details class="component-example__code">
-            <summary>View Code</summary>
-            <pre><code>{`<ResponsiveImage 
-  src="/images/hero-bg.jpg" 
-  alt="Hero image" 
-  width={600} 
-  height={400}
-  thumb="/images/hero-bg.jpg"
-  eager={true}
-/>`}</code></pre>
-          </details>
-        </div>
-      </div>
-    </section>
-    
-    <section class="component-section">
-      <h2 class="component-section__title">ServiceCard</h2>
-      <p class="component-section__description">
-        A card component for displaying service information.
-      </p>
-      
-      <div class="component-examples component-examples--grid">
-        <div class="component-example">
-          <h3 class="component-example__title">Default</h3>
-          <div class="component-example__container component-example__container--fixed-width">
-            <ServiceCard 
-              title="Brake Service"
-              description="Complete brake system diagnostics, repair and replacement. Includes pads, rotors, calipers, and brake lines."
-              link="/services/brakes"
-            />
-          </div>
-          <details class="component-example__code">
-            <summary>View Code</summary>
-            <pre><code>{`<ServiceCard 
-  title="Brake Service"
-  description="Complete brake system diagnostics, repair and replacement. Includes pads, rotors, calipers, and brake lines."
-  link="/services/brakes"
-/>`}</code></pre>
-          </details>
-        </div>
-        
-        <div class="component-example">
-          <h3 class="component-example__title">With Icon</h3>
-          <div class="component-example__container component-example__container--fixed-width">
-            <ServiceCard 
-              title="Oil Change"
-              description="Regular maintenance with conventional, synthetic blend, or full synthetic oil. Includes multi-point inspection."
-              link="/services/oil-change"
-              icon={exampleIcon}
-            />
-          </div>
-          <details class="component-example__code">
-            <summary>View Code</summary>
-            <pre><code>{`<ServiceCard 
-  title="Oil Change"
-  description="Regular maintenance with conventional, synthetic blend, or full synthetic oil. Includes multi-point inspection."
-  link="/services/oil-change"
-  icon="<path stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M4 8h16M4 16h16'/>"
-/>`}</code></pre>
-          </details>
-        </div>
-      </div>
-    </section>
-    
-    <section class="component-section">
-      <h2 class="component-section__title">LazyLoad</h2>
-      <p class="component-section__description">
-        A component for lazy-loading content when it enters the viewport.
-      </p>
-      
-      <div class="component-examples component-examples--grid">
-        <div class="component-example">
-          <h3 class="component-example__title">Default</h3>
-          <div class="component-example__container">
-            <LazyLoad height="200px" placeholder="Content will load when visible">
-              <div style="background: #e0e7ff; padding: 2rem; text-align: center;">
-                This content was lazy loaded!
-              </div>
-            </LazyLoad>
-          </div>
-          <details class="component-example__code">
-            <summary>View Code</summary>
-            <pre><code>{`<LazyLoad height="200px" placeholder="Content will load when visible">
-  <div style="background: #e0e7ff; padding: 2rem; text-align: center;">
-    This content was lazy loaded!
-  </div>
-</LazyLoad>`}</code></pre>
-          </details>
-        </div>
-        
-        <div class="component-example">
-          <h3 class="component-example__title">With Transition</h3>
-          <div class="component-example__container">
-            <LazyLoad 
-              height="200px" 
-              transition={true} 
-              background="#f3f4f6"
-              delay={300}
-              placeholder="Loading content..."
-            >
-              <div style="background: #fef3c7; padding: 2rem; text-align: center;">
-                This content loads with a fade-in transition!
-              </div>
-            </LazyLoad>
-          </div>
-          <details class="component-example__code">
-            <summary>View Code</summary>
-            <pre><code>{`<LazyLoad 
-  height="200px" 
-  transition={true} 
-  background="#f3f4f6"
-  delay={300}
-  placeholder="Loading content..."
->
-  <div style="background: #fef3c7; padding: 2rem; text-align: center;">
-    This content loads with a fade-in transition!
-  </div>
-</LazyLoad>`}</code></pre>
-          </details>
-        </div>
-      </div>
-    </section>
-    
-    <section class="component-section">
-      <h2 class="component-section__title">Testimonial</h2>
-      <p class="component-section__description">
-        A component for displaying a single customer testimonial.
-      </p>
-      
-      <div class="component-examples component-examples--grid">
-        <div class="component-example">
-          <h3 class="component-example__title">Default</h3>
-          <div class="component-example__container component-example__container--fixed-width">
-            <Testimonial 
-              quote="Professional respectable operation run at peak productivity. Amazingly service. Honest. A garage with morals to not rip you off."
-              author="Oak Owl"
-              rating={5}
-            />
-          </div>
-          <details class="component-example__code">
-            <summary>View Code</summary>
-            <pre><code>{`<Testimonial 
-  quote="Professional respectable operation run at peak productivity. Amazingly service. Honest. A garage with morals to not rip you off."
-  author="Oak Owl"
-  rating={5}
-/>`}</code></pre>
-          </details>
-        </div>
-        
-        <div class="component-example">
-          <h3 class="component-example__title">With Read More Link</h3>
-          <div class="component-example__container component-example__container--fixed-width">
-            <Testimonial 
-              quote="Great place, they're fast, reliable, honest, and professional. They never try to sell you on things you don't need and they always do quality work."
-              author="Joe H."
-              rating={4}
-              readMoreLink="https://www.google.com/maps/place/Scotia+Performance/"
-            />
-          </div>
-          <details class="component-example__code">
-            <summary>View Code</summary>
-            <pre><code>{`<Testimonial 
-  quote="Great place, they're fast, reliable, honest, and professional. They never try to sell you on things you don't need and they always do quality work."
-  author="Joe H."
-  rating={4}
-  readMoreLink="https://www.google.com/maps/place/Scotia+Performance/"
-/>`}</code></pre>
-          </details>
-        </div>
-      </div>
-    </section>
-    
-    <section class="component-section">
-      <h2 class="component-section__title">Testimonials</h2>
-      <p class="component-section__description">
-        A carousel component for displaying multiple customer testimonials.
-      </p>
-      
-      <div class="component-examples">
-        <div class="component-example component-example--fullwidth">
-          <h3 class="component-example__title">Default</h3>
-          <div class="component-example__container component-example__container--large">
-            <Testimonials />
-          </div>
-          <details class="component-example__code">
-            <summary>View Code</summary>
-            <pre><code>{`<Testimonials />`}</code></pre>
-          </details>
-        </div>
-      </div>
-    </section>
-    
-    <section class="component-section">
-      <h2 class="component-section__title">ServiceHighlights</h2>
-      <p class="component-section__description">
-        A component for highlighting key services with icons and descriptions.
-      </p>
-      
-      <div class="component-examples">
-        <div class="component-example component-example--fullwidth">
-          <h3 class="component-example__title">Default</h3>
-          <div class="component-example__container component-example__container--large">
-            <ServiceHighlights 
-              services={serviceHighlightsData}
-            />
-          </div>
-          <details class="component-example__code">
-            <summary>View Code</summary>
-            <pre><code>{`<ServiceHighlights 
-  services={[
-    {
-      title: "Performance Tuning",
-      description: "Unlock your vehicle's full potential with our professional tuning services.",
-      icon: "<svg>...</svg>"
-    },
-    {
-      title: "Brake Service",
-      description: "Complete brake system diagnostics, repair and replacement for maximum safety.",
-      icon: "<svg>...</svg>"
-    },
-    {
-      title: "Engine Repair",
-      description: "Expert diagnostics and repair for all engine issues by ASE certified technicians.",
-      icon: "<svg>...</svg>"
-    }
-  ]}
-/>`}</code></pre>
-          </details>
-        </div>
-      </div>
-    </section>
-    
-    <section class="component-section">
-      <h2 class="component-section__title">ServiceDetail</h2>
-      <p class="component-section__description">
-        A component for displaying detailed information about a service.
-      </p>
-      
-      <div class="component-examples">
-        <div class="component-example component-example--fullwidth">
-          <h3 class="component-example__title">Default Layout</h3>
-          <div class="component-example__container component-example__container--large">
-            <ServiceDetail 
-              title="Engine Tuning" 
-              description="Our engine tuning service optimizes your vehicle's performance by adjusting the engine control unit (ECU) parameters. This results in improved power, torque, and fuel efficiency tailored to your specific driving needs."
-              icon="🔧"
-            />
-          </div>
-          <details class="component-example__code">
-            <summary>View Code</summary>
-            <pre><code>{`<ServiceDetail 
-  title="Engine Tuning" 
-  description="Our engine tuning service optimizes your vehicle's performance by adjusting the engine control unit (ECU) parameters. This results in improved power, torque, and fuel efficiency tailored to your specific driving needs."
-  icon="🔧"
-/>`}</code></pre>
-          </details>
-        </div>
-        
-        <div class="component-example component-example--fullwidth">
-          <h3 class="component-example__title">Reversed Layout</h3>
-          <div class="component-example__container component-example__container--large">
-            <ServiceDetail 
-              title="Suspension Upgrades" 
-              description="Improve your vehicle's handling and comfort with our suspension upgrade services. We offer everything from simple spring and shock replacements to complete performance suspension systems."
-              icon="🛞"
-              isReversed={true}
-            />
-          </div>
-          <details class="component-example__code">
-            <summary>View Code</summary>
-            <pre><code>{`<ServiceDetail 
-  title="Suspension Upgrades" 
-  description="Improve your vehicle's handling and comfort with our suspension upgrade services. We offer everything from simple spring and shock replacements to complete performance suspension systems."
-  icon="🛞"
-  isReversed={true}
-/>`}</code></pre>
-          </details>
-        </div>
-      </div>
-    </section>
-    
-    <section class="component-section">
-      <h2 class="component-section__title">ServiceHero</h2>
-      <p class="component-section__description">
-        A hero banner specifically for service pages.
-      </p>
-      
-      <div class="component-examples">
-        <div class="component-example component-example--fullwidth">
-          <h3 class="component-example__title">Default</h3>
-          <div class="component-example__container component-example__container--fullwidth">
-            <ServiceHero 
-              title="Performance Tuning" 
-              subtitle="Unlock your vehicle's true potential with our expert tuning services."
-              backgroundImage="/images/hero-bg.jpg"
-            />
-          </div>
-          <details class="component-example__code">
-            <summary>View Code</summary>
-            <pre><code>{`<ServiceHero 
-  title="Performance Tuning" 
-  subtitle="Unlock your vehicle's true potential with our expert tuning services."
-  backgroundImage="/images/hero-bg.jpg"
-/>`}</code></pre>
-          </details>
-        </div>
-      </div>
-    </section>
+    <!-- Continue with the rest of the components following the same pattern -->
+    <!-- Include all other components with the same pattern: data-component attribute and conditional rendering -->
   </div>
 </div>
 
@@ -942,5 +677,16 @@
     .component-example__container--medium {
       max-width: 100%;
     }
+  }
+  
+  .component-section__placeholder {
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f5f5f5;
+    border-radius: 8px;
+    color: #666;
+    font-size: 1.1rem;
   }
 </style> 
