@@ -226,7 +226,7 @@
     <!-- Rest of nav items -->
     <a href="/about" class="nav-link">About</a>
     <a href="/gallery" class="nav-link">Gallery</a>
-    <a href="tel:5182801698" class="header-cta">Call Us</a>
+    <a href="tel:5182801698" class="header-cta">Call Us: (518) 280-1698</a>
   </nav>
 
   <!-- Mobile Navigation Toggle -->
@@ -245,7 +245,7 @@
 
 <!-- Mobile bottom CTA -->
 <div class="cta-bottom">
-  <a href="tel:5183746111" class="cta-button" aria-label="Schedule Service">
+  <a href="tel:5182801698" class="cta-button" aria-label="Schedule Service">
     Schedule Service: (518) 280-1698
   </a>
 </div>
@@ -489,54 +489,17 @@
     margin-bottom: 0;
     
     h3 {
-      font-family: $font-primary;
       font-size: $font-size-lg;
-      font-weight: $font-weight-bold;
-      color: $scotia-dark;
-      margin-bottom: $spacing-4;
-      padding-bottom: $spacing-2;
-      border-bottom: 1px solid #e5e5e5;
-      
-      a {
-        font-family: $font-primary;
-        font-size: $font-size-lg;
-        font-weight: $font-weight-bold;
-        color: $scotia-dark;
-        text-decoration: none;
-        display: block;
-        
-        &:hover {
-          color: $scotia-red;
-          text-decoration: none;
-        }
-      }
+      margin-bottom: $spacing-2;
     }
     
     ul {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      
       li {
-        margin-bottom: $spacing-1;
+        margin-bottom: 0;
         
         a {
-          display: block;
-          padding: $spacing-2 0;
-          min-height: 44px;
-          font-size: $font-size-sm;
-          line-height: 1.3;
-          color: $scotia-gray;
-          text-decoration: none;
-          border-radius: $border-radius-md;
-          transition: all 0.2s ease;
-          font-family: $font-secondary;
-          font-weight: $font-weight-normal;
-          
-          &:hover {
-            color: $scotia-red;
-            padding-left: 20px;
-          }
+          padding: $spacing-1 0;
+          min-height: 36px;
         }
       }
     }
@@ -620,6 +583,8 @@
     z-index: 99;
     transform: translateX(100%);
     transition: transform 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
     
     &.active {
       transform: translateX(0);
@@ -630,16 +595,74 @@
     padding: $spacing-4;
     max-width: 1200px;
     margin: 0 auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    justify-content: space-between;
   }
 
   .menu-sections-grid {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: $spacing-6;
-    padding-bottom: $spacing-6;
+    grid-template-columns: repeat(2, 1fr);
+    gap: $spacing-4;
+    padding-bottom: $spacing-4;
+  }
+
+  .menu-section {
+    margin-bottom: 0;
     
-    @include sm {
-      grid-template-columns: repeat(2, 1fr);
+    h3 {
+      font-family: $font-primary;
+      font-size: $font-size-lg;
+      font-weight: $font-weight-bold;
+      color: $scotia-dark;
+      margin-bottom: $spacing-2;
+      padding-bottom: $spacing-1;
+      border-bottom: 1px solid #e5e5e5;
+      
+      a {
+        font-family: $font-primary;
+        font-size: $font-size-lg;
+        font-weight: $font-weight-bold;
+        color: $scotia-dark;
+        text-decoration: none;
+        display: block;
+        
+        &:hover {
+          color: $scotia-red;
+          text-decoration: none;
+        }
+      }
+    }
+    
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      
+      li {
+        margin-bottom: 0;
+        
+        a {
+          display: block;
+          padding: $spacing-1 0;
+          min-height: 36px;
+          font-size: $font-size-sm;
+          line-height: 1.3;
+          color: $scotia-gray;
+          text-decoration: none;
+          border-radius: $border-radius-md;
+          transition: all 0.2s ease;
+          font-family: $font-secondary;
+          font-weight: $font-weight-normal;
+          
+          &:hover {
+            color: $scotia-red;
+            padding-left: 10px;
+          }
+        }
+      }
     }
   }
 
@@ -660,16 +683,19 @@
 
   .bottom-nav {
     border-top: 1px solid rgba($black, 0.1);
-    padding-top: $spacing-4;
+    padding-top: $spacing-3;
     display: flex;
     flex-direction: column;
-    gap: $spacing-3;
+    gap: $spacing-2;
+    margin-bottom: 60px; /* Space for the bottom CTA */
     
+    .hours-text,
     a {
       color: $scotia-gray;
       text-decoration: none;
       font-size: $font-size-sm;
       display: block;
+      padding: $spacing-1 0;
       
       &:hover,
       &:focus {
@@ -700,6 +726,7 @@
       font-weight: $font-weight-semibold;
       text-decoration: none;
       font-family: $font-primary;
+      min-width: 90vw;
     }
   }
   
