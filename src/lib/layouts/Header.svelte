@@ -1,11 +1,13 @@
 <script lang="ts">
   import { businessHoursService } from '$lib/services/businessHours.js';
+  import { Clock, MapPin } from '@lucide/svelte';
   
   // State initialization
   let isMobileMenuOpen = $state(false);
   let isServicesMenuOpen = $state(false);
   let hoursText = $state(businessHoursService.getCurrentStatus().message);
   let isScrolled = $state(false);
+  let isClientSide = $state(false);
   
   // Derived values
   const menuAriaLabel = $derived(
@@ -73,6 +75,9 @@
   $effect(() => {
     // Only run in browser environment
     if (typeof document === 'undefined' || typeof window === 'undefined') return;
+    
+    // Set client-side flag
+    isClientSide = true;
     
     console.log("Effect: Initial services menu state:", isServicesMenuOpen);
     console.log("Effect: Initial mobile menu state:", isMobileMenuOpen);
@@ -200,26 +205,7 @@
         </div>
 
         <!-- Menu Footer -->
-        <div class="mega-menu-footer">
-          <div class="info-card">
-            <div class="info-item">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"></circle>
-                <polyline points="12 6 12 12 16 14"></polyline>
-              </svg>
-              <span class="text">{hoursText}</span>
-            </div>
-            <div class="info-item">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                <circle cx="12" cy="10" r="3"></circle>
-              </svg>
-              <a href="https://www.google.com/maps/search/?api=1&query=24+Sacandaga+Rd,+Scotia,+NY+12302" class="text address-link">24 Sacandaga Rd, Scotia</a>
-            </div>
-          </div>
-        </div>
+                            <div class="mega-menu-footer">            <div class="info-card">              <div class="info-item">                {#if isClientSide}<Clock size={20} />{/if}                <span class="text">{hoursText}</span>              </div>              <div class="info-item">                {#if isClientSide}<MapPin size={20} />{/if}                <a href="https://www.google.com/maps/search/?api=1&query=24+Sacandaga+Rd,+Scotia,+NY+12302" class="text address-link">24 Sacandaga Rd, Scotia</a>              </div>            </div>          </div>
       </div>
     </div>
 
@@ -296,10 +282,7 @@
     </div>
 
     <!-- Bottom Navigation -->
-    <div class="bottom-nav">
-      <span class="hours-text">{hoursText}</span>
-      <a href="https://www.google.com/maps/search/?api=1&query=24+Sacandaga+Rd,+Scotia,+NY+12302">24 Sacandaga Rd, Scotia</a>
-    </div>
+                <div class="bottom-nav">        <div class="info-item">          {#if isClientSide}<Clock size={18} />{/if}          <span class="hours-text">{hoursText}</span>        </div>        <div class="info-item">          {#if isClientSide}<MapPin size={18} />{/if}          <a href="https://www.google.com/maps/search/?api=1&query=24+Sacandaga+Rd,+Scotia,+NY+12302">24 Sacandaga Rd, Scotia</a>        </div>      </div>
   </div>
 </div>
 
@@ -464,7 +447,7 @@
     opacity: 0;
     visibility: hidden;
     overflow-y: auto;
-    max-height: calc(100vh - 80px);
+    max-height: 80vh; /* Use vh instead of fit-content */
     transition: opacity 0.2s ease, visibility 0.2s ease;
     z-index: 98;
     
@@ -478,10 +461,10 @@
   .mega-menu-content {
     max-width: 1200px;
     margin: 0 auto;
-    padding: $spacing-8 $spacing-8 0;
+    padding: $spacing-6 $spacing-8 0;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: $spacing-8;
+    gap: $spacing-6;
   }
 
   /* Menu Section Styles */
@@ -530,8 +513,8 @@
   /* Menu Footer */
   .mega-menu-footer {
     border-top: 1px solid rgba($black, 0.1);
-    margin-top: $spacing-8;
-    padding: $spacing-6 $spacing-8;
+    margin-top: $spacing-4;
+    padding: $spacing-4 $spacing-8;
     max-width: 1200px;
     width: 100%;
     margin-left: auto;
@@ -553,9 +536,10 @@
     gap: $spacing-2;
     color: $scotia-gray;
     
-    svg {
+    :global(svg) {
       flex-shrink: 0;
       color: $scotia-blue;
+      stroke-width: 2;
     }
     
     .text,
@@ -577,7 +561,7 @@
     top: 80px;
     left: 0;
     width: 100%;
-    height: calc(100vh - 80px);
+    height: calc(100vh - 140px); /* Reduced height to make space for bottom CTA */
     background-color: $white;
     overflow-y: auto;
     z-index: 99;
@@ -689,18 +673,28 @@
     gap: $spacing-2;
     margin-bottom: 60px; /* Space for the bottom CTA */
     
-    .hours-text,
-    a {
-      color: $scotia-gray;
-      text-decoration: none;
-      font-size: $font-size-sm;
-      display: block;
-      padding: $spacing-1 0;
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: $spacing-2;
+      line-height: 1.4;
       
-      &:hover,
-      &:focus {
+      :global(svg) {
         color: $scotia-blue;
-        text-decoration: underline;
+        flex-shrink: 0;
+      }
+      
+      .hours-text,
+      a {
+        color: $scotia-gray;
+        text-decoration: none;
+        font-size: $font-size-sm;
+        
+        &:hover,
+        &:focus {
+          color: $scotia-blue;
+          text-decoration: underline;
+        }
       }
     }
   }
@@ -713,9 +707,10 @@
     left: 0;
     width: 100%;
     background-color: $scotia-red;
-    padding: $spacing-3;
+    padding: $spacing-2 $spacing-3;
     text-align: center;
-    z-index: 97;
+    z-index: 100; /* Higher z-index than mobile menu */
+    box-shadow: 0 -2px 10px rgba($black, 0.2);
     
     @include md {
       display: none;
@@ -726,7 +721,13 @@
       font-weight: $font-weight-semibold;
       text-decoration: none;
       font-family: $font-primary;
-      min-width: 90vw;
+      width: auto;
+      max-width: 100%;
+      padding: 0 $spacing-2;
+      display: inline-block;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
   }
   
