@@ -1,5 +1,5 @@
 ---
-description: 
+description: In our Svelte 5 project, we **exclusively use snippets and render tags** for content projection instead of the legacy slot system. This provides better TypeScript support, more flexible content distribution, and aligns with Svelte 5's modern patterns.
 globs: 
 alwaysApply: false
 ---

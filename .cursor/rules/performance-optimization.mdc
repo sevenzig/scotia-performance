@@ -1,5 +1,5 @@
 ---
-description: 
+description: This guide provides techniques for optimizing the performance of the Scotia Performance SvelteKit application. These optimizations focus on improving both perceived and actual performance by addressing bundle size, rendering performance, network efficiency, and server-side optimizations.
 globs: 
 alwaysApply: false
 ---
