@@ -1,5 +1,6 @@
 <script lang="ts">
   import ServiceCard from '$lib/components/ServiceCard.svelte';
+  import AboutCard from '$lib/components/AboutCard.svelte';
   
   const services = [
     {
@@ -72,6 +73,20 @@
       <p>Call us at <a href="tel:5183746111" class="text-scotia-red hover:underline">(518) 374-6111</a> or visit our shop at 24 Sacandaga Rd, Scotia, NY 12302</p>
     </div>
   </div>
+  
+  <div class="status-examples mt-12">
+    <h2 class="text-center mb-8">Status Examples</h2>
+    <div class="status-grid">
+      <div>
+        <h3 class="text-lg font-semibold mb-2">Current Status</h3>
+        <AboutCard />
+      </div>
+      <div>
+        <h3 class="text-lg font-semibold mb-2">Closed Example</h3>
+        <AboutCard showClosedExample={true} />
+      </div>
+    </div>
+  </div>
 </div>
 
 <style lang="scss">
@@ -137,5 +152,25 @@
     padding: $spacing-6;
     border-radius: $border-radius;
     text-align: center;
+  }
+  
+  .status-examples {
+    max-width: 1200px;
+    margin: 0 auto;
+    
+    h2 {
+      font-size: $font-size-2xl;
+      color: $scotia-dark;
+    }
+  }
+  
+  .status-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $spacing-8;
+    
+    @include md {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 </style> 

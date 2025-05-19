@@ -1,8 +1,15 @@
 <script lang="ts">
   import { businessHoursService } from '$lib/services/BusinessHoursService';
   
+  // Add prop to allow forcing closed status for examples
+  const { showClosedExample = false } = $props<{
+    showClosedExample?: boolean;
+  }>();
+  
   // Get status directly from service instead of props
-  const status = businessHoursService.getCurrentStatus();
+  const status = showClosedExample 
+    ? { isOpen: false, message: "Closed - Opens tomorrow at 8AM" } 
+    : businessHoursService.getCurrentStatus();
 </script>
 
 <style>

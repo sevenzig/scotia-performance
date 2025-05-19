@@ -175,11 +175,11 @@
         <div class="component-example">
           <h3 class="component-example__title">Status: Closed</h3>
           <div class="component-example__container component-example__container--fixed-width">
-            <AboutCard />
+            <AboutCard showClosedExample={true} />
           </div>
           <details class="component-example__code">
             <summary>View Code</summary>
-            <pre><code>{`<AboutCard />`}</code></pre>
+            <pre><code>{`<AboutCard showClosedExample={true} />`}</code></pre>
           </details>
         </div>
       </div>
