@@ -142,7 +142,8 @@ export default defineConfig(({ mode }) => {
 			watch: {
 				usePolling: true,
 				interval: 100
-			}
+			},
+			host: true // Allow access from any network interface
 		},
 		preview: {
 			headers: {
