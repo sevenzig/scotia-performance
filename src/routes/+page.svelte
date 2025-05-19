@@ -1,7 +1,8 @@
-<script>
+<script lang="ts">
   import { onMount } from 'svelte';
   import ResponsiveImage from '$lib/components/ResponsiveImage.svelte';
   import { getImageAttributes } from '$lib/utils/clientImageUtils';
+  import Hero from '$lib/components/Hero.svelte';
   
   // Rotating taglines for the homepage
   const taglines = [
@@ -66,7 +67,12 @@
         threshold: 0.1
       };
       
-      const handleIntersection = (entries, observer, targetState) => {
+      // Add proper type annotations for the intersection handler
+      const handleIntersection = (
+        entries: IntersectionObserverEntry[], 
+        observer: IntersectionObserver, 
+        targetState: 'reviews' | 'diagnostic'
+      ) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
             if (targetState === 'reviews') reviewsVisible = true;
@@ -126,7 +132,7 @@
 <svelte:head>
   <title>Scotia Performance | Auto Repair Scotia, NY</title>
   <meta name="description" content="Scotia Performance - Professional auto repair services in Scotia, NY. ASE certified mechanics specializing in brake service, engine repair, transmission service, and more.">
-  <link rel="preload" fetchpriority="high" href="/images/hero-bg.jpg" as="image" type="image/jpeg">
+  <link rel="preload" fetchpriority="high" href="/images/garage.jpg" as="image" type="image/jpeg">
   
   <!-- This style defines critical CSS for the hero section that appears above the fold -->
   <style>
@@ -184,16 +190,8 @@
   </style>
 </svelte:head>
 
-<!-- Hero Section - Use background-image with preloaded image for fastest loading -->
-<section class="hero" style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/images/hero-bg.jpg');">
-  <div class="container">
-    <div class="hero-content">
-      <h1>Scotia Performance Auto</h1>
-      <h2>Professional Auto Service & Repair</h2>
-      <a href="tel:+15183746111" class="cta-button">Schedule Service</a>
-    </div>
-  </div>
-</section>
+<!-- Hero Section - Using the Hero component -->
+<Hero />
 
 <div class="tagline">{randomTagline}</div>
 
@@ -323,6 +321,15 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 1rem;
+  }
+  
+  /* Tagline */
+  .tagline {
+    text-align: center;
+    padding: 1rem;
+    background-color: #f3f4f6;
+    font-style: italic;
+    font-weight: 500;
   }
   
   /* Services Section */
@@ -471,14 +478,6 @@
   
   /* Responsive adjustments */
   @media (max-width: 768px) {
-    .hero h1 {
-      font-size: 2rem;
-    }
-    
-    .hero h2 {
-      font-size: 1.25rem;
-    }
-    
     .services-grid,
     .diagnostic-grid,
     .reviews-grid {
