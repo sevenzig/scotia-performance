@@ -205,7 +205,26 @@
         </div>
 
         <!-- Menu Footer -->
-                            <div class="mega-menu-footer">            <div class="info-card">              <div class="info-item">                {#if isClientSide}<Clock size={20} />{/if}                <span class="text">{hoursText}</span>              </div>              <div class="info-item">                {#if isClientSide}<MapPin size={20} />{/if}                <a href="https://www.google.com/maps/search/?api=1&query=24+Sacandaga+Rd,+Scotia,+NY+12302" class="text address-link">24 Sacandaga Rd, Scotia</a>              </div>            </div>          </div>
+        <div class="mega-menu-footer">
+          <div class="info-card">
+            <div class="info-item">
+              <span class="icon-wrapper">
+                {#if isClientSide}
+                  <Clock size={20} />
+                {/if}
+              </span>
+              <span class="text">{hoursText}</span>
+            </div>
+            <div class="info-item">
+              <span class="icon-wrapper">
+                {#if isClientSide}
+                  <MapPin size={20} />
+                {/if}
+              </span>
+              <a href="https://www.google.com/maps/search/?api=1&query=24+Sacandaga+Rd,+Scotia,+NY+12302" class="text address-link">24 Sacandaga Rd, Scotia</a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -219,8 +238,9 @@
   <button 
     type="button"
     class="nav-toggle" 
-    aria-label={menuAriaLabel}
     aria-expanded={isMobileMenuOpen}
+    aria-controls="mobile-menu"
+    aria-label={menuAriaLabel}
     onclick={handleMobileMenuToggle}
   >
     <span></span>
@@ -282,7 +302,24 @@
     </div>
 
     <!-- Bottom Navigation -->
-                <div class="bottom-nav">        <div class="info-item">          {#if isClientSide}<Clock size={18} />{/if}          <span class="hours-text">{hoursText}</span>        </div>        <div class="info-item">          {#if isClientSide}<MapPin size={18} />{/if}          <a href="https://www.google.com/maps/search/?api=1&query=24+Sacandaga+Rd,+Scotia,+NY+12302">24 Sacandaga Rd, Scotia</a>        </div>      </div>
+    <div class="bottom-nav">
+      <div class="info-item">
+        <span class="icon-wrapper">
+          {#if isClientSide}
+            <Clock size={18} />
+          {/if}
+        </span>
+        <span class="hours-text">{hoursText}</span>
+      </div>
+      <div class="info-item">
+        <span class="icon-wrapper">
+          {#if isClientSide}
+            <MapPin size={18} />
+          {/if}
+        </span>
+        <a href="https://www.google.com/maps/search/?api=1&query=24+Sacandaga+Rd,+Scotia,+NY+12302">24 Sacandaga Rd, Scotia</a>
+      </div>
+    </div>
   </div>
 </div>
 
