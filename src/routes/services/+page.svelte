@@ -51,7 +51,7 @@
         title={service.title}
         description={service.description}
         icon={service.icon}
-        url={service.url}
+        link={service.url}
       />
     {/each}
   </div>
@@ -70,7 +70,7 @@
     
     <div class="contact-info mt-8">
       <p class="text-lg font-semibold">Ready to schedule service?</p>
-      <p>Call us at <a href="tel:5183746111" class="text-scotia-red hover:underline">(518) 374-6111</a> or visit our shop at 24 Sacandaga Rd, Scotia, NY 12302</p>
+      <p>Call us at <a href="tel:5182801698" class="text-scotia-red hover:underline">(518) 280-1698</a> or visit our shop at 24 Sacandaga Rd, Scotia, NY 12302</p>
     </div>
   </div>
   
@@ -90,27 +90,27 @@
 </div>
 
 <style lang="scss">
-  @use '../../scss/core/_mixins' as *;
-  @import '../../scss/core/_variables';
+  @use '../../scss/core/_mixins' as mix;
+  @use '../../scss/core/_variables' as vars;
   
   .services-page {
-    padding: $spacing-6 0;
+    padding: vars.$spacing-6 0;
   }
   
   .page-header {
     text-align: center;
-    margin-bottom: $spacing-8;
+    margin-bottom: vars.$spacing-8;
     
     h1 {
-      font-size: $font-size-3xl;
-      color: $scotia-red;
-      margin-bottom: $spacing-3;
-      font-weight: $font-weight-bold;
+      font-size: vars.$font-size-3xl;
+      color: vars.$scotia-red;
+      margin-bottom: vars.$spacing-3;
+      font-weight: vars.$font-weight-bold;
     }
     
     .lead {
-      font-size: $font-size-lg;
-      color: $scotia-gray;
+      font-size: vars.$font-size-lg;
+      color: vars.$scotia-gray;
       max-width: 700px;
       margin: 0 auto;
     }
@@ -119,14 +119,14 @@
   .service-categories {
     display: grid;
     grid-template-columns: 1fr;
-    gap: $spacing-6;
-    margin-bottom: $spacing-8;
+    gap: vars.$spacing-6;
+    margin-bottom: vars.$spacing-8;
     
-    @include sm {
+    @include mix.sm {
       grid-template-columns: repeat(2, 1fr);
     }
     
-    @include lg {
+    @include mix.lg {
       grid-template-columns: repeat(4, 1fr);
     }
   }
@@ -136,21 +136,21 @@
     margin: 0 auto;
     
     h2 {
-      font-size: $font-size-2xl;
-      margin-bottom: $spacing-4;
-      color: $scotia-dark;
+      font-size: vars.$font-size-2xl;
+      margin-bottom: vars.$spacing-4;
+      color: vars.$scotia-dark;
     }
     
     p {
-      margin-bottom: $spacing-4;
+      margin-bottom: vars.$spacing-4;
       line-height: 1.6;
     }
   }
   
   .contact-info {
-    background-color: $scotia-light;
-    padding: $spacing-6;
-    border-radius: $border-radius;
+    background-color: vars.$scotia-light;
+    padding: vars.$spacing-6;
+    border-radius: vars.$border-radius;
     text-align: center;
   }
   
@@ -159,17 +159,17 @@
     margin: 0 auto;
     
     h2 {
-      font-size: $font-size-2xl;
-      color: $scotia-dark;
+      font-size: vars.$font-size-2xl;
+      color: vars.$scotia-dark;
     }
   }
   
   .status-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: $spacing-8;
+    gap: vars.$spacing-8;
     
-    @include md {
+    @include mix.md {
       grid-template-columns: repeat(2, 1fr);
     }
   }

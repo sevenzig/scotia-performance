@@ -1,5 +1,5 @@
-@use '../core/variables' as *;
-@use '../core/mixins' as *;
+@use '../core/variables' as vars;
+@use '../core/mixins' as mix;
 
 /* =========================================
    Layout & Grid Systems
@@ -18,47 +18,47 @@
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 $spacing-4;
+  padding: 0 vars.$spacing-4;
 
-  @include lg {
-    padding: 0 $spacing-6;
+  @include mix.lg {
+    padding: 0 vars.$spacing-6;
   }
 }
 
 /* Main content area */
 .site-content {
   flex: 1 0 auto;
-  padding: $spacing-4 0;
+  padding: vars.$spacing-4 0;
 
-  @include md {
-    padding: $spacing-6 0;
+  @include mix.md {
+    padding: vars.$spacing-6 0;
   }
 
-  @include lg {
-    padding: $spacing-8 0;
+  @include mix.lg {
+    padding: vars.$spacing-8 0;
   }
 }
 
 /* Section layouts */
 .section {
-  margin-bottom: $spacing-8;
+  margin-bottom: vars.$spacing-8;
 
-  @include md {
-    margin-bottom: $spacing-10;
+  @include mix.md {
+    margin-bottom: vars.$spacing-10;
   }
 
   &__header {
-    margin-bottom: $spacing-6;
+    margin-bottom: vars.$spacing-6;
     text-align: center;
   }
 
   &__title {
-    @include heading-2;
-    margin-bottom: $spacing-2;
+    margin-bottom: vars.$spacing-2;
+    @include mix.heading-2;
   }
 
   &__subtitle {
-    color: $scotia-gray;
+    color: vars.$scotia-gray;
     max-width: 600px;
     margin: 0 auto;
   }
@@ -69,15 +69,15 @@
   margin-left: 0;
   margin-right: 0;
   width: 100%;
-  border-radius: $border-radius-lg;
-  box-shadow: $shadow-sm;
+  border-radius: vars.$border-radius-lg;
+  box-shadow: vars.$shadow-sm;
   
-  @include sm {
-    padding: $spacing-4 $spacing-2;
+  @include mix.sm {
+    padding: vars.$spacing-4 vars.$spacing-2;
   }
   
-  @include md {
-    padding: $spacing-6 $spacing-4;
+  @include mix.md {
+    padding: vars.$spacing-6 vars.$spacing-4;
   }
 }
 
@@ -95,7 +95,7 @@ main {
 /* Table styling (common) */
 .table-zebra {
   tr:nth-child(even) {
-    background-color: rgba($black, 0.03);
+    background-color: rgba(vars.$black, 0.03);
   }
 }
 
@@ -117,13 +117,13 @@ main {
     flex-direction: column;
   }
 
-  @include sm {
+  @include mix.sm {
     &--row-sm {
       flex-direction: row;
     }
   }
 
-  @include md {
+  @include mix.md {
     &--row-md {
       flex-direction: row;
     }
@@ -135,40 +135,40 @@ main {
 .grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: $spacing-4;
+  gap: vars.$spacing-4;
 
-  @include md {
+  @include mix.md {
     grid-template-columns: repeat(2, 1fr);
-    gap: $spacing-6;
+    gap: vars.$spacing-6;
   }
 
-  @include lg {
+  @include mix.lg {
     grid-template-columns: repeat(3, 1fr);
   }
 
   /* Grid with specific column counts */
   &--2-col {
-    @include md {
+    @include mix.md {
       grid-template-columns: repeat(2, 1fr);
     }
   }
 
   &--3-col {
-    @include md {
+    @include mix.md {
       grid-template-columns: repeat(2, 1fr);
     }
 
-    @include lg {
+    @include mix.lg {
       grid-template-columns: repeat(3, 1fr);
     }
   }
 
   &--4-col {
-    @include md {
+    @include mix.md {
       grid-template-columns: repeat(2, 1fr);
     }
 
-    @include lg {
+    @include mix.lg {
       grid-template-columns: repeat(4, 1fr);
     }
   }
@@ -178,24 +178,24 @@ main {
 .grid-auto {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: $spacing-4;
+  gap: vars.$spacing-4;
 
-  @include md {
-    gap: $spacing-6;
+  @include mix.md {
+    gap: vars.$spacing-6;
   }
 }
 
 .grid-sidebar {
   display: grid;
   grid-template-columns: 1fr;
-  gap: $spacing-6;
+  gap: vars.$spacing-6;
 
-  @include lg {
+  @include mix.lg {
     grid-template-columns: 3fr 1fr;
   }
 
   &--reverse {
-    @include lg {
+    @include mix.lg {
       grid-template-columns: 1fr 3fr;
     }
   }
@@ -204,11 +204,11 @@ main {
 .grid-half {
   display: grid;
   grid-template-columns: 1fr;
-  gap: $spacing-4;
+  gap: vars.$spacing-4;
 
-  @include md {
+  @include mix.md {
     grid-template-columns: 1fr 1fr;
-    gap: $spacing-6;
+    gap: vars.$spacing-6;
   }
 }
 
@@ -219,14 +219,14 @@ main {
 .col-span-3 { grid-column: span 3; }
 .col-span-full { grid-column: 1 / -1; }
 
-@include md {
+@include mix.md {
   .md\:col-span-1 { grid-column: span 1; }
   .md\:col-span-2 { grid-column: span 2; }
   .md\:col-span-3 { grid-column: span 3; }
   .md\:col-span-full { grid-column: 1 / -1; }
 }
 
-@include lg {
+@include mix.lg {
   .lg\:col-span-1 { grid-column: span 1; }
   .lg\:col-span-2 { grid-column: span 2; }
   .lg\:col-span-3 { grid-column: span 3; }
@@ -240,7 +240,7 @@ main {
 .row-span-3 { grid-row: span 3; }
 .row-span-full { grid-row: 1 / -1; }
 
-@include md {
+@include mix.md {
   .md\:row-span-1 { grid-row: span 1; }
   .md\:row-span-2 { grid-row: span 2; }
   .md\:row-span-3 { grid-row: span 3; }
@@ -253,17 +253,17 @@ main {
 .grid-end { place-items: end; }
 
 /* ------ Spacing Utilities ------ */
-.mt-1 { margin-top: $spacing-1; }
-.mt-2 { margin-top: $spacing-2; }
-.mt-4 { margin-top: $spacing-4; }
-.mt-6 { margin-top: $spacing-6; }
-.mt-8 { margin-top: $spacing-8; }
+.mt-1 { margin-top: vars.$spacing-1; }
+.mt-2 { margin-top: vars.$spacing-2; }
+.mt-4 { margin-top: vars.$spacing-4; }
+.mt-6 { margin-top: vars.$spacing-6; }
+.mt-8 { margin-top: vars.$spacing-8; }
 
-.mb-1 { margin-bottom: $spacing-1; }
-.mb-2 { margin-bottom: $spacing-2; }
-.mb-4 { margin-bottom: $spacing-4; }
-.mb-6 { margin-bottom: $spacing-6; }
-.mb-8 { margin-bottom: $spacing-8; }
+.mb-1 { margin-bottom: vars.$spacing-1; }
+.mb-2 { margin-bottom: vars.$spacing-2; }
+.mb-4 { margin-bottom: vars.$spacing-4; }
+.mb-6 { margin-bottom: vars.$spacing-6; }
+.mb-8 { margin-bottom: vars.$spacing-8; }
 
 .mx-auto { 
   margin-left: auto;

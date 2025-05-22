@@ -9,10 +9,10 @@
 </div>
 
 <style lang="scss">
-  @import '../../scss/core/_variables';
+  @use '../../scss/core/_variables' as vars;
   
   .services-layout {
-    background-color: $white;
+    background-color: vars.$white;
     min-height: 60vh;
   }
 </style> 

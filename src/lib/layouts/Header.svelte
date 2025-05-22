@@ -324,8 +324,9 @@
 </div>
 
 <style lang="scss">
-  @use '../../scss/core/variables' as *;
-  @use '../../scss/core/mixins' as *;
+  @use 'sass:color';
+  @use '../../scss/core/variables' as vars;
+  @use '../../scss/core/mixins' as mix;
   
   /* Header Core Styles */
   .site-header {
@@ -333,32 +334,32 @@
     top: 0;
     left: 0;
     right: 0;
-    background-color: $white;
+    background-color: vars.$white;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    z-index: $z-index-header;
-    padding: 0 $spacing-4;
+    z-index: vars.$z-index-header;
+    padding: 0 vars.$spacing-4;
     height: 80px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    box-shadow: 0 2px 10px rgba($black, 0.1);
+    box-shadow: 0 2px 10px rgba(vars.$black, 0.1);
     
     &.scrolled {
-      box-shadow: 0 4px 15px rgba($black, 0.15);
+      box-shadow: 0 4px 15px rgba(vars.$black, 0.15);
     }
     
-    @include md {
-      padding: 0 $spacing-6;
+    @include mix.md {
+      padding: 0 vars.$spacing-6;
     }
   }
 
   /* Logo Styles */
   .logo {
-    color: $scotia-blue;
+    color: vars.$scotia-blue;
     text-decoration: none;
-    font-size: $font-size-xl;
-    font-weight: $font-weight-bold;
-    font-family: $font-primary;
+    font-size: vars.$font-size-xl;
+    font-weight: vars.$font-weight-bold;
+    font-family: vars.$font-primary;
     min-width: 44px;
     min-height: 44px;
     display: flex;
@@ -370,12 +371,12 @@
     display: block;
     min-width: 44px;
     min-height: 44px;
-    padding: $spacing-2;
+    padding: vars.$spacing-2;
     background: none;
     border: none;
     cursor: pointer;
     
-    @include md {
+    @include mix.md {
       display: none;
     }
     
@@ -383,7 +384,7 @@
       display: block;
       width: 24px;
       height: 2px;
-      background: $scotia-dark;
+      background: vars.$scotia-dark;
       margin: 5px 0;
       transition: transform 0.3s ease;
     }
@@ -405,23 +406,23 @@
   .desktop-nav {
     display: none;
     align-items: center;
-    gap: $spacing-5;
+    gap: vars.$spacing-5;
     
-    @include md {
+    @include mix.md {
       display: flex;
     }
   }
 
   .nav-link, 
   .services-toggle {
-    font-family: $font-primary;
-    font-size: $font-size-sm;
-    font-weight: $font-weight-semibold;
+    font-family: vars.$font-primary;
+    font-size: vars.$font-size-sm;
+    font-weight: vars.$font-weight-semibold;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: $scotia-blue;
+    color: vars.$scotia-blue;
     text-decoration: none;
-    padding: $spacing-2;
+    padding: vars.$spacing-2;
     min-height: 44px;
     min-width: 44px;
     display: flex;
@@ -429,7 +430,7 @@
     transition: color 0.2s ease;
     
     &:hover {
-      color: darken($scotia-blue, 15%);
+      color: color.scale(vars.$scotia-blue, $lightness: -15%);
     }
   }
 
@@ -441,8 +442,8 @@
   }
 
   .services-toggle {
-    color: $scotia-blue;
-    padding: $spacing-2;
+    color: vars.$scotia-blue;
+    padding: vars.$spacing-2;
     min-height: 44px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -456,8 +457,8 @@
     transition: color 0.2s ease;
     
     &[aria-expanded="true"] {
-      color: $scotia-red;
-      background-color: rgba($scotia-blue, 0.05);
+      color: vars.$scotia-red;
+      background-color: rgba(vars.$scotia-blue, 0.05);
     }
     
     &::after {
@@ -479,8 +480,8 @@
     top: 80px;
     left: 0;
     width: 100%;
-    background: $white;
-    box-shadow: 0 4px 6px -1px rgba($black, 0.1);
+    background: vars.$white;
+    box-shadow: 0 4px 6px -1px rgba(vars.$black, 0.1);
     opacity: 0;
     visibility: hidden;
     overflow-y: auto;
@@ -498,10 +499,10 @@
   .mega-menu-content {
     max-width: 1200px;
     margin: 0 auto;
-    padding: $spacing-6 $spacing-8 0;
+    padding: vars.$spacing-6 vars.$spacing-8 0;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: $spacing-6;
+    gap: vars.$spacing-6;
   }
 
   /* Menu Section Styles */
@@ -509,8 +510,8 @@
     margin-bottom: 0;
     
     h3 {
-      font-size: $font-size-lg;
-      margin-bottom: $spacing-2;
+      font-size: vars.$font-size-lg;
+      margin-bottom: vars.$spacing-2;
     }
     
     ul {
@@ -518,7 +519,7 @@
         margin-bottom: 0;
         
         a {
-          padding: $spacing-1 0;
+          padding: vars.$spacing-1 0;
           min-height: 36px;
         }
       }
@@ -527,31 +528,31 @@
 
   /* CTA Buttons */
   .header-cta {
-    background: $scotia-red;
-    color: $white;
-    padding: $spacing-2 $spacing-4;
-    border-radius: $border-radius-md;
+    background: vars.$scotia-red;
+    color: vars.$white;
+    padding: vars.$spacing-2 vars.$spacing-4;
+    border-radius: vars.$border-radius-md;
     text-decoration: none;
     min-height: 44px;
     min-width: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: $font-primary;
-    font-weight: $font-weight-semibold;
+    font-family: vars.$font-primary;
+    font-weight: vars.$font-weight-semibold;
     letter-spacing: 0.01em;
     transition: background-color 0.2s ease;
     
     &:hover {
-      background-color: darken($scotia-red, 10%);
+      background-color: color.scale(vars.$scotia-red, $lightness: -10%);
     }
   }
 
   /* Menu Footer */
   .mega-menu-footer {
-    border-top: 1px solid rgba($black, 0.1);
-    margin-top: $spacing-4;
-    padding: $spacing-4 $spacing-8;
+    border-top: 1px solid rgba(vars.$black, 0.1);
+    margin-top: vars.$spacing-4;
+    padding: vars.$spacing-4 vars.$spacing-8;
     max-width: 1200px;
     width: 100%;
     margin-left: auto;
@@ -564,29 +565,29 @@
     border: none;
     margin: 0;
     display: flex;
-    gap: $spacing-8;
+    gap: vars.$spacing-8;
   }
 
   .mega-menu .info-item {
     display: flex;
     align-items: center;
-    gap: $spacing-2;
-    color: $scotia-gray;
+    gap: vars.$spacing-2;
+    color: vars.$scotia-gray;
     
     :global(svg) {
       flex-shrink: 0;
-      color: $scotia-blue;
+      color: vars.$scotia-blue;
       stroke-width: 2;
     }
     
     .text,
     .address-link {
-      color: $scotia-gray;
+      color: vars.$scotia-gray;
       text-decoration: none;
-      font-size: $font-size-sm;
+      font-size: vars.$font-size-sm;
       
       &:hover {
-        color: $scotia-blue;
+        color: vars.$scotia-blue;
         text-decoration: underline;
       }
     }
@@ -599,7 +600,7 @@
     left: 0;
     width: 100%;
     height: calc(100vh - 140px); /* Reduced height to make space for bottom CTA */
-    background-color: $white;
+    background-color: vars.$white;
     overflow-y: auto;
     z-index: 99;
     transform: translateX(100%);
@@ -613,7 +614,7 @@
   }
 
   .mobile-menu-content {
-    padding: $spacing-4;
+    padding: vars.$spacing-4;
     max-width: 1200px;
     margin: 0 auto;
     width: 100%;
@@ -626,32 +627,32 @@
   .menu-sections-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: $spacing-4;
-    padding-bottom: $spacing-4;
+    gap: vars.$spacing-4;
+    padding-bottom: vars.$spacing-4;
   }
 
   .menu-section {
     margin-bottom: 0;
     
     h3 {
-      font-family: $font-primary;
-      font-size: $font-size-lg;
-      font-weight: $font-weight-bold;
-      color: $scotia-dark;
-      margin-bottom: $spacing-2;
-      padding-bottom: $spacing-1;
+      font-family: vars.$font-primary;
+      font-size: vars.$font-size-lg;
+      font-weight: vars.$font-weight-bold;
+      color: vars.$scotia-dark;
+      margin-bottom: vars.$spacing-2;
+      padding-bottom: vars.$spacing-1;
       border-bottom: 1px solid #e5e5e5;
       
       a {
-        font-family: $font-primary;
-        font-size: $font-size-lg;
-        font-weight: $font-weight-bold;
-        color: $scotia-dark;
+        font-family: vars.$font-primary;
+        font-size: vars.$font-size-lg;
+        font-weight: vars.$font-weight-bold;
+        color: vars.$scotia-dark;
         text-decoration: none;
         display: block;
         
         &:hover {
-          color: $scotia-red;
+          color: vars.$scotia-red;
           text-decoration: none;
         }
       }
@@ -667,19 +668,19 @@
         
         a {
           display: block;
-          padding: $spacing-1 0;
+          padding: vars.$spacing-1 0;
           min-height: 36px;
-          font-size: $font-size-sm;
+          font-size: vars.$font-size-sm;
           line-height: 1.3;
-          color: $scotia-gray;
+          color: vars.$scotia-gray;
           text-decoration: none;
-          border-radius: $border-radius-md;
+          border-radius: vars.$border-radius-md;
           transition: all 0.2s ease;
-          font-family: $font-secondary;
-          font-weight: $font-weight-normal;
+          font-family: vars.$font-secondary;
+          font-weight: vars.$font-weight-normal;
           
           &:hover {
-            color: $scotia-red;
+            color: vars.$scotia-red;
             padding-left: 10px;
           }
         }
@@ -688,48 +689,48 @@
   }
 
   .see-all {
-    font-weight: $font-weight-medium;
-    color: $scotia-blue !important;
+    font-weight: vars.$font-weight-medium;
+    color: vars.$scotia-blue !important;
     position: relative;
     
     &::after {
       content: "→";
-      margin-left: $spacing-2;
+      margin-left: vars.$spacing-2;
     }
     
     &:hover::after {
-      margin-left: $spacing-3;
+      margin-left: vars.$spacing-3;
     }
   }
 
   .bottom-nav {
-    border-top: 1px solid rgba($black, 0.1);
-    padding-top: $spacing-3;
+    border-top: 1px solid rgba(vars.$black, 0.1);
+    padding-top: vars.$spacing-3;
     display: flex;
     flex-direction: column;
-    gap: $spacing-2;
+    gap: vars.$spacing-2;
     margin-bottom: 60px; /* Space for the bottom CTA */
     
     .info-item {
       display: flex;
       align-items: center;
-      gap: $spacing-2;
+      gap: vars.$spacing-2;
       line-height: 1.4;
       
       :global(svg) {
-        color: $scotia-blue;
+        color: vars.$scotia-blue;
         flex-shrink: 0;
       }
       
       .hours-text,
       a {
-        color: $scotia-gray;
+        color: vars.$scotia-gray;
         text-decoration: none;
-        font-size: $font-size-sm;
+        font-size: vars.$font-size-sm;
         
         &:hover,
         &:focus {
-          color: $scotia-blue;
+          color: vars.$scotia-blue;
           text-decoration: underline;
         }
       }
@@ -743,24 +744,24 @@
     bottom: 0;
     left: 0;
     width: 100%;
-    background-color: $scotia-red;
-    padding: $spacing-2 $spacing-3;
+    background-color: vars.$scotia-red;
+    padding: vars.$spacing-2 vars.$spacing-3;
     text-align: center;
     z-index: 100; /* Higher z-index than mobile menu */
-    box-shadow: 0 -2px 10px rgba($black, 0.2);
+    box-shadow: 0 -2px 10px rgba(vars.$black, 0.2);
     
-    @include md {
+    @include mix.md {
       display: none;
     }
     
     .cta-button {
-      color: $white;
-      font-weight: $font-weight-semibold;
+      color: vars.$white;
+      font-weight: vars.$font-weight-semibold;
       text-decoration: none;
-      font-family: $font-primary;
+      font-family: vars.$font-primary;
       width: auto;
       max-width: 100%;
-      padding: 0 $spacing-2;
+      padding: 0 vars.$spacing-2;
       display: inline-block;
       white-space: nowrap;
       text-overflow: ellipsis;
@@ -773,7 +774,7 @@
   .services-toggle:focus-visible,
   .header-cta:focus-visible,
   .nav-toggle:focus-visible {
-    outline: 2px solid $scotia-blue;
+    outline: 2px solid vars.$scotia-blue;
     outline-offset: 2px;
   }
 </style> 

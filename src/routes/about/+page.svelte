@@ -509,7 +509,7 @@
   }
   
   /* Force no border on all headings with !important */
-  h1, h2, h3, h4, h5, h6 {
+  h1, h2, h3, h4 {
     border: none !important;
     border-bottom: none !important;
   }
