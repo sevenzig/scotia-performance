@@ -1,4 +1,6 @@
-<script>
+<script lang="ts">
+  import type { Snippet } from 'svelte';
+
   // Props definition - Svelte 5 style with $props rune
   const { 
     rootMargin = '200px', 
@@ -10,14 +12,29 @@
     background = 'transparent',
     className = '',
     transition = true,
-    delay = 0
-  } = $props();
+    delay = 0,
+    children = () => null,
+    placeholderContent = () => null
+  } = $props<{
+    rootMargin?: string;
+    threshold?: number | string;
+    height?: string;
+    width?: string;
+    once?: boolean;
+    placeholder?: string | null;
+    background?: string;
+    className?: string;
+    transition?: boolean;
+    delay?: number;
+    children?: Snippet;
+    placeholderContent?: Snippet;
+  }>();
   
   // State management
   let isVisible = $state(false);
   let hasLoaded = $state(false);
-  let element;
-  let observer;
+  let element: HTMLDivElement | null = null;
+  let observer: IntersectionObserver | null = null;
   
   // Create the intersection observer when component mounts
   $effect(() => {
@@ -30,7 +47,7 @@
     // Setup options
     const options = {
       rootMargin,
-      threshold: parseFloat(threshold)
+      threshold: typeof threshold === 'string' ? parseFloat(threshold) : threshold
     };
     
     // Create observer
@@ -50,7 +67,7 @@
         }
         
         // Disconnect if we only care about first visibility
-        if (once) {
+        if (once && observer) {
           observer.disconnect();
         }
       } else if (!once) {
@@ -83,14 +100,14 @@
 >
   {#if isVisible}
     <div class="lazy-content">
-      <slot />
+      {@render children()}
     </div>
   {:else if placeholder}
     <div class="lazy-placeholder">
       {#if typeof placeholder === 'string'}
         <div class="placeholder-text">{placeholder}</div>
       {:else}
-        <slot name="placeholder" />
+        {@render placeholderContent()}
       {/if}
     </div>
   {/if}

@@ -2,7 +2,7 @@
   const { 
     title = 'Ready to get started?', 
     description = 'Contact us today to schedule your service or learn more about how we can help with your automotive needs.',
-    phone = '(518) 374-6111',
+    phone = '(518) 280-1698',
     buttonText = 'Schedule Service',
     secondaryAction = undefined
   } = $props<{

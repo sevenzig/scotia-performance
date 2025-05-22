@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import type { ComponentType } from 'svelte';
+  import { browser } from '$app/environment';
   
   // Import directly only what's needed for initial render
   import AboutCard from '$lib/components/AboutCard.svelte';
@@ -14,7 +15,6 @@
                       'ServiceCard' | 'ServiceDetail' | 'ServiceHero' | 
                       'ServiceHighlights' | 'Testimonial' | 'Testimonials';
   
-  // Lazy load other components
   let componentsLoaded = $state<Record<ComponentName, boolean>>({
     CallToAction: false,
     ContactCard: false,
@@ -49,13 +49,21 @@
   
   // Function to load a specific component
   async function loadComponent(name: ComponentName): Promise<void> {
-    if (!componentsLoaded[name]) {
+    if (browser && !componentsLoaded[name]) {
       try {
+        console.log(`Attempting to load component: ${name}`);
         const module = await import(`$lib/components/${name}.svelte`);
-        components[name] = module.default;
-        componentsLoaded[name] = true;
+        if (module && module.default) {
+          components[name] = module.default;
+          componentsLoaded[name] = true;
+          console.log(`Successfully loaded component: ${name}`);
+        } else {
+          console.error(`Component ${name} module loaded but default export missing`);
+          componentsLoaded[name] = false;
+        }
       } catch (error) {
         console.error(`Failed to load component ${name}:`, error);
+        componentsLoaded[name] = false;
       }
     }
   }
@@ -72,30 +80,32 @@
   ];
   
   // Example data for component demos
-  const garageStatus = $state({ 
+  let garageStatus = { 
     isOpen: true, 
     message: "We're currently open until 5:00 PM today" 
-  });
+  };
   
-  const garageClosedStatus = $state({
+  let garageClosedStatus = {
     isOpen: false,
     message: "We're currently closed. Opening tomorrow at 8:00 AM"
-  });
+  };
   
   // Example data for BusinessInfo
-  const businessInfoData = $state({
+  let businessInfoData = {
     address: "24 Sacandaga Rd, Scotia, NY 12302",
-    phone: "(518) 374-6111",
+    phone: "(518) 280-1698",
     email: "info@scotiaperf.com",
     businessHours: sampleBusinessHours
-  });
+  };
   
   // Business hours for the standalone hours card
-  const businessHours = $state(sampleBusinessHours);
+  let businessHours = sampleBusinessHours;
   
   // Button click handler for demo purposes
   function handleButtonClick() {
-    alert('Button clicked!');
+    if (browser) {
+      alert('Button clicked!');
+    }
   }
 
   // Secondary action for Call to Action component - using a string return
@@ -105,7 +115,7 @@
   const exampleIcon = `<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"/>`;
   
   // ServiceHighlights example data
-  const serviceHighlightsData = $state([
+  let serviceHighlightsData = [
     {
       title: "Performance Tuning",
       description: "Unlock your vehicle's full potential with our professional tuning services.",
@@ -121,15 +131,30 @@
       description: "Expert diagnostics and repair for all engine issues by ASE certified technicians.",
       icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-12 h-12"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905a3.61 3.61 0 01-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" /></svg>`
     }
-  ]);
+  ];
+  
+  let isInitialized = false;
   
   // Setup intersection observer for lazy loading
-  onMount(() => {
+  onMount(async () => {
+    if (!browser) return;
+    
+    isInitialized = true;
+    console.log('Setting up components loading');
+    
+    const componentNames = Object.keys(componentsLoaded) as ComponentName[];
+    for (const componentName of componentNames) {
+      await loadComponent(componentName);
+    }
+    console.log('Finished all component loading attempts.');
+    
+    /* Comment out intersection observer for now
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           const elem = entry.target as HTMLElement;
           const componentName = elem.dataset.component as ComponentName | undefined;
+          // console.log(`Component in viewport: ${componentName}`);
           if (componentName && componentsLoaded[componentName] === false) {
             loadComponent(componentName);
           }
@@ -140,14 +165,19 @@
       threshold: 0.1
     });
     
-    // Observe sections with data-component attribute
-    document.querySelectorAll('[data-component]').forEach(el => {
+    const sections = document.querySelectorAll('[data-component]');
+    // console.log(`Found ${sections.length} component sections to observe`);
+    sections.forEach(el => {
       observer.observe(el);
+      // console.log(`Observing: ${(el as HTMLElement).dataset.component}`);
     });
     
     return () => {
-      observer.disconnect();
+      if (observer) { // Ensure observer exists before trying to disconnect
+        observer.disconnect();
+      }
     };
+    */
   });
 </script>
 
@@ -206,7 +236,7 @@
             <summary>View Code</summary>
             <pre><code>{`<BusinessInfo 
   address="24 Sacandaga Rd, Scotia, NY 12302"
-  phone="(518) 374-6111"
+  phone="(518) 280-1698"
   email="info@scotiaperf.com"
   businessHours={sampleBusinessHours}
 />`}</code></pre>
@@ -323,7 +353,10 @@
           <div class="component-example">
             <h3 class="component-example__title">Default CTA</h3>
             <div class="component-example__container component-example__container--large">
-              <svelte:component this={components.CallToAction} />
+              {#if components.CallToAction}
+                {@const CallToAction = components.CallToAction}
+                <CallToAction />
+              {/if}
             </div>
             <details class="component-example__code">
               <summary>View Code</summary>
@@ -334,20 +367,23 @@
           <div class="component-example">
             <h3 class="component-example__title">Custom CTA</h3>
             <div class="component-example__container component-example__container--large">
-              <svelte:component this={components.CallToAction}
-                title="Need Emergency Repairs?"
-                description="Our team is ready to help with your urgent automotive needs."
-                phone="(518) 374-6111"
-                buttonText="Call Now"
-                secondaryAction={secondaryActionFn}
-              />
+              {#if components.CallToAction}
+                {@const CallToAction = components.CallToAction}
+                <CallToAction
+                  title="Need Emergency Repairs?"
+                  description="Our team is ready to help with your urgent automotive needs."
+                  phone="(518) 280-1698"
+                  buttonText="Call Now"
+                  secondaryAction={secondaryActionFn}
+                />
+              {/if}
             </div>
             <details class="component-example__code">
               <summary>View Code</summary>
               <pre><code>{`<CallToAction 
   title="Need Emergency Repairs?"
   description="Our team is ready to help with your urgent automotive needs."
-  phone="(518) 374-6111"
+  phone="(518) 280-1698"
   buttonText="Call Now"
   secondaryAction={() => "View all services"}
 />`}</code></pre>
@@ -355,7 +391,7 @@
           </div>
         {:else}
           <div class="component-section__placeholder">
-            Loading Call to Action...
+            {browser ? "Loading Call to Action..." : "Call to Action component will load in browser"}
           </div>
         {/if}
       </div>
@@ -372,7 +408,10 @@
           <div class="component-example">
             <h3 class="component-example__title">Default</h3>
             <div class="component-example__container component-example__container--fixed-width">
-              <svelte:component this={components.ContactCard} />
+              {#if components.ContactCard}
+                {@const ContactCard = components.ContactCard}
+                <ContactCard />
+              {/if}
             </div>
             <details class="component-example__code">
               <summary>View Code</summary>
@@ -383,12 +422,15 @@
           <div class="component-example">
             <h3 class="component-example__title">With Custom Info</h3>
             <div class="component-example__container component-example__container--fixed-width">
-              <svelte:component this={components.ContactCard}
-                address="123 Main Street, Anywhere, NY 12345, USA"
-                phone="(555) 123-4567"
-                email="custom@example.com"
-                website="https://example.com"
-              />
+              {#if components.ContactCard}
+                {@const ContactCard = components.ContactCard}
+                <ContactCard
+                  address="123 Main Street, Anywhere, NY 12345, USA"
+                  phone="(555) 123-4567"
+                  email="custom@example.com"
+                  website="https://example.com"
+                />
+              {/if}
             </div>
             <details class="component-example__code">
               <summary>View Code</summary>
@@ -402,7 +444,7 @@
           </div>
         {:else}
           <div class="component-section__placeholder">
-            Loading Contact Card...
+            {browser ? "Loading Contact Card..." : "Contact Card component will load in browser"}
           </div>
         {/if}
       </div>
@@ -419,7 +461,10 @@
           <div class="component-example component-example--fullwidth">
             <h3 class="component-example__title">Default</h3>
             <div class="component-example__container component-example__container--fullwidth">
-              <svelte:component this={components.Hero} />
+              {#if components.Hero}
+                {@const Hero = components.Hero}
+                <Hero />
+              {/if}
             </div>
             <details class="component-example__code">
               <summary>View Code</summary>
@@ -428,7 +473,7 @@
           </div>
         {:else}
           <div class="component-section__placeholder">
-            Loading Hero...
+            {browser ? "Loading Hero..." : "Hero component will load in browser"}
           </div>
         {/if}
       </div>
@@ -445,11 +490,14 @@
           <div class="component-example component-example--fullwidth">
             <h3 class="component-example__title">Default</h3>
             <div class="component-example__container component-example__container--fullwidth">
-              <svelte:component this={components.HeroBanner}
-                title="Scotia Performance"
-                subtitle="Your trusted automotive repair partner"
-                description="We provide top-quality automotive repair services with transparent pricing and exceptional customer service."
-              />
+              {#if components.HeroBanner}
+                {@const HeroBanner = components.HeroBanner}
+                <HeroBanner
+                  title="Scotia Performance"
+                  subtitle="Your trusted automotive repair partner"
+                  description="We provide top-quality automotive repair services with transparent pricing and exceptional customer service."
+                />
+              {/if}
             </div>
             <details class="component-example__code">
               <summary>View Code</summary>
@@ -464,14 +512,17 @@
           <div class="component-example component-example--fullwidth">
             <h3 class="component-example__title">With Custom Properties</h3>
             <div class="component-example__container component-example__container--fullwidth">
-              <svelte:component this={components.HeroBanner}
-                title="Special Offers"
-                subtitle="Save on your next service"
-                description="Take advantage of our seasonal specials and save on maintenance and repairs."
-                buttonText="View Offers"
-                buttonHref="#offers"
-                backgroundImage="/images/mechanic.jpg"
-              />
+              {#if components.HeroBanner}
+                {@const HeroBanner = components.HeroBanner}
+                <HeroBanner
+                  title="Special Offers"
+                  subtitle="Save on your next service"
+                  description="Take advantage of our seasonal specials and save on maintenance and repairs."
+                  buttonText="View Offers"
+                  buttonHref="#offers"
+                  backgroundImage="/images/mechanic.jpg"
+                />
+              {/if}
             </div>
             <details class="component-example__code">
               <summary>View Code</summary>
@@ -487,7 +538,143 @@
           </div>
         {:else}
           <div class="component-section__placeholder">
-            Loading Hero Banner...
+            {browser ? "Loading Hero Banner..." : "Hero Banner component will load in browser"}
+          </div>
+        {/if}
+      </div>
+    </section>
+    
+    <section class="component-section" data-component="ServiceHighlights">
+      <h2 class="component-section__title">Service Highlights</h2>
+      <p class="component-section__description">
+        Showcase key services with icons and descriptions.
+      </p>
+      
+      <div class="component-examples">
+        {#if componentsLoaded.ServiceHighlights && components.ServiceHighlights}
+          <div class="component-example">
+            <h3 class="component-example__title">Default</h3>
+            <div class="component-example__container component-example__container--large">
+              {#if components.ServiceHighlights}
+                {@const ServiceHighlights = components.ServiceHighlights}
+                <ServiceHighlights services={serviceHighlightsData} />
+              {/if}
+            </div>
+            <details class="component-example__code">
+              <summary>View Code</summary>
+              <pre><code>{`<ServiceHighlights services={serviceHighlightsData} />`}</code></pre>
+            </details>
+          </div>
+        {:else}
+          <div class="component-section__placeholder">
+            {browser ? "Loading Service Highlights..." : "Service Highlights component will load in browser"}
+          </div>
+        {/if}
+      </div>
+    </section>
+    
+    <section class="component-section" data-component="ServiceCard">
+      <h2 class="component-section__title">Service Card</h2>
+      <p class="component-section__description">
+        A card displaying a service with title, description, and icon.
+      </p>
+      
+      <div class="component-examples component-examples--grid">
+        {#if componentsLoaded.ServiceCard && components.ServiceCard}
+          <div class="component-example">
+            <h3 class="component-example__title">Default</h3>
+            <div class="component-example__container component-example__container--fixed-width">
+              {#if components.ServiceCard}
+                {@const ServiceCard = components.ServiceCard}
+                <ServiceCard
+                  title="Oil Change"
+                  description="Regular oil changes are essential for keeping your engine running smoothly and extending its lifespan."
+                  icon={exampleIcon}
+                />
+              {/if}
+            </div>
+            <details class="component-example__code">
+              <summary>View Code</summary>
+              <pre><code>{`<ServiceCard
+  title="Oil Change"
+  description="Regular oil changes are essential for keeping your engine running smoothly and extending its lifespan."
+  icon={exampleIcon}
+/>`}</code></pre>
+            </details>
+          </div>
+        {:else}
+          <div class="component-section__placeholder">
+            {browser ? "Loading Service Card..." : "Service Card component will load in browser"}
+          </div>
+        {/if}
+      </div>
+    </section>
+    
+    <section class="component-section" data-component="Testimonials">
+      <h2 class="component-section__title">Testimonials</h2>
+      <p class="component-section__description">
+        A collection of customer testimonials to showcase feedback and reviews.
+      </p>
+      
+      <div class="component-examples">
+        {#if componentsLoaded.Testimonials && components.Testimonials}
+          <div class="component-example">
+            <h3 class="component-example__title">Default</h3>
+            <div class="component-example__container component-example__container--large">
+              {#if components.Testimonials}
+                {@const Testimonials = components.Testimonials}
+                <Testimonials />
+              {/if}
+            </div>
+            <details class="component-example__code">
+              <summary>View Code</summary>
+              <pre><code>{`<Testimonials />`}</code></pre>
+            </details>
+          </div>
+        {:else}
+          <div class="component-section__placeholder">
+            {browser ? "Loading Testimonials..." : "Testimonials component will load in browser"}
+          </div>
+        {/if}
+      </div>
+    </section>
+    
+    <section class="component-section" data-component="LazyLoad">
+      <h2 class="component-section__title">Lazy Load</h2>
+      <p class="component-section__description">
+        A utility component for lazy loading content as it enters the viewport.
+      </p>
+      
+      <div class="component-examples">
+        {#if componentsLoaded.LazyLoad && components.LazyLoad}
+          <div class="component-example">
+            <h3 class="component-example__title">Default</h3>
+            <div class="component-example__container">
+              {#if components.LazyLoad}
+                {@const LazyLoad = components.LazyLoad}
+                <LazyLoad height="200px">
+                  {#snippet children()}
+                  <div style="padding: 2rem; background-color: #f5f5f5; text-align: center;">
+                    This content was lazy loaded!
+                  </div>
+                  {/snippet}
+                </LazyLoad>
+              {/if}
+            </div>
+            <details class="component-example__code">
+              <summary>View Code</summary>
+              <pre><code>{`<LazyLoad height="200px">
+  {#snippet children()}
+  <div style="padding: 2rem; background-color: #f5f5f5; text-align: center;">
+    This content was lazy loaded!
+  </div>
+  {/snippet}
+</LazyLoad>`}</code></pre>
+            </details>
+          </div>
+        {:else}
+          <div class="component-section__placeholder">
+            {browser ? "Loading LazyLoad component..." : "LazyLoad component will load in browser"}
           </div>
         {/if}
       </div>

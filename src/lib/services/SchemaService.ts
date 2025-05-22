@@ -29,7 +29,7 @@ export class SchemaService {
         "latitude": "42.8288669",
         "longitude": "-73.9672425"
       },
-      "telephone": "+15183746111",
+      "telephone": "+15182801698",
       "openingHoursSpecification": [
         {
           "@type": "OpeningHoursSpecification",

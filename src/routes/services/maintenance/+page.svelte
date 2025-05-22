@@ -143,7 +143,7 @@
       <a href="/contact" class="bg-white text-scotia-blue px-6 py-2 rounded-md font-semibold hover:bg-gray-100 transition-colors">
         Schedule Service
       </a>
-      <a href="tel:+15183746111" class="bg-transparent border-2 border-white px-6 py-2 rounded-md font-semibold hover:bg-white hover:text-scotia-blue transition-colors">
+      <a href="tel:+15182801698" class="bg-transparent border-2 border-white px-6 py-2 rounded-md font-semibold hover:bg-white hover:text-scotia-blue transition-colors">
         Call Us
       </a>
     </div>

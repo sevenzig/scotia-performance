@@ -134,52 +134,8 @@
   <meta name="description" content="Scotia Performance - Professional auto repair services in Scotia, NY. ASE certified mechanics specializing in brake service, engine repair, transmission service, and more.">
   <link rel="preload" fetchpriority="high" href="/images/garage.jpg" as="image" type="image/jpeg">
   
-  <!-- This style defines critical CSS for the hero section that appears above the fold -->
+  <!-- Critical CSS for non-hero components that appear above the fold -->
   <style>
-    .hero {
-      position: relative;
-      background-size: cover;
-      background-position: center;
-      color: white;
-      min-height: 60vh;
-      display: flex;
-      align-items: center;
-      text-align: center;
-      overflow: hidden;
-      background-color: #1e3a8a; /* Fallback color while image loads */
-    }
-    
-    .hero-content {
-      z-index: 2;
-      padding: 2rem;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-    }
-    
-    .hero h1 {
-      font-size: 2.5rem;
-      margin-bottom: 0.5rem;
-      font-weight: 700;
-      contain: content;
-    }
-    
-    .hero h2 {
-      font-size: 1.5rem;
-      margin-bottom: 1.5rem;
-      font-weight: 500;
-      contain: content;
-    }
-    
-    .cta-button {
-      display: inline-block;
-      background-color: #7f1d1d;
-      color: white;
-      padding: 0.75rem 1.5rem;
-      border-radius: 0.25rem;
-      font-weight: 600;
-      text-decoration: none;
-      transition: background-color 0.3s;
-    }
-    
     .tagline {
       text-align: center;
       padding: 1rem;

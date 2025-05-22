@@ -55,7 +55,19 @@ export default defineConfig(({ mode }) => {
 		css: {
 			preprocessorOptions: {
 				scss: {
-					includePaths: [path.resolve('./src'), path.resolve('./src/scss')]
+					includePaths: [path.resolve('./src'), path.resolve('./src/scss')],
+					// Use the modern Sass API
+					api: 'modern',
+					sassOptions: {
+						outputStyle: 'expanded',
+						charset: false,
+						// This explicitly enables the new API
+						javascriptEnabled: true,
+						// Set to false to avoid legacy API warnings
+						legacyJavaScript: false,
+						// Silence the legacy API deprecation warnings
+						silenceDeprecations: ['legacy-js-api']
+					}
 				}
 			},
 			devSourcemap: false

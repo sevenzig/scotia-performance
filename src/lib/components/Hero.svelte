@@ -23,14 +23,17 @@
 <section class="hero">
   <div class="container">
     <div class="info-card">
-      <div class="info-item">
-        <Clock size={20} />
-        <span>{hoursText}</span>
-      </div>
-      <div class="info-item">
-        <MapPin size={20} />
-        <a href="https://www.google.com/maps/search/?api=1&query=42.8288669,-73.9672425">24 Sacandaga Rd, Scotia, NY 12302</a>
-      </div>
+      <table class="info-table">
+        <tbody>
+          <tr>
+            <td class="icon-cell"><Clock size={20} /></td>
+            <td class="text-cell">{hoursText}</td>
+            <td class="spacer-cell"></td>
+            <td class="icon-cell"><MapPin size={20} /></td>
+            <td class="text-cell"><a href="https://www.google.com/maps/search/?api=1&query=42.8288669,-73.9672425" class="address-link" style="color: white !important;">24 Sacandaga Rd, Scotia, NY 12302</a></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
     <div class="hero-content">
       <h1>Scotia Performance Auto</h1>
@@ -49,63 +52,122 @@
     background-size: cover;
     background-position: center;
     color: white;
-    padding: 2.5rem 0;
+    padding: 1rem 0;
     position: relative;
+    height: 50vh;
+    min-height: 50vh;
+    max-height: 50vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+  
+  /* Alternative selector to increase specificity */
+  section.hero {
+    height: 50vh;
+    min-height: 50vh;
+    max-height: 50vh;
   }
   
   @media (min-width: 768px) {
     .hero {
-      padding: 3rem 0;
+      padding: 1rem 0;
+      height: 50vh;
+      min-height: 50vh;
+      max-height: 50vh;
+    }
+    
+    section.hero {
+      height: 50vh;
+      min-height: 50vh;
+      max-height: 50vh;
     }
   }
   
-  .info-card {
+  .container {
+    width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    justify-content: center;
+  }
+  
+  .info-card {
     background-color: rgba(26, 93, 173, 0.1);
-    padding: 1.25rem;
+    padding: 0.75rem 1rem;
     border-radius: 0.375rem;
-    margin: 0 auto 1.5rem;
+    margin: 0 auto 1rem;
     max-width: fit-content;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   }
   
   @media (min-width: 768px) {
     .info-card {
-      flex-direction: row;
-      gap: 2rem;
-      position: relative;
-      margin: 0 auto 2.5rem;
-      padding: 1.5rem 2rem;
+      margin: 0 auto 1.5rem;
+      padding: 0.75rem 1.25rem;
     }
   }
   
-  .info-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
+  .info-table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  .icon-cell {
+    vertical-align: middle;
+    padding: 0;
+    width: 20px;
+  }
+  
+  .text-cell {
+    vertical-align: middle;
+    padding: 0 0 0 0.75rem;
     font-size: 0.875rem;
-    min-height: 28px; /* Ensure consistent height */
-  }
-  
-  .info-item :global(svg) {
-    flex-shrink: 0;
-    stroke: rgba(255, 255, 255, 0.9);
-  }
-  
-  .info-item span,
-  .info-item a {
     color: rgba(255, 255, 255, 0.9);
+    white-space: nowrap;
+  }
+  
+  .spacer-cell {
+    width: 2rem;
+  }
+  
+  .address-link,
+  .address-link:visited,
+  .address-link:link,
+  a.address-link,
+  a.address-link:visited,
+  a.address-link:link,
+  :where(.address-link),
+  :where(.address-link:visited),
+  :where(.address-link:link) {
+    color: white;
     text-decoration: none;
     transition: color 0.3s;
-    line-height: 1.4;
-    align-self: center;
+    display: inline-block;
+    -webkit-text-fill-color: white; /* For Safari */
   }
   
-  .info-item a:hover {
+  .address-link:hover,
+  a.address-link:hover,
+  :where(.address-link:hover) {
     color: white;
     text-decoration: underline;
+  }
+  
+  /* More specific selector to override browser defaults */
+  .info-table .text-cell a[href*="google.com"] {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  
+  .info-table .text-cell a[href*="google.com"]:hover {
+    color: white;
+    text-decoration: underline;
+  }
+  
+  .info-table :global(svg) {
+    stroke: rgba(255, 255, 255, 0.9);
+    display: block;
   }
   
   .hero-content {
@@ -118,7 +180,7 @@
     font-family: var(--font-primary, 'Montserrat', sans-serif);
     font-weight: 700;
     font-size: 1.5rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem;
     color: white;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   }
@@ -133,7 +195,7 @@
     font-family: var(--font-primary, 'Montserrat', sans-serif);
     font-weight: 500;
     font-size: 1.125rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
     color: rgba(255, 255, 255, 0.95);
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   }
@@ -145,9 +207,9 @@
   }
   
   .hero-description {
-    margin: 0 auto 1.5rem;
+    margin: 0 auto 1rem;
     max-width: 600px;
-    line-height: 1.6;
+    line-height: 1.5;
     font-size: 1rem;
     color: rgba(255, 255, 255, 0.9);
   }
@@ -196,6 +258,24 @@
       max-width: 100%;
       font-size: 1rem;
       padding: 0.75rem 1rem;
+    }
+  }
+  
+  /* Mobile responsive for info table */
+  @media (max-width: 600px) {
+    .info-table {
+      width: 100%;
+    }
+    
+    .info-table tr {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+    }
+    
+    .info-table td.spacer-cell {
+      display: none;
     }
   }
 </style> 

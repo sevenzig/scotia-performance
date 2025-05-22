@@ -11,7 +11,15 @@ const config = {
 		vitePreprocess(),
 		sveltePreprocess({
 			scss: {
-				includePaths: ['src']
+				includePaths: ['src'],
+				sassOptions: {
+					outputStyle: 'expanded',
+					charset: false,
+					javascriptEnabled: true,
+					legacyJavaScript: false,
+					// Silence the legacy API deprecation warnings
+					silenceDeprecations: ['legacy-js-api']
+				}
 			},
 			typescript: {
 				tsconfigFile: './tsconfig.json',

@@ -1,4 +1,8 @@
 @use './scss/main' as *;
+/* Import Tailwind and DaisyUI directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 /* 
  * Critical path CSS - Keep this section small to improve initial render time
