@@ -148,14 +148,15 @@ export default defineConfig(({ mode }) => {
 			hmr: {
 				protocol: 'ws',
 				host: 'localhost',
-				port: 5175,
-				clientPort: 5175
+				port: 5173,
+				clientPort: 5173,
+				timeout: 120000,
+				overlay: true
 			},
 			watch: {
-				usePolling: true,
-				interval: 100
+				usePolling: false
 			},
-			host: true // Allow access from any network interface
+			host: 'localhost'
 		},
 		preview: {
 			headers: {

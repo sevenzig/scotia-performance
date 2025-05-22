@@ -5,7 +5,7 @@
   // State initialization
   let isMobileMenuOpen = $state(false);
   let isServicesMenuOpen = $state(false);
-  let hoursText = $state(businessHoursService.getCurrentStatus().message);
+  let hoursText = $state('');
   let isScrolled = $state(false);
   let isClientSide = $state(false);
   
@@ -23,15 +23,14 @@
     event.preventDefault();
     event.stopPropagation();
     isServicesMenuOpen = !isServicesMenuOpen;
-    console.log("Services menu toggled. New state:", isServicesMenuOpen);
   }
   
   // Toggle mobile menu
   function handleMobileMenuToggle() {
     isMobileMenuOpen = !isMobileMenuOpen;
-    console.log("Mobile menu toggled. New state:", isMobileMenuOpen);
-    // Handle body scrolling
-    if (typeof document !== 'undefined') {
+    
+    // Handle body scrolling - only in browser
+    if (isClientSide && typeof document !== 'undefined') {
       if (isMobileMenuOpen) {
         document.body.classList.add('menu-open');
       } else {
@@ -42,6 +41,8 @@
   
   // Close menus when clicking outside
   function handleClickOutside(event: Event) {
+    if (!isClientSide) return;
+    
     const target = event.target as HTMLElement;
     
     if (typeof document !== 'undefined') {
@@ -52,7 +53,6 @@
         if (!megaMenu.contains(target) && !toggleButton.contains(target)) {
           if (isServicesMenuOpen) {
             isServicesMenuOpen = false;
-            console.log("Clicked outside services menu. Closed. State:", isServicesMenuOpen);
           }
         }
       }
@@ -61,26 +61,25 @@
   
   // Handle scroll event to add/remove scrolled class
   function handleScroll() {
-    if (typeof window !== 'undefined') {
+    if (isClientSide && typeof window !== 'undefined') {
       isScrolled = window.scrollY > 10;
     }
   }
   
   // Update business hours
   function updateBusinessHours() {
-    hoursText = businessHoursService.getCurrentStatus().message;
+    if (isClientSide) {
+      hoursText = businessHoursService.getCurrentStatus().message;
+    }
   }
   
   // Set up document click listener and business hours interval
   $effect(() => {
     // Only run in browser environment
-    if (typeof document === 'undefined' || typeof window === 'undefined') return;
+    if (typeof window === 'undefined') return;
     
     // Set client-side flag
     isClientSide = true;
-    
-    console.log("Effect: Initial services menu state:", isServicesMenuOpen);
-    console.log("Effect: Initial mobile menu state:", isMobileMenuOpen);
     
     // Set up click listener for outside clicks
     document.addEventListener('click', handleClickOutside as EventListener);
@@ -103,15 +102,7 @@
     };
   });
   
-  // Effect to monitor services menu state changes for debugging
-  $effect(() => {
-    console.log("Effect: Services menu state changed:", isServicesMenuOpen);
-  });
-  
-  // Effect to monitor mobile menu state changes for debugging
-  $effect(() => {
-    console.log("Effect: Mobile menu state changed:", isMobileMenuOpen);
-  });
+    // Remove debug effects to prevent hydration mismatches
 </script>
 
 <svelte:head>
