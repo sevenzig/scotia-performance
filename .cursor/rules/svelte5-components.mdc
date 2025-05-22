@@ -1,0 +1,85 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Svelte 5 Dynamic Components
+
+In Svelte 5 with runes mode, the `<svelte:component>` syntax is deprecated. Components are dynamic by default in Svelte 5.
+
+## Incorrect Usage (Deprecated)
+
+```svelte
+<!-- ❌ Don't use this pattern in Svelte 5 runes mode -->
+<svelte:component this={dynamicComponent} />
+```
+
+## Correct Usage 
+
+For dynamically loaded components, use the `@const` directive to create a local component reference:
+
+```svelte
+<!-- ✅ For components loaded with import() -->
+{#if componentVar}
+  {@const Component = componentVar}
+  <Component {...props} />
+{/if}
+```
+
+For components that are already imported:
+
+```svelte
+<!-- ✅ For components that are already imported -->
+<{ImportedComponent} {...props} />
+```
+
+## Implementation Examples
+
+### Dynamic Component Loading
+
+```svelte
+<script>
+  import { browser } from '$app/environment';
+  import type { ComponentType } from 'svelte';
+  
+  let component: ComponentType | null = null;
+  
+  async function loadComponent() {
+    if (browser) {
+      const module = await import('./DynamicComponent.svelte');
+      component = module.default;
+    }
+  }
+</script>
+
+{#if component}
+  {@const DynamicComponent = component}
+  <DynamicComponent prop1="value" prop2={123} />
+{/if}
+```
+
+## Array of Components Example
+
+When dealing with an array of dynamic components:
+
+```svelte
+<script>
+  import type { ComponentType } from 'svelte';
+  
+  let components = $state([
+    { component: Component1, props: { value: 'test' } },
+    { component: Component2, props: { count: 42 } }
+  ]);
+</script>
+
+{#each components as component}
+  {@const DynamicComponent = component.component}
+  <DynamicComponent {...component.props} />
+{/each}
+```
+
+## Notes
+
+- Always check if the component exists before rendering it, especially when lazy-loading
+- Components in Svelte 5 runes mode are inherently dynamic
+- For more details, see the [Svelte 5 documentation](mdc:https:/svelte.dev/docs/runes)
