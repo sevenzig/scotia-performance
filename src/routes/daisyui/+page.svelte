@@ -91,17 +91,17 @@
       <h2 class="font-bold mb-2">Form Elements</h2>
       
       <div class="form-control mb-4">
-        <label class="label">
+        <label class="label" for="text-input">
           <span class="label-text">Text Input</span>
         </label>
-        <input type="text" placeholder="Type here" class="input input-bordered" />
+        <input id="text-input" type="text" placeholder="Type here" class="input input-bordered" />
       </div>
       
       <div class="form-control mb-4">
-        <label class="label">
+        <label class="label" for="select-input">
           <span class="label-text">Select</span>
         </label>
-        <select class="select select-bordered">
+        <select id="select-input" class="select select-bordered">
           <option disabled selected>Pick one</option>
           <option>Option 1</option>
           <option>Option 2</option>
