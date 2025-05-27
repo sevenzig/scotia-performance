@@ -10,7 +10,7 @@
   ];
   
   // Current tagline state
-  const currentTagline = $state(0);
+  let currentTagline = $state(0);
   
   // Start rotation
   onMount(() => {
