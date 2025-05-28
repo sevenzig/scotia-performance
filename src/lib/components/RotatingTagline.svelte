@@ -1,42 +1,74 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   
-  // Taglines
+  // Taglines data - following the same pattern as other components
   const taglines = [
-    "ASE Certified Master Technicians",
-    "Professional Diagnostics & Repair",
-    "All Makes & Models",
-    "Local Family-Owned Since 1995"
+    "Your premier automotive service center in Scotia, NY",
+    "Quality workmanship from ASE certified technicians", 
+    "Specializing in both performance and everyday repairs",
+    "Serving Scotia and the Greater Capital Region since 2005",
+    "Trusted by local auto enthusiasts and everyday drivers alike"
   ];
   
-  // Current tagline state
-  let currentTagline = $state(0);
+  // Component state using Svelte 5 runes
+  let currentTaglineIndex = $state(Math.floor(Math.random() * taglines.length));
+  let isClient = $state(false);
   
-  // Start rotation
+  // Derived current tagline
+  let currentTagline = $derived(taglines[currentTaglineIndex]);
+  
+  // Rotation logic
+  function rotateTagline() {
+    if (!document.hidden && isClient) {
+      let newIndex;
+      do {
+        newIndex = Math.floor(Math.random() * taglines.length);
+      } while (newIndex === currentTaglineIndex);
+      
+      currentTaglineIndex = newIndex;
+    }
+  }
+  
+  // Initialize after component mounts
   onMount(() => {
-    const interval = setInterval(() => {
-      currentTagline = (currentTagline + 1) % taglines.length;
-    }, 3000);
+    isClient = true;
+    
+    // Set up rotation interval
+    const interval = setInterval(rotateTagline, 5000);
     
     return () => clearInterval(interval);
   });
 </script>
 
 <div class="tagline">
-  {taglines[currentTagline]}
+  {currentTagline}
 </div>
 
-<style lang="scss">
-  @use '../../scss/core/mixins' as *;
-  @use '../../scss/core/variables' as *;
-  
+<style>
   .tagline {
-    background-color: $scotia-blue;
-    color: $white;
-    padding: $spacing-3 0;
     text-align: center;
-    font-family: $font-primary;
-    font-weight: $font-weight-medium;
-    font-size: $font-size-lg;
+    padding: 1rem;
+    background-color: #f3f4f6;
+    font-style: italic;
+    font-weight: 500;
+    color: #374151;
+    transition: opacity 0.3s ease;
+    width: 100%;
+    min-width: 100%;
+  }
+  
+  /* Respect reduced motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    .tagline {
+      transition: none;
+    }
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .tagline {
+      padding: 0.75rem;
+      font-size: 0.875rem;
+    }
   }
 </style> 
