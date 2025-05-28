@@ -5,6 +5,7 @@ node_modules
 .vercel
 .netlify
 .wrangler
+stats.html
 
 # Svelte-specific
 /node_modules/
