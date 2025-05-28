@@ -3,6 +3,7 @@
   import ResponsiveImage from '$lib/components/ResponsiveImage.svelte';
   import { getImageAttributes } from '$lib/utils/clientImageUtils';
   import Hero from '$lib/components/Hero.svelte';
+  import ServicesOffered from '$lib/components/ServicesOffered.svelte';
   
   // Rotating taglines for the homepage
   const taglines = [
@@ -151,46 +152,8 @@
 
 <div class="tagline">{randomTagline}</div>
 
-<!-- Services Section - Critical Content -->
-<section class="services" id="services">
-  <div class="container">
-    <h2>Services We Offer</h2>
-    <div class="services-grid">
-      <div class="service-card">
-        <h3>Brake Service</h3>
-        <p>Complete brake system diagnostics, repair and replacement. Includes pads, rotors, calipers, and brake lines.</p>
-      </div>
-      <div class="service-card">
-        <h3>Engine Diagnostics & Repair</h3>
-        <p>Computer diagnostics, troubleshooting, and repair for all engine issues. Check engine light specialists.</p>
-      </div>
-      <div class="service-card">
-        <h3>Transmission Service</h3>
-        <p>Automatic and manual transmission repair, fluid services, and diagnostics for all makes and models.</p>
-      </div>
-      <div class="service-card">
-        <h3>Oil Changes</h3>
-        <p>Regular maintenance with conventional, synthetic blend, or full synthetic oil. Includes multi-point inspection.</p>
-      </div>
-      <div class="service-card" style="content-visibility: auto; height: 230px; min-height: 230px; contain-intrinsic-size: auto 230px;">
-        <h3>Suspension Work</h3>
-        <p>Shocks, struts, alignment services, and complete suspension system repairs for a smoother ride.</p>
-      </div>
-      <div class="service-card" style="content-visibility: auto; height: 230px; min-height: 230px; contain-intrinsic-size: auto 230px;">
-        <h3>Tire Service</h3>
-        <p>Tire rotation, balancing, repairs, and replacement. All major tire brands available.</p>
-      </div>
-      <div class="service-card" style="content-visibility: auto; height: 230px; min-height: 230px; contain-intrinsic-size: auto 230px;">
-        <h3>State Inspections</h3>
-        <p>NYS certified inspection station. Quick and thorough vehicle safety inspections.</p>
-      </div>
-      <div class="service-card" style="content-visibility: auto; height: 230px; min-height: 230px; contain-intrinsic-size: auto 230px;">
-        <h3>AC Service</h3>
-        <p>AC system diagnosis, recharge, and repair. Keep your vehicle cool and comfortable.</p>
-      </div>
-    </div>
-  </div>
-</section>
+<!-- Services Section - Using the ServicesOffered component -->
+<ServicesOffered />
 
 <!-- Diagnostic Help Section - Deferred Content -->
 <section class="help-section" id="help">
@@ -286,38 +249,6 @@
     background-color: #f3f4f6;
     font-style: italic;
     font-weight: 500;
-  }
-  
-  /* Services Section */
-  .services {
-    padding: 3rem 0;
-  }
-  
-  .services h2 {
-    text-align: center;
-    margin-bottom: 2rem;
-    font-size: 2rem;
-    font-weight: 600;
-  }
-  
-  .services-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.5rem;
-  }
-  
-  .service-card {
-    background-color: white;
-    padding: 1.5rem;
-    border-radius: 0.5rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-  
-  .service-card h3 {
-    color: #1e3a8a;
-    margin-bottom: 0.75rem;
-    font-weight: 600;
   }
   
   /* Diagnostic Help Section */
@@ -422,10 +353,6 @@
       animation: none;
       border-left-color: #1e3a8a;
     }
-    
-    .service-card {
-      transition: none;
-    }
   }
   
   @keyframes spin {
@@ -434,7 +361,6 @@
   
   /* Responsive adjustments */
   @media (max-width: 768px) {
-    .services-grid,
     .diagnostic-grid,
     .reviews-grid {
       grid-template-columns: 1fr;
