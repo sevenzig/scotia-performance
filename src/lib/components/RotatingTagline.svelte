@@ -53,8 +53,9 @@
     font-weight: 500;
     color: #374151;
     transition: opacity 0.3s ease;
-    width: 100%;
-    min-width: 100%;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
   }
   
   /* Respect reduced motion preferences */

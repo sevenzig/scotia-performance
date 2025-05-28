@@ -76,7 +76,7 @@
           <h3>{service.title}</h3>
           <p>{service.description}</p>
           {#if index === 0}
-            <span class="featured-badge">Most Popular</span>
+            <span class="featured-badge">High Demand</span>
           {/if}
         </div>
       {/each}
@@ -90,13 +90,14 @@
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 1rem;
+    padding: 1rem 1rem;
   }
   
   /* Services Section */
   .services {
     padding: 4rem 0;
     background-color: white;
+    overflow: visible;
   }
   
   .services h2 {
@@ -121,6 +122,8 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1rem;
   }
   
   .service-card {
@@ -146,8 +149,8 @@
 
   .featured-badge {
     position: absolute;
-    top: -0.75rem;
-    left: 1.5rem;
+    top: 1rem;
+    right: 1rem;
     background-color: #1e3a8a;
     color: white;
     padding: 0.25rem 0.75rem;

@@ -7,19 +7,7 @@
   import DiagnosticHelp from '$lib/components/DiagnosticHelp.svelte';
   import PerformanceServices from '$lib/components/PerformanceServices.svelte';
   import Reviews from '$lib/components/Reviews.svelte';
-  
-  // Rotating taglines for the homepage
-  const taglines = [
-    "Your premier automotive service center in Scotia, NY",
-    "Quality workmanship from ASE certified technicians",
-    "Specializing in both performance and everyday repairs",
-    "Serving Scotia and the Greater Capital Region since 2005",
-    "Trusted by local auto enthusiasts and everyday drivers alike"
-  ];
-  
-  // Get a random tagline
-  let randomTagline = $state(taglines[Math.floor(Math.random() * taglines.length)]);
-  let isClient = $state(false);
+  import RotatingTagline from '$lib/components/RotatingTagline.svelte';
   
   // Elements visibility for lazy loading
   let initialRenderComplete = $state(false);
@@ -32,53 +20,14 @@
     thumb: '/images/optimized/hero-bg-thumb.webp'
   };
   
-  // Update tagline periodically (client-side only) with requestAnimationFrame for better performance
-  let taglineRotationScheduled = $state(false);
-  
-  function rotateTagline() {
-    if (!document.hidden && isClient) {
-      let newIndex;
-      do {
-        newIndex = Math.floor(Math.random() * taglines.length);
-      } while (taglines[newIndex] === randomTagline);
-      
-      randomTagline = taglines[newIndex];
-    }
-    
-    if (isClient) {
-      // Use setTimeout with requestAnimationFrame for smoother visual updates
-      setTimeout(() => {
-        taglineRotationScheduled = false;
-        scheduleTaglineRotation();
-      }, 5000);
-    }
-  }
-  
-  function scheduleTaglineRotation() {
-    if (!taglineRotationScheduled && isClient) {
-      taglineRotationScheduled = true;
-      requestAnimationFrame(rotateTagline);
-    }
-  }
-  
   // Initialize after component mounts
   onMount(() => {
-    isClient = true;
-    
     // Mark the initial render as complete
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         initialRenderComplete = true;
       });
     });
-    
-    // Start tagline rotation
-    scheduleTaglineRotation();
-    
-    return () => {
-      // Cleanup
-      taglineRotationScheduled = false;
-    };
   });
 </script>
 
@@ -86,23 +35,13 @@
   <title>Scotia Performance | Auto Repair Scotia, NY</title>
   <meta name="description" content="Scotia Performance - Professional auto repair services in Scotia, NY. ASE certified mechanics specializing in brake service, engine repair, transmission service, and more.">
   <link rel="preload" fetchpriority="high" href="/images/garage.jpg" as="image" type="image/jpeg">
-  
-  <!-- Critical CSS for non-hero components that appear above the fold -->
-  <style>
-    .tagline {
-      text-align: center;
-      padding: 1rem;
-      background-color: #f3f4f6;
-      font-style: italic;
-      font-weight: 500;
-    }
-  </style>
 </svelte:head>
 
 <!-- Hero Section - Using the Hero component -->
 <Hero />
 
-<div class="tagline">{randomTagline}</div>
+<!-- Rotating Tagline Section -->
+<RotatingTagline />
 
 <!-- Performance Services Section - Using the PerformanceServices component -->
 <PerformanceServices />
