@@ -20,7 +20,7 @@
 			font-src 'self' data: https://fonts.gstatic.com;
 			object-src 'none';
 			media-src 'self' data: blob: https:;
-			frame-src 'self';
+			frame-src 'self' https://www.google.com https://maps.google.com;
 			worker-src 'self' blob:;
 			child-src 'self' blob:;
 			form-action 'self';
@@ -122,7 +122,7 @@
 		
 		%sveltekit.head%
 	</head>
-	<body data-sveltekit-preload-data="hover" data-sveltekit-preload-code="eager">
+	<body data-sveltekit-preload-data="tap" data-sveltekit-preload-code="hover">
 		<div style="display: contents">%sveltekit.body%</div>
 		
 		<!-- Optimized script loading -->
