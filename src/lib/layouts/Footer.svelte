@@ -8,35 +8,29 @@
 
 <footer class="site-footer">
   <div class="container">
-    {#if initialRenderComplete}
-      <div class="footer-grid">
-        <div class="footer-section">
-          <h3>Contact Us</h3>
-          <p>Scotia Performance Auto</p>
-          <p>24 Sacandaga Rd, Scotia, NY 12302</p>
-          <p><a href="tel:+15182801698">(518) 280-1698</a></p>
-        </div>
-        <div class="footer-section">
-          <h3>Service Area</h3>
-          <p>Scotia, Schenectady, Glenville, Rotterdam, Niskayuna, and surrounding areas.</p>
-        </div>
-        <div class="footer-section">
-          <h3>Quick Links</h3>
-          <ul>
-            <li><a href="#services">Services</a></li>
-            <li><a href="#help">Diagnostic Help</a></li>
-            <li><a href="#reviews">Reviews</a></li>
-          </ul>
-        </div>
+    <div class="footer-grid" class:hidden={!initialRenderComplete}>
+      <div class="footer-section">
+        <h3>Contact Us</h3>
+        <p>Scotia Performance Auto</p>
+        <p>24 Sacandaga Rd, Scotia, NY 12302</p>
+        <p><a href="tel:+15182801698">(518) 280-1698</a></p>
       </div>
-      <div class="copyright">
-        <p>&copy; {currentYear} Scotia Performance Auto. All rights reserved.</p>
+      <div class="footer-section">
+        <h3>Service Area</h3>
+        <p>Scotia, Schenectady, Glenville, Rotterdam, Niskayuna, and surrounding areas.</p>
       </div>
-    {:else}
-      <div class="copyright minimal">
-        <p>&copy; Scotia Performance Auto. All rights reserved.</p>
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#help">Diagnostic Help</a></li>
+          <li><a href="#reviews">Reviews</a></li>
+        </ul>
       </div>
-    {/if}
+    </div>
+    <div class="copyright" class:minimal={!initialRenderComplete}>
+      <p>&copy; {currentYear} Scotia Performance Auto. All rights reserved.</p>
+    </div>
   </div>
 </footer>
 
@@ -72,6 +66,15 @@
       grid-template-columns: 1fr;
       gap: $spacing-8;
       margin-bottom: $spacing-8;
+      transition: opacity 0.3s ease;
+      
+      &.hidden {
+        opacity: 0;
+        visibility: hidden;
+        height: 0;
+        overflow: hidden;
+        margin-bottom: 0;
+      }
       
       @include md {
         grid-template-columns: repeat(3, 1fr);
