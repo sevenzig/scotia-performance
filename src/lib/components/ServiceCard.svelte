@@ -28,8 +28,26 @@
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
-    height: 100%;
+    
+    /* Responsive height constraints following best practices */
+    height: 40vh;
+    min-height: 450px;
+    max-height: 700px;
+    
+    /* Essential for proper layout */
+    overflow: hidden;
+    
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  @media (min-width: 768px) {
+    .service-card {
+      /* Desktop - slightly taller */
+      height: 45vh;
+      /* min-height and max-height remain the same */
+      min-height: 450px;
+      max-height: 700px;
+    }
   }
   
   .service-card:hover {
@@ -40,6 +58,7 @@
   .service-card__icon {
     margin-bottom: 0.75rem;
     color: #1A5DAD;
+    flex-shrink: 0;
   }
   
   .service-card__icon svg {
@@ -53,6 +72,7 @@
     font-size: 1.25rem;
     color: #1A5DAD;
     margin-bottom: 0.5rem;
+    flex-shrink: 0;
   }
   
   .service-card__description {
@@ -60,6 +80,8 @@
     font-size: 1rem;
     margin-bottom: 1.5rem;
     flex-grow: 1;
+    line-height: 1.6;
+    overflow-y: auto;
   }
   
   .service-card__link {
@@ -70,6 +92,7 @@
     display: inline-flex;
     align-items: center;
     margin-top: auto;
+    flex-shrink: 0;
   }
   
   .service-card__link::after {
@@ -89,5 +112,24 @@
   
   .service-card__link:hover::after {
     transform: translateX(4px) rotate(45deg);
+  }
+  
+  /* Respect reduced motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    .service-card {
+      transition: none;
+    }
+    
+    .service-card:hover {
+      transform: none;
+    }
+    
+    .service-card__link::after {
+      transition: none;
+    }
+    
+    .service-card__link:hover::after {
+      transform: rotate(45deg);
+    }
   }
 </style> 
