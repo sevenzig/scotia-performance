@@ -1,24 +1,39 @@
 <script lang="ts">
   import { businessHoursService } from '$lib/services/businessHours.js';
   import { Clock, MapPin } from '@lucide/svelte';
+  import { onMount } from 'svelte';
+  import { browser } from '$app/environment';
   
   // Business hours state using $state rune
-  let hoursText = $state(businessHoursService.getCurrentStatus().message);
+  let hoursText = $state('Hours available by phone');
+  let mounted = $state(false);
   
-  // Update business hours
+  // Update business hours safely
   function updateBusinessHours() {
-    hoursText = businessHoursService.getCurrentStatus().message;
+    if (!browser) return;
+    
+    try {
+      const status = businessHoursService.getCurrentStatus();
+      hoursText = status.message || 'Hours available by phone';
+    } catch (error) {
+      console.warn('Error updating business hours:', error);
+      hoursText = 'Hours available by phone';
+    }
   }
   
-  // Set up interval to update the hours using $effect rune
-  $effect(() => {
+  // Initialize on mount with proper cleanup
+  onMount(() => {
+    mounted = true;
     updateBusinessHours();
+    
+    // Set up interval to update the hours
     const interval = setInterval(updateBusinessHours, 60000);
-    return () => clearInterval(interval);
+    
+    return () => {
+      clearInterval(interval);
+    };
   });
 </script>
-
-<svelte:options namespace="html" />
 
 <section class="hero">
   <div class="container">
@@ -26,10 +41,10 @@
       <table class="info-table">
         <tbody>
           <tr>
-            <td class="icon-cell"><Clock size={20} /></td>
-            <td class="text-cell">{hoursText}</td>
+            <td class="icon-cell">{#if mounted}<Clock size={20} />{/if}</td>
+            <td class="text-cell">{hoursText || 'Hours available by phone'}</td>
             <td class="spacer-cell"></td>
-            <td class="icon-cell"><MapPin size={20} /></td>
+            <td class="icon-cell">{#if mounted}<MapPin size={20} />{/if}</td>
             <td class="text-cell"><a href="https://www.google.com/maps/search/?api=1&query=42.8288669,-73.9672425" class="address-link" style="color: white !important;">24 Sacandaga Rd, Scotia, NY 12302</a></td>
           </tr>
         </tbody>
@@ -54,33 +69,20 @@
     color: white;
     padding: 1rem 0;
     position: relative;
-    height: 50vh;
-    min-height: 50vh;
-    max-height: 50vh;
+    height: 60vh;
+    min-height: 450px;
+    max-height: 750px;
     display: flex;
     align-items: center;
     overflow: hidden;
   }
   
-  /* Alternative selector to increase specificity */
-  section.hero {
-    height: 50vh;
-    min-height: 50vh;
-    max-height: 50vh;
-  }
-  
   @media (min-width: 768px) {
     .hero {
       padding: 1rem 0;
-      height: 50vh;
-      min-height: 50vh;
-      max-height: 50vh;
-    }
-    
-    section.hero {
-      height: 50vh;
-      min-height: 50vh;
-      max-height: 50vh;
+      height: 65vh;
+      min-height: 450px;
+      max-height: 750px;
     }
   }
   
