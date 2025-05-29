@@ -1,13 +1,14 @@
 <script lang="ts">
   import { businessHoursService } from '$lib/services/businessHours.js';
   import { Clock, MapPin } from '@lucide/svelte';
+  import { onMount } from 'svelte';
   
   // State initialization
   let isMobileMenuOpen = $state(false);
   let isServicesMenuOpen = $state(false);
-  let hoursText = $state('');
+  let hoursText = $state('Hours available by phone');
   let isScrolled = $state(false);
-  let isClientSide = $state(false);
+  let mounted = $state(false);
   
   // Derived values
   const menuAriaLabel = $derived(
@@ -30,7 +31,7 @@
     isMobileMenuOpen = !isMobileMenuOpen;
     
     // Handle body scrolling - only in browser
-    if (isClientSide && typeof document !== 'undefined') {
+    if (mounted && typeof document !== 'undefined') {
       if (isMobileMenuOpen) {
         document.body.classList.add('menu-open');
       } else {
@@ -41,7 +42,7 @@
   
   // Close menus when clicking outside
   function handleClickOutside(event: Event) {
-    if (!isClientSide) return;
+    if (!mounted) return;
     
     const target = event.target as HTMLElement;
     
@@ -61,25 +62,27 @@
   
   // Handle scroll event to add/remove scrolled class
   function handleScroll() {
-    if (isClientSide && typeof window !== 'undefined') {
+    if (mounted && typeof window !== 'undefined') {
       isScrolled = window.scrollY > 10;
     }
   }
   
   // Update business hours
   function updateBusinessHours() {
-    if (isClientSide) {
-      hoursText = businessHoursService.getCurrentStatus().message;
+    if (mounted) {
+      try {
+        const status = businessHoursService.getCurrentStatus();
+        hoursText = status.message || 'Hours available by phone';
+      } catch (error) {
+        console.warn('Error updating business hours:', error);
+        hoursText = 'Hours available by phone';
+      }
     }
   }
   
-  // Set up document click listener and business hours interval
-  $effect(() => {
-    // Only run in browser environment
-    if (typeof window === 'undefined') return;
-    
-    // Set client-side flag
-    isClientSide = true;
+  // Initialize after component mounts
+  onMount(() => {
+    mounted = true;
     
     // Set up click listener for outside clicks
     document.addEventListener('click', handleClickOutside as EventListener);
@@ -200,17 +203,13 @@
           <div class="info-card">
             <div class="info-item">
               <span class="icon-wrapper">
-                {#if isClientSide}
-                  <Clock size={20} />
-                {/if}
+                <Clock size={20} />
               </span>
               <span class="text">{hoursText}</span>
             </div>
             <div class="info-item">
               <span class="icon-wrapper">
-                {#if isClientSide}
-                  <MapPin size={20} />
-                {/if}
+                <MapPin size={20} />
               </span>
               <a href="https://www.google.com/maps/search/?api=1&query=24+Sacandaga+Rd,+Scotia,+NY+12302" class="text address-link">24 Sacandaga Rd, Scotia</a>
             </div>
@@ -296,17 +295,13 @@
     <div class="bottom-nav">
       <div class="info-item">
         <span class="icon-wrapper">
-          {#if isClientSide}
-            <Clock size={18} />
-          {/if}
+          <Clock size={18} />
         </span>
         <span class="hours-text">{hoursText}</span>
       </div>
       <div class="info-item">
         <span class="icon-wrapper">
-          {#if isClientSide}
-            <MapPin size={18} />
-          {/if}
+          <MapPin size={18} />
         </span>
         <a href="https://www.google.com/maps/search/?api=1&query=24+Sacandaga+Rd,+Scotia,+NY+12302">24 Sacandaga Rd, Scotia</a>
       </div>
