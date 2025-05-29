@@ -22,11 +22,10 @@
   
   // Initialize after component mounts
   onMount(() => {
-    // Mark the initial render as complete
+    // Mark the initial render as complete after a single frame
+    // This prevents rapid state changes that cause DOM conflicts
     requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        initialRenderComplete = true;
-      });
+      initialRenderComplete = true;
     });
   });
 </script>
