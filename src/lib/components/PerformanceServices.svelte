@@ -160,40 +160,104 @@
     transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
     position: relative;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    
+    /* CSS Custom Properties for hover effects */
+    --accent-color: var(--scotia-blue, #1e3a8a);
+    --glow-color: rgba(30, 58, 138, 0.4);
+    --shadow-color: rgba(30, 58, 138, 0.25);
+    --shimmer-color: rgba(255, 255, 255, 0.6);
+  }
+
+  /* Shimmer effect pseudo-element with better approach */
+  .performance-service-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      110deg,
+      transparent 20%,
+      var(--shimmer-color) 40%,
+      var(--shimmer-color) 60%,
+      transparent 80%
+    );
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+    z-index: 1;
+    pointer-events: none;
+    border-radius: 0.75rem;
+    opacity: 0;
   }
 
   .performance-service-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 25px rgba(30, 58, 138, 0.15);
-    border-color: #1e3a8a;
+    /* Lift animation - increased from 4px to 10px */
+    transform: translateY(-10px);
+    
+    /* Enhanced drop shadow with colored shadow */
+    box-shadow: 
+      0 20px 40px var(--shadow-color),
+      0 10px 20px rgba(0, 0, 0, 0.1);
+    
+    /* Border glow effect */
+    border-color: var(--accent-color);
+    box-shadow: 
+      0 20px 40px var(--shadow-color),
+      0 10px 20px rgba(0, 0, 0, 0.1),
+      0 0 0 1px var(--accent-color),
+      0 0 20px var(--glow-color);
+  }
+
+  .performance-service-card:hover::before {
+    transform: translateX(100%);
+    opacity: 1;
+  }
+
+  /* Reset shimmer position when not hovering */
+  .performance-service-card:not(:hover)::before {
+    transform: translateX(-100%);
+    opacity: 0;
+    transition: transform 0s, opacity 0.2s ease;
+  }
+
+  /* Ensure content stays above shimmer effect */
+  .performance-service-card > * {
+    position: relative;
+    z-index: 2;
   }
 
   .performance-service-card.featured {
-    border-color: #1e3a8a;
+    border-color: var(--accent-color);
     background: linear-gradient(135deg, rgba(30, 58, 138, 0.05), rgba(30, 58, 138, 0.1));
+    
+    /* Enhanced custom properties for featured card */
+    --glow-color: rgba(30, 58, 138, 0.6);
+    --shadow-color: rgba(30, 58, 138, 0.35);
   }
 
   .featured-badge {
     position: absolute;
     top: -0.75rem;
     left: 1.5rem;
-    background-color: #1e3a8a;
+    background-color: var(--accent-color);
     color: white;
     padding: 0.25rem 0.75rem;
     border-radius: 1rem;
     font-size: 0.75rem;
     font-weight: 600;
+    z-index: 3; /* Ensure badge stays above shimmer effect */
   }
 
   .performance-service-card h3 {
-    color: #1e3a8a;
+    color: var(--accent-color);
     margin-bottom: 1rem;
     font-weight: 600;
     font-size: 1.25rem;
   }
 
   .performance-service-card.featured h3 {
-    color: #1e3a8a;
+    color: var(--accent-color);
   }
 
   .performance-service-card p {
@@ -274,6 +338,12 @@
     .performance-service-card:hover,
     .stat-item:hover {
       transform: none;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Keep original shadow */
+    }
+
+    /* Disable shimmer effect for reduced motion */
+    .performance-service-card::before {
+      display: none;
     }
 
     .btn-primary:hover {
