@@ -11,27 +11,41 @@
   ];
   
   // Component state using Svelte 5 runes
-  let currentTaglineIndex = $state(Math.floor(Math.random() * taglines.length));
-  let isClient = $state(false);
+  let currentTaglineIndex = $state(0);
+  let mounted = $state(false);
+  let isVisible = $state(true);
   
-  // Derived current tagline
-  let currentTagline = $derived(taglines[currentTaglineIndex]);
+  // Derived current tagline - ensure it's always valid
+  let currentTagline = $derived(taglines[currentTaglineIndex] || taglines[0]);
   
-  // Rotation logic
+  // Rotation logic with fade transition to prevent text node conflicts
   function rotateTagline() {
-    if (!document.hidden && isClient) {
-      let newIndex;
-      do {
-        newIndex = Math.floor(Math.random() * taglines.length);
-      } while (newIndex === currentTaglineIndex);
+    if (!document.hidden && mounted) {
+      // Fade out
+      isVisible = false;
       
-      currentTaglineIndex = newIndex;
+      setTimeout(() => {
+        // Change tagline while invisible
+        let newIndex;
+        do {
+          newIndex = Math.floor(Math.random() * taglines.length);
+        } while (newIndex === currentTaglineIndex && taglines.length > 1);
+        
+        currentTaglineIndex = newIndex;
+        
+        // Fade back in
+        setTimeout(() => {
+          isVisible = true;
+        }, 50);
+      }, 150);
     }
   }
   
   // Initialize after component mounts
   onMount(() => {
-    isClient = true;
+    // Set random initial tagline
+    currentTaglineIndex = Math.floor(Math.random() * taglines.length);
+    mounted = true;
     
     // Set up rotation interval
     const interval = setInterval(rotateTagline, 5000);
@@ -40,7 +54,7 @@
   });
 </script>
 
-<div class="tagline">
+<div class="tagline" class:visible={isVisible}>
   {currentTagline}
 </div>
 
@@ -56,6 +70,11 @@
     width: 100vw;
     margin-left: calc(-50vw + 50%);
     margin-right: calc(-50vw + 50%);
+    opacity: 0;
+    
+    &.visible {
+      opacity: 1;
+    }
   }
   
   /* Respect reduced motion preferences */
