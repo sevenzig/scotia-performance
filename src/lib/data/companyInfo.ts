@@ -33,8 +33,8 @@ export const companyInfo = {
     full: '24 Sacandaga Rd, Scotia, NY 12302',
     // Add coordinates for structured data
     coordinates: {
-      latitude: 42.8264,
-      longitude: -73.9532
+      latitude: 42.82889119837178,
+      longitude: -73.96725658970267
     }
   },
   phone: {
@@ -225,26 +225,71 @@ export function generateWebPageSchema(pageSEO: SEOData) {
   };
 }
 
-// FAQ schema based on your search console data
+// Enhanced FAQ schema based on search console data analysis
 export function generateFAQSchema() {
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     "mainEntity": [
+      // BIGGEST MISSED OPPORTUNITY: AC Services (423+ impressions, 0 clicks)
       {
         "@type": "Question",
         "name": "Do you provide AC replacement services in Scotia, NY?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": `Yes, ${companyInfo.name} provides professional AC replacement and air conditioning repair services in Scotia, NY. Our ASE certified technicians can diagnose and repair all types of automotive AC systems. Call ${companyInfo.phone.formatted} to schedule service.`
+          "text": `Yes, ${companyInfo.name} provides professional AC replacement and air conditioning repair services in Scotia, NY. Our ASE certified technicians can diagnose and repair all types of automotive AC systems including compressors, condensers, evaporators, and refrigerant leaks. Call ${companyInfo.phone.formatted} to schedule service.`
         }
       },
+      {
+        "@type": "Question",
+        "name": "How much does AC repair cost in Scotia, NY?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": `AC repair costs vary depending on the issue. Simple refrigerant recharges typically cost $150-250, while major component replacements like compressors can range from $800-1500. At ${companyInfo.name}, we provide free diagnostics and upfront pricing before any work begins. Call ${companyInfo.phone.formatted} for a quote.`
+        }
+      },
+      {
+        "@type": "Question", 
+        "name": "What are signs my car's AC needs repair?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Common signs include: warm air blowing from vents, weak airflow, strange odors, unusual noises when AC is on, or refrigerant leaks under your car. If you notice any of these symptoms in the Scotia, NY area, our technicians can quickly diagnose the problem."
+        }
+      },
+      
+      // PERFORMANCE SERVICES (96+ impressions for "performance")  
+      {
+        "@type": "Question",
+        "name": "What performance services do you offer?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": `${companyInfo.name} specializes in performance tuning including ECU tuning, dyno testing, turbo/supercharger installation, exhaust systems, intake modifications, and custom performance builds. We work on all makes and models with state-of-the-art dyno equipment for precise tuning.`
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do you have a dyno for performance tuning?", 
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, we have professional dynamometer equipment for accurate performance testing and tuning. Our dyno services include baseline testing, custom ECU tuning, and performance verification to ensure optimal power and reliability for your vehicle."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can you tune Subaru and VW vehicles?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Absolutely! We specialize in European and Japanese performance tuning, including Subaru WRX/STI models and Volkswagen GTI/R vehicles. Our technicians have extensive experience with these platforms and use manufacturer-specific tuning software for optimal results."
+        }
+      },
+
+      // GENERAL AUTO REPAIR SERVICES
       {
         "@type": "Question",
         "name": "What auto repair services do you offer?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "We offer comprehensive auto repair services including brake service, engine diagnostics, transmission service, AC repair, oil changes, suspension work, tire service, and state inspections. We also specialize in performance tuning and dyno services."
+          "text": "We offer comprehensive auto repair services including brake service, engine diagnostics, transmission service, AC repair, oil changes, suspension work, tire service, state inspections, and electrical repairs. We also specialize in performance tuning and dyno services for enthusiasts."
         }
       },
       {
@@ -252,15 +297,79 @@ export function generateFAQSchema() {
         "name": "Do you work on VW and Subaru vehicles?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes, our experienced technicians work on all makes and models including Volkswagen and Subaru vehicles. We have the specialized knowledge and tools needed for European and Japanese automotive repair."
+          "text": "Yes, our experienced technicians work on all makes and models including Volkswagen and Subaru vehicles. We have the specialized knowledge, diagnostic equipment, and tools needed for European and Japanese automotive repair and performance modifications."
         }
       },
+
+      // LOCATION & HOURS
       {
         "@type": "Question",
         "name": "Where are you located in Scotia, NY?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": `${companyInfo.name} is located at ${companyInfo.address.full}. We serve the greater Capital Region area including Schenectady, Amsterdam, and surrounding communities.`
+          "text": `${companyInfo.name} is located at ${companyInfo.address.full}. We serve the greater Capital Region area including Schenectady, Amsterdam, Ballston Spa, and surrounding communities. Easy access from Route 5 and Interstate 890.`
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What are your business hours?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": `We're typically open Monday through Friday from 8:00 AM to 5:00 PM. For current hours and availability, please call ${companyInfo.phone.formatted} or check our website. We also offer emergency services for urgent repairs.`
+        }
+      },
+
+      // COMMON AUTO REPAIR QUESTIONS
+      {
+        "@type": "Question",
+        "name": "How often should I service my brakes?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Brake pads typically need replacement every 25,000-70,000 miles depending on driving habits and vehicle type. We recommend brake inspections every 12,000 miles or during oil changes. Signs you need brake service include squealing, grinding noises, or a soft brake pedal."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What does a check engine light mean?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A check engine light indicates your vehicle's computer has detected an issue with the engine, transmission, or emissions system. Common causes include faulty oxygen sensors, catalytic converter issues, or loose gas caps. We offer professional diagnostic services to identify the exact problem."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How long does transmission service take?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Basic transmission fluid changes typically take 1-2 hours, while major transmission repairs can take 1-3 days depending on the issue and parts availability. We provide accurate time estimates and keep you informed throughout the repair process."
+        }
+      },
+
+      // APPOINTMENTS
+      {
+        "@type": "Question",
+        "name": "Do I need an appointment for service?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": `While we accept walk-ins for basic services, we recommend scheduling an appointment to ensure prompt service. Call ${companyInfo.phone.formatted} or visit our website to book your appointment. Emergency repairs are handled as quickly as possible.`
+        }
+      },
+
+      // SPECIALIZATIONS
+      {
+        "@type": "Question",
+        "name": "Can you work on modified or performance vehicles?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Absolutely! We specialize in modified and performance vehicles. Our technicians understand aftermarket parts, performance modifications, and tuning requirements. Whether you need maintenance on a tuned car or want to add performance modifications, we have the expertise."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do you install aftermarket parts?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, we install high-quality aftermarket performance parts including turbo systems, exhaust systems, suspension components, and engine modifications. We work with reputable brands and ensure proper installation for optimal performance and reliability."
         }
       }
     ]

@@ -29,20 +29,20 @@ export interface NearbyArea {
 export const nearbyAreas: NearbyArea[] = [
   {
     name: "Schenectady",
-    directions: "Take NY-5 West for 3 miles. Turn right onto Sacandaga Rd. We're on the left.",
+    directions: "Take NY-5 West for 3 miles. Turn right onto Sacandaga Rd. We're on the right.",
     estimatedTime: "8-12 minutes",
     distance: "3.2 miles"
   },
   {
     name: "Amsterdam", 
-    directions: "Take NY-5 East for 8 miles. Turn left onto Sacandaga Rd. We're on the left.",
+    directions: "Take NY-5 East for 8 miles. Turn left onto Sacandaga Rd. We're on the right.",
     estimatedTime: "12-18 minutes",
     distance: "8.1 miles"
   },
   {
     name: "Rotterdam",
-    directions: "Take I-890 West to Exit 4A (NY-5 West). Continue 2 miles, turn right on Sacandaga Rd.",
-    estimatedTime: "15-20 minutes", 
+    directions: "Take Guilderland Ave, Broadway, Western Gateway Bridge and Mohawk Ave to 1st St in Scotia",
+    estimatedTime: "10-15 minutes", 
     distance: "9.3 miles"
   },
   {
@@ -59,13 +59,13 @@ export const nearbyAreas: NearbyArea[] = [
   },
   {
     name: "Troy",
-    directions: "Take NY-2 West to I-890 West. Exit 4A to NY-5 West, turn right on Sacandaga Rd.",
+    directions: "Take NY-2 West to I-890 West. Exit 5 to Scotia, turn right on Sacandaga Rd.",
     estimatedTime: "20-25 minutes",
     distance: "11.8 miles"
   },
   {
     name: "Albany",
-    directions: "Take I-90 West to I-890 West. Exit 4A to NY-5 West, turn right on Sacandaga Rd.",
+    directions: "Take I-90 West to I-890 West. Exit 5 to Scotia, turn right on Sacandaga Rd.",
     estimatedTime: "25-30 minutes",
     distance: "15.4 miles"
   }
