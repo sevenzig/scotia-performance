@@ -1,6 +1,6 @@
 <script lang="ts">
   import ServiceCard from '$lib/components/ServiceCard.svelte';
-  import AboutCard from '$lib/components/AboutCard.svelte';
+  import HeroBanner from '$lib/components/HeroBanner.svelte';
   
   const services = [
     {
@@ -39,138 +39,249 @@
   <meta name="description" content="Scotia Performance offers comprehensive automotive services including performance tuning, auto repair, maintenance, and tire services in Scotia, NY." />
 </svelte:head>
 
-<div class="services-page">
-  <div class="page-header">
-    <h1>Our Services</h1>
-    <p class="lead">Comprehensive automotive services for performance, repair, and maintenance</p>
-  </div>
+<!-- Hero Banner Section -->
+<HeroBanner 
+  title="Our Services"
+  subtitle="Comprehensive automotive services for performance, repair, and maintenance"
+  description="Expert automotive services in Scotia, NY. From routine maintenance to performance upgrades and complex repairs, our experienced team delivers quality workmanship with transparency and integrity."
+  buttonText="Schedule Service"
+  buttonHref="tel:5182801698"
+  backgroundImage="/images/garage.jpg"
+/>
 
-  <div class="service-categories">
-    {#each services as service}
-      <ServiceCard 
-        title={service.title}
-        description={service.description}
-        icon={service.icon}
-        link={service.url}
-      />
-    {/each}
-  </div>
-  
-  <div class="service-intro mt-12">
-    <h2>Expert Automotive Services in Scotia, NY</h2>
-    <p>
-      At Scotia Performance, we provide comprehensive automotive services ranging from routine maintenance 
-      to performance upgrades and complex repairs. Our experienced team is equipped with the latest diagnostic 
-      tools and knowledge to handle vehicles of all makes and models.
-    </p>
-    <p>
-      Whether you need an oil change, engine tuning, brake repair, or a complete performance overhaul, 
-      our dedicated technicians deliver quality workmanship and outstanding customer service.
-    </p>
-    
-    <div class="contact-info mt-8">
-      <p class="text-lg font-semibold">Ready to schedule service?</p>
-      <p>Call us at <a href="tel:5182801698" class="text-scotia-red hover:underline">(518) 280-1698</a> or visit our shop at 24 Sacandaga Rd, Scotia, NY 12302</p>
+<section class="services-section">
+  <div class="container">
+    <!-- Services Grid -->
+    <div class="services-grid">
+      {#each services as service, index}
+        <div class="service-card {index === 0 ? 'featured' : ''}">
+          {#if index === 0}
+            <span class="featured-badge">Most Popular</span>
+          {/if}
+          <ServiceCard 
+            title={service.title}
+            description={service.description}
+            icon={service.icon}
+            link={service.url}
+          />
+        </div>
+      {/each}
+    </div>
+
+    <!-- Service Introduction -->
+    <div class="service-intro">
+      <h2>Expert Automotive Services in Scotia, NY</h2>
+      <p>
+        At Scotia Performance, we provide comprehensive automotive services ranging from routine maintenance 
+        to performance upgrades and complex repairs. Our experienced team is equipped with the latest diagnostic 
+        tools and knowledge to handle vehicles of all makes and models.
+      </p>
+      <p>
+        Whether you need an oil change, engine tuning, brake repair, or a complete performance overhaul, 
+        our dedicated technicians deliver quality workmanship and outstanding customer service.
+      </p>
+    </div>
+
+    <!-- Call to Action Section -->
+    <div class="cta-section">
+      <h3>Ready to Schedule Service?</h3>
+      <p>Contact Scotia Performance today for professional automotive services you can trust.</p>
+      <div class="cta-buttons">
+        <a href="tel:5182801698" class="btn-primary">Call (518) 280-1698</a>
+        <a href="https://www.google.com/maps/search/?api=1&query=24+Sacandaga+Rd,+Scotia,+NY+12302" class="btn-secondary">Visit Our Shop</a>
+      </div>
     </div>
   </div>
-  
-  <div class="status-examples mt-12">
-    <h2 class="text-center mb-8">Status Examples</h2>
-    <div class="status-grid">
-      <div>
-        <h3 class="text-lg font-semibold mb-2">Current Status</h3>
-        <AboutCard />
-      </div>
-      <div>
-        <h3 class="text-lg font-semibold mb-2">Closed Example</h3>
-        <AboutCard showClosedExample={true} />
-      </div>
-    </div>
-  </div>
-</div>
+</section>
 
-<style lang="scss">
-  @use '../../scss/core/_mixins' as mix;
-  @use '../../scss/core/_variables' as vars;
-  
-  .services-page {
-    padding: vars.$spacing-6 0;
+<style>
+  /* Main Container */
+  .container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
   }
-  
-  .page-header {
-    text-align: center;
-    margin-bottom: vars.$spacing-8;
-    
-    h1 {
-      font-size: vars.$font-size-3xl;
-      color: vars.$scotia-red;
-      margin-bottom: vars.$spacing-3;
-      font-weight: vars.$font-weight-bold;
-    }
-    
-    .lead {
-      font-size: vars.$font-size-lg;
-      color: vars.$scotia-gray;
-      max-width: 700px;
-      margin: 0 auto;
-    }
+
+  /* Services Section */
+  .services-section {
+    padding: 4rem 0;
+    background-color: #f9fafb;
   }
-  
-  .service-categories {
+
+  /* Services Grid */
+  .services-grid {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: vars.$spacing-6;
-    margin-bottom: vars.$spacing-8;
-    
-    @include mix.sm {
-      grid-template-columns: repeat(2, 1fr);
-    }
-    
-    @include mix.lg {
-      grid-template-columns: repeat(4, 1fr);
-    }
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+    align-items: start;
   }
-  
+
+  .service-card {
+    position: relative;
+    
+    /* CSS Custom Properties for hover effects */
+    --accent-color: var(--scotia-blue, #1e3a8a);
+    --glow-color: rgba(30, 58, 138, 0.4);
+    --shadow-color: rgba(30, 58, 138, 0.25);
+  }
+
+  .service-card.featured {
+    border-color: var(--accent-color);
+    background: linear-gradient(135deg, rgba(30, 58, 138, 0.05), rgba(30, 58, 138, 0.1));
+  }
+
+  .featured-badge {
+    position: absolute;
+    top: -0.75rem;
+    left: 1.5rem;
+    background-color: var(--accent-color);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    z-index: 3;
+  }
+
+  /* Service Introduction */
   .service-intro {
     max-width: 800px;
-    margin: 0 auto;
+    margin: 0 auto 3rem;
+    text-align: center;
     
     h2 {
-      font-size: vars.$font-size-2xl;
-      margin-bottom: vars.$spacing-4;
-      color: vars.$scotia-dark;
+      font-size: 1.75rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: #1e3a8a;
     }
     
     p {
-      margin-bottom: vars.$spacing-4;
+      color: #6b7280;
       line-height: 1.6;
+      margin-bottom: 1rem;
+      font-size: 1.125rem;
     }
   }
-  
-  .contact-info {
-    background-color: vars.$scotia-light;
-    padding: vars.$spacing-6;
-    border-radius: vars.$border-radius;
+
+  /* Call to Action Section */
+  .cta-section {
     text-align: center;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 1rem;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 3rem;
   }
-  
-  .status-examples {
-    max-width: 1200px;
-    margin: 0 auto;
-    
-    h2 {
-      font-size: vars.$font-size-2xl;
-      color: vars.$scotia-dark;
+
+  .cta-section h3 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: #1e3a8a;
+  }
+
+  .cta-section p {
+    color: #6b7280;
+    margin-bottom: 1.5rem;
+    font-size: 1.125rem;
+  }
+
+  .cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    background-color: #1e3a8a;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+  }
+
+  .btn-primary:hover {
+    background-color: #1e40af;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(30, 58, 138, 0.3);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: #1e3a8a;
+    padding: 0.75rem 1.5rem;
+    border: 2px solid #1e3a8a;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .btn-secondary:hover {
+    background-color: #1e3a8a;
+    color: white;
+  }
+
+  /* Respect reduced motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    .btn-primary:hover {
+      transform: none;
     }
   }
-  
-  .status-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: vars.$spacing-8;
-    
-    @include mix.md {
+
+  /* Responsive adjustments */
+  @media (min-width: 768px) {
+    .services-grid {
       grid-template-columns: repeat(2, 1fr);
+      gap: 2.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .services-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 3rem;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .services-grid {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .services-section {
+      padding: 3rem 0;
+    }
+
+    .services-grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .cta-buttons {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+      width: 100%;
+      max-width: 280px;
     }
   }
 </style> 
