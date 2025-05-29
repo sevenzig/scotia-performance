@@ -1,61 +1,66 @@
-<script>
-  // Props definition - Svelte 5 style with $props rune
-  const { 
-    src, 
-    alt, 
-    className = '', 
-    width, 
-    height, 
-    loading = 'lazy',
-    fetchPriority = 'auto',
-    decoding = 'async',
+<script lang="ts">
+  import { onMount } from 'svelte';
+  import { browser } from '$app/environment';
+  
+  // Props for component
+  const {
+    src,
+    alt = '',
+    width,
+    height,
     sources = [],
-    thumb = null,
-    eager = false
+    className = '',
+    loading = 'lazy',
+    decoding = 'async',
+    fetchPriority = 'auto',
+    eager = false,
+    thumb = ''
   } = $props();
 
   // Track if image has loaded
   let isLoaded = $state(false);
   let isVisible = $state(false);
+  let containerElement = $state<HTMLElement | null>(null);
   
-  // Use effect for client-side visibility detection
-  $effect(() => {
-    if (typeof window !== 'undefined' && !eager) {
-      // Use Intersection Observer for more efficient loading
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            isVisible = true;
-            observer.disconnect();
-          }
-        });
-      }, {
-        rootMargin: '200px', // Load images a bit before they enter viewport
-        threshold: 0.01
-      });
-      
-      // Find the container element after component is mounted
-      const container = document.querySelector(`.responsive-image-container-${Math.random().toString(36).substring(2, 9)}`);
-      if (container) {
-        observer.observe(container);
-      }
-      
-      return () => observer.disconnect();
-    } else {
-      // If eager loading or no window object, mark as visible immediately
+  // Use onMount for safer DOM manipulation
+  onMount(() => {
+    if (!browser) {
       isVisible = true;
+      return;
     }
+    
+    if (eager) {
+      isVisible = true;
+      return;
+    }
+    
+    // Use Intersection Observer for more efficient loading
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          isVisible = true;
+          observer.disconnect();
+        }
+      });
+    }, {
+      rootMargin: '200px', // Load images a bit before they enter viewport
+      threshold: 0.01
+    });
+    
+    // Observe the container element if it exists
+    if (containerElement) {
+      observer.observe(containerElement);
+    }
+    
+    return () => observer.disconnect();
   });
   
   function handleLoad() {
     isLoaded = true;
   }
-  
-  // Generate unique class for observer targeting
-  const uniqueClass = `responsive-image-container-${Math.random().toString(36).substring(2, 9)}`;
 </script>
 
-<div class="responsive-image-container {uniqueClass} {className}" class:loaded={isLoaded}>
+<div class="responsive-image-container {className}" class:loaded={isLoaded} bind:this={containerElement}>
   {#if isVisible || eager || loading === 'eager'}
     {#if sources && sources.length > 0}
       <picture>
