@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
+  import { browser } from '$app/environment';
   import type { Snippet } from 'svelte';
 
   // Props definition - Svelte 5 style with $props rune
@@ -33,14 +35,15 @@
   // State management
   let isVisible = $state(false);
   let hasLoaded = $state(false);
-  let element: HTMLDivElement | null = null;
+  let element = $state<HTMLDivElement | null>(null);
   let observer: IntersectionObserver | null = null;
   
-  // Create the intersection observer when component mounts
-  $effect(() => {
-    if (typeof IntersectionObserver === 'undefined' || typeof window === 'undefined') {
+  // Create the intersection observer when component mounts - moved to onMount for safety
+  onMount(() => {
+    if (!browser || typeof IntersectionObserver === 'undefined') {
       // If IntersectionObserver isn't supported or we're in SSR, show content immediately
       isVisible = true;
+      hasLoaded = true;
       return;
     }
     
@@ -75,7 +78,7 @@
       }
     }, options);
     
-    // Start observing our element
+    // Start observing our element if it exists
     if (element) {
       observer.observe(element);
     }
