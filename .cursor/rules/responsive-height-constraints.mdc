@@ -1,0 +1,143 @@
+---
+description: "Guidelines for implementing responsive height behavior with strict minimum and maximum constraints across components"
+globs: 
+alwaysApply: false
+---
+---
+description: 
+globs: 
+alwaysApply: false
+---
+
+# Responsive Height Constraints
+
+This rule provides guidelines for implementing responsive height behavior with strict minimum and maximum constraints across components.
+
+## When to Apply
+
+Use this pattern when:
+- A component needs to scale with viewport height
+- You need to enforce strict minimum and maximum height limits
+- The component should respond to browser window resizing
+- You want consistent responsive behavior across similar components
+
+## Implementation Pattern
+
+### Basic Structure
+```css
+.component {
+  height: [viewport-percentage]vh;
+  min-height: [minimum-px]px;
+  max-height: [maximum-px]px;
+}
+```
+
+### Responsive Breakpoints
+```css
+.component {
+  /* Mobile/default */
+  height: 60vh;
+  min-height: [minimum-px]px;
+  max-height: [maximum-px]px;
+}
+
+@media (min-width: 768px) {
+  .component {
+    /* Desktop - slightly taller */
+    height: 65vh;
+    min-height: [minimum-px]px;
+    max-height: [maximum-px]px;
+  }
+}
+```
+
+## Key Principles
+
+1. **Always use explicit min-height and max-height**: Don't rely solely on `clamp()` as it may be overridden by other CSS
+2. **Use viewport units (vh) for responsive scaling**: This ensures the component scales with browser window size
+3. **Set conservative mobile heights**: Mobile screens are typically shorter, so use smaller vh values
+4. **Increase vh values for larger screens**: Desktop can handle taller components
+5. **Maintain consistent min/max across breakpoints**: Keep the same pixel constraints for predictable behavior
+
+## Common Values
+
+### Hero Sections
+- **Mobile**: `height: 60vh`
+- **Desktop**: `height: 65vh`
+- **Min**: `450px` (ensures readability on small screens)
+- **Max**: `750px` (prevents excessive height on large screens)
+
+### Banner Components
+- **Mobile**: `height: 40vh`
+- **Desktop**: `height: 45vh`
+- **Min**: `300px`
+- **Max**: `500px`
+
+### Full-screen Modals
+- **Mobile**: `height: 90vh`
+- **Desktop**: `height: 85vh`
+- **Min**: `600px`
+- **Max**: `900px`
+
+## Anti-patterns to Avoid
+
+❌ **Don't use only clamp()** - May be overridden
+```css
+/* Avoid this */
+.component {
+  height: clamp(450px, 60vh, 750px);
+}
+```
+
+❌ **Don't omit min/max constraints** - Component may become unusable
+```css
+/* Avoid this */
+.component {
+  height: 60vh; /* No constraints */
+}
+```
+
+❌ **Don't use fixed heights** - Not responsive
+```css
+/* Avoid this */
+.component {
+  height: 600px; /* Fixed, not responsive */
+}
+```
+
+## Example Implementation
+
+```css
+.hero-section {
+  /* Core responsive height setup */
+  height: 60vh;
+  min-height: 450px;
+  max-height: 750px;
+  
+  /* Essential for proper layout */
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .hero-section {
+    height: 65vh;
+    /* min-height and max-height remain the same */
+    min-height: 450px;
+    max-height: 750px;
+  }
+}
+```
+
+## Testing Checklist
+
+When implementing responsive height constraints:
+
+- [ ] Test on mobile devices (320px - 768px width)
+- [ ] Test on desktop (768px+ width)
+- [ ] Verify minimum height is respected on very short screens
+- [ ] Verify maximum height is enforced on very tall screens
+- [ ] Test browser window resizing behavior
+- [ ] Ensure content remains readable at all sizes
+- [ ] Check that flex/grid layouts work properly within constraints
