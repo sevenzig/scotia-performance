@@ -1,4 +1,7 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
+  import { browser } from '$app/environment';
+  
   // Services data - could be made props or moved to a store if needed in the future
   const services = [
     {
@@ -39,29 +42,35 @@
     }
   ];
 
-  // Apply content visibility to services after the first row
-  $effect(() => {
-    if (typeof document !== 'undefined') {
-      // Apply content visibility after initial items for better performance
-      const applyContentVisibility = () => {
-        const serviceCards = document.querySelectorAll('.service-card');
-        const initialVisibleCount = 4; // First row of cards
-        
-        serviceCards.forEach((card, index) => {
-          if (index >= initialVisibleCount) {
-            (card as HTMLElement).style.contentVisibility = 'auto';
-            (card as HTMLElement).style.height = '230px';
-            (card as HTMLElement).style.minHeight = '230px';
-            (card as HTMLElement).style.containIntrinsicSize = 'auto 230px';
-          }
-        });
-      };
+  let mounted = $state(false);
+
+  // Apply content visibility to services after the first row - moved to onMount for safety
+  onMount(() => {
+    if (!browser) return;
+    
+    mounted = true;
+    
+    // Apply content visibility after initial items for better performance
+    const applyContentVisibility = () => {
+      const serviceCards = document.querySelectorAll('.service-card');
+      const initialVisibleCount = 4; // First row of cards
       
-      // Use requestAnimationFrame for visual updates
-      requestAnimationFrame(() => {
-        requestAnimationFrame(applyContentVisibility);
+      serviceCards.forEach((card, index) => {
+        if (index >= initialVisibleCount && card instanceof HTMLElement) {
+          card.style.contentVisibility = 'auto';
+          card.style.height = '230px';
+          card.style.minHeight = '230px';
+          card.style.containIntrinsicSize = 'auto 230px';
+        }
       });
-    }
+    };
+    
+    // Use multiple animation frames to ensure DOM is fully ready
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        setTimeout(applyContentVisibility, 100);
+      });
+    });
   });
 </script>
 
