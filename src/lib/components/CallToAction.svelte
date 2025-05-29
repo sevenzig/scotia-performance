@@ -10,7 +10,7 @@
     description?: string;
     phone?: string;
     buttonText?: string;
-    secondaryAction?: () => string;
+    secondaryAction?: (() => string) | (() => any);
   }>();
 </script>
 
@@ -26,7 +26,7 @@
       
       {#if secondaryAction}
         <div class="secondary-action">
-          <a href="/services" class="text-white underline">{@render secondaryAction()}</a>
+          <a href="/services" class="text-white underline">{secondaryAction()}</a>
         </div>
       {/if}
     </div>
