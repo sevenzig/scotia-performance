@@ -49,12 +49,15 @@
   
   // Function to load a specific component
   async function loadComponent(name: ComponentName): Promise<void> {
-    if (browser && !componentsLoaded[name]) {
+    if (browser && !componentsLoaded[name] && !components[name]) {
       try {
         console.log(`Attempting to load component: ${name}`);
         const module = await import(`$lib/components/${name}.svelte`);
         if (module && module.default) {
+          // Set component first, then mark as loaded
           components[name] = module.default;
+          // Add a small delay to ensure the component is fully ready
+          await new Promise(resolve => setTimeout(resolve, 10));
           componentsLoaded[name] = true;
           console.log(`Successfully loaded component: ${name}`);
         } else {
@@ -64,8 +67,17 @@
       } catch (error) {
         console.error(`Failed to load component ${name}:`, error);
         componentsLoaded[name] = false;
+        components[name] = null; // Ensure it's reset on error
       }
     }
+  }
+  
+  // Helper function to safely check if component is ready to render
+  function isComponentReady(name: ComponentName): boolean {
+    return browser && 
+           componentsLoaded[name] === true && 
+           components[name] !== null && 
+           components[name] !== undefined;
   }
   
   // Sample business hours data for demonstration
@@ -139,14 +151,28 @@
   onMount(async () => {
     if (!browser) return;
     
-    isInitialized = true;
-    console.log('Setting up components loading');
+    // Wait for the page to be fully rendered before starting component loading
+    await new Promise(resolve => setTimeout(resolve, 100));
     
-    const componentNames = Object.keys(componentsLoaded) as ComponentName[];
-    for (const componentName of componentNames) {
-      await loadComponent(componentName);
-    }
-    console.log('Finished all component loading attempts.');
+    // Use requestAnimationFrame to avoid DOM conflicts during initial render
+    requestAnimationFrame(async () => {
+      isInitialized = true;
+      console.log('Setting up components loading');
+      
+      try {
+        const componentNames = Object.keys(componentsLoaded) as ComponentName[];
+        
+        // Load components one at a time with delays to prevent overwhelming the system
+        for (const componentName of componentNames) {
+          await new Promise(resolve => setTimeout(resolve, 100)); // Increased delay for stability
+          await loadComponent(componentName);
+        }
+        
+        console.log('Finished all component loading attempts.');
+      } catch (error) {
+        console.error('Error during component loading:', error);
+      }
+    });
     
     /* Comment out intersection observer for now
     const observer = new IntersectionObserver((entries) => {
@@ -349,14 +375,11 @@
       </p>
       
       <div class="component-examples">
-        {#if componentsLoaded.CallToAction && components.CallToAction}
+        {#if isComponentReady('CallToAction')}
           <div class="component-example">
             <h3 class="component-example__title">Default CTA</h3>
             <div class="component-example__container component-example__container--large">
-              {#if components.CallToAction}
-                {@const CallToAction = components.CallToAction}
-                <CallToAction />
-              {/if}
+              <components.CallToAction />
             </div>
             <details class="component-example__code">
               <summary>View Code</summary>
@@ -367,16 +390,13 @@
           <div class="component-example">
             <h3 class="component-example__title">Custom CTA</h3>
             <div class="component-example__container component-example__container--large">
-              {#if components.CallToAction}
-                {@const CallToAction = components.CallToAction}
-                <CallToAction
-                  title="Need Emergency Repairs?"
-                  description="Our team is ready to help with your urgent automotive needs."
-                  phone="(518) 280-1698"
-                  buttonText="Call Now"
-                  secondaryAction={secondaryActionFn}
-                />
-              {/if}
+              <components.CallToAction
+                title="Need Emergency Repairs?"
+                description="Our team is ready to help with your urgent automotive needs."
+                phone="(518) 280-1698"
+                buttonText="Call Now"
+                secondaryAction={secondaryActionFn}
+              />
             </div>
             <details class="component-example__code">
               <summary>View Code</summary>
@@ -404,14 +424,11 @@
       </p>
       
       <div class="component-examples component-examples--grid">
-        {#if componentsLoaded.ContactCard && components.ContactCard}
+        {#if isComponentReady('ContactCard')}
           <div class="component-example">
             <h3 class="component-example__title">Default</h3>
             <div class="component-example__container component-example__container--fixed-width">
-              {#if components.ContactCard}
-                {@const ContactCard = components.ContactCard}
-                <ContactCard />
-              {/if}
+              <components.ContactCard />
             </div>
             <details class="component-example__code">
               <summary>View Code</summary>
@@ -422,15 +439,12 @@
           <div class="component-example">
             <h3 class="component-example__title">With Custom Info</h3>
             <div class="component-example__container component-example__container--fixed-width">
-              {#if components.ContactCard}
-                {@const ContactCard = components.ContactCard}
-                <ContactCard
-                  address="123 Main Street, Anywhere, NY 12345, USA"
-                  phone="(555) 123-4567"
-                  email="custom@example.com"
-                  website="https://example.com"
-                />
-              {/if}
+              <components.ContactCard
+                address="123 Main Street, Anywhere, NY 12345, USA"
+                phone="(555) 123-4567"
+                email="custom@example.com"
+                website="https://example.com"
+              />
             </div>
             <details class="component-example__code">
               <summary>View Code</summary>
@@ -457,14 +471,11 @@
       </p>
       
       <div class="component-examples">
-        {#if componentsLoaded.Hero && components.Hero}
+        {#if isComponentReady('Hero')}
           <div class="component-example component-example--fullwidth">
             <h3 class="component-example__title">Default</h3>
             <div class="component-example__container component-example__container--fullwidth">
-              {#if components.Hero}
-                {@const Hero = components.Hero}
-                <Hero />
-              {/if}
+              <components.Hero />
             </div>
             <details class="component-example__code">
               <summary>View Code</summary>
@@ -490,14 +501,11 @@
           <div class="component-example component-example--fullwidth">
             <h3 class="component-example__title">Default</h3>
             <div class="component-example__container component-example__container--fullwidth">
-              {#if components.HeroBanner}
-                {@const HeroBanner = components.HeroBanner}
-                <HeroBanner
-                  title="Scotia Performance"
-                  subtitle="Your trusted automotive repair partner"
-                  description="We provide top-quality automotive repair services with transparent pricing and exceptional customer service."
-                />
-              {/if}
+              <components.HeroBanner
+                title="Scotia Performance"
+                subtitle="Your trusted automotive repair partner"
+                description="We provide top-quality automotive repair services with transparent pricing and exceptional customer service."
+              />
             </div>
             <details class="component-example__code">
               <summary>View Code</summary>
@@ -512,17 +520,14 @@
           <div class="component-example component-example--fullwidth">
             <h3 class="component-example__title">With Custom Properties</h3>
             <div class="component-example__container component-example__container--fullwidth">
-              {#if components.HeroBanner}
-                {@const HeroBanner = components.HeroBanner}
-                <HeroBanner
-                  title="Special Offers"
-                  subtitle="Save on your next service"
-                  description="Take advantage of our seasonal specials and save on maintenance and repairs."
-                  buttonText="View Offers"
-                  buttonHref="#offers"
-                  backgroundImage="/images/mechanic.jpg"
-                />
-              {/if}
+              <components.HeroBanner
+                title="Special Offers"
+                subtitle="Save on your next service"
+                description="Take advantage of our seasonal specials and save on maintenance and repairs."
+                buttonText="View Offers"
+                buttonHref="#offers"
+                backgroundImage="/images/mechanic.jpg"
+              />
             </div>
             <details class="component-example__code">
               <summary>View Code</summary>
@@ -555,10 +560,7 @@
           <div class="component-example">
             <h3 class="component-example__title">Default</h3>
             <div class="component-example__container component-example__container--large">
-              {#if components.ServiceHighlights}
-                {@const ServiceHighlights = components.ServiceHighlights}
-                <ServiceHighlights services={serviceHighlightsData} />
-              {/if}
+              <components.ServiceHighlights services={serviceHighlightsData} />
             </div>
             <details class="component-example__code">
               <summary>View Code</summary>
@@ -584,14 +586,11 @@
           <div class="component-example">
             <h3 class="component-example__title">Default</h3>
             <div class="component-example__container component-example__container--fixed-width">
-              {#if components.ServiceCard}
-                {@const ServiceCard = components.ServiceCard}
-                <ServiceCard
-                  title="Oil Change"
-                  description="Regular oil changes are essential for keeping your engine running smoothly and extending its lifespan."
-                  icon={exampleIcon}
-                />
-              {/if}
+              <components.ServiceCard
+                title="Oil Change"
+                description="Regular oil changes are essential for keeping your engine running smoothly and extending its lifespan."
+                icon={exampleIcon}
+              />
             </div>
             <details class="component-example__code">
               <summary>View Code</summary>
@@ -621,10 +620,7 @@
           <div class="component-example">
             <h3 class="component-example__title">Default</h3>
             <div class="component-example__container component-example__container--large">
-              {#if components.Testimonials}
-                {@const Testimonials = components.Testimonials}
-                <Testimonials />
-              {/if}
+              <components.Testimonials />
             </div>
             <details class="component-example__code">
               <summary>View Code</summary>
@@ -650,16 +646,13 @@
           <div class="component-example">
             <h3 class="component-example__title">Default</h3>
             <div class="component-example__container">
-              {#if components.LazyLoad}
-                {@const LazyLoad = components.LazyLoad}
-                <LazyLoad height="200px">
-                  {#snippet children()}
-                  <div style="padding: 2rem; background-color: #f5f5f5; text-align: center;">
-                    This content was lazy loaded!
-                  </div>
-                  {/snippet}
-                </LazyLoad>
-              {/if}
+              <components.LazyLoad height="200px">
+                {#snippet children()}
+                <div style="padding: 2rem; background-color: #f5f5f5; text-align: center;">
+                  This content was lazy loaded!
+                </div>
+                {/snippet}
+              </components.LazyLoad>
             </div>
             <details class="component-example__code">
               <summary>View Code</summary>
