@@ -302,7 +302,7 @@
         <h2>Find Us on the Map</h2>
         <div class="map-container">
           <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2958.123456789!2d-73.9532!3d42.8264!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2z{encodeURIComponent(companyInfo.address.full)}!5e0!3m2!1sen!2sus!4v1234567890"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2958.123456789!2d{companyInfo.address.coordinates.longitude}!3d{companyInfo.address.coordinates.latitude}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2z{encodeURIComponent(companyInfo.address.full)}!5e0!3m2!1sen!2sus!4v1234567890"
             width="100%"
             height="400"
             style="border:0;"
