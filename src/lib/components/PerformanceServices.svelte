@@ -55,11 +55,11 @@
     <div class="services-grid">
       {#each services as service, index}
         <div class="performance-service-card {index === 0 ? 'featured' : ''}">
-          <h3>{service.title}</h3>
-          <p>{service.description}</p>
           {#if index === 0}
             <span class="featured-badge">Most Popular</span>
           {/if}
+          <h3>{service.title}</h3>
+          <p>{service.description}</p>
         </div>
       {/each}
     </div>
