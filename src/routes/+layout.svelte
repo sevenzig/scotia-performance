@@ -24,7 +24,6 @@
 	}>();
 	
 	let isLoaded = $state(false);
-	let criticalContentLoaded = $state(false);
 	let initialRenderComplete = $state(false);
 	
 	// Load non-critical resources lazily
@@ -45,31 +44,17 @@
 		}
 	}
 	
-	// Effect to handle critical content loading
-	$effect(() => {
-		if (isLoaded && !criticalContentLoaded) {
-			// Mark critical content as loaded
-			criticalContentLoaded = true;
-			
-			// After first paint is complete, mark initial render done
-			if (typeof window !== 'undefined') {
-				window.requestAnimationFrame(() => {
-					window.requestAnimationFrame(() => {
-						initialRenderComplete = true;
-					});
-				});
-			}
-		}
-	});
-	
 	// Lifecycle - use requestAnimationFrame for non-blocking updates
 	onMount(() => {
 		// Mark as client-side
 		isLoaded = true;
 		
-		// Use requestAnimationFrame to defer non-critical initialization
+		// Use a single requestAnimationFrame to mark initial render complete
+		// This prevents rapid state changes that cause DOM conflicts
 		requestAnimationFrame(() => {
-			// After a slight delay, load non-critical resources
+			initialRenderComplete = true;
+			
+			// After a delay, load non-critical resources
 			setTimeout(() => {
 				lazyLoadResources();
 			}, 1000);
