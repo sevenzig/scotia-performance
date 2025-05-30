@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Hero from '$lib/components/Hero.svelte';
+  import HeroBanner from '$lib/components/HeroBanner.svelte';
   import ServiceDetail from '$lib/components/ServiceDetail.svelte';
   import ServiceCard from '$lib/components/ServiceCard.svelte';
 
@@ -47,7 +47,7 @@
   <meta name="description" content="Professional auto maintenance services including oil changes, brake service, and filter replacements from Scotia Performance Auto.">
 </svelte:head>
 
-<HeroBanner 
+<HeroBanner
   title="Professional Maintenance Services"
   subtitle="Save on your next service"
   description="Keep your vehicle in peak condition with our comprehensive maintenance services. 

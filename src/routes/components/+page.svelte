@@ -11,7 +11,7 @@
   
   // Define component names type for type safety
   type ComponentName = 'CallToAction' | 'ContactCard' | 'Hero' | 'HeroBanner' | 
-                      'HeroSection' | 'LazyLoad' | 'ResponsiveImage' | 
+                      'HeroSection' | 'LazyLoad' | 'ManufacturerCarousel' | 'ResponsiveImage' | 
                       'ServiceCard' | 'ServiceDetail' | 'ServiceHero' | 
                       'ServiceHighlights' | 'Testimonial' | 'Testimonials';
   
@@ -22,6 +22,7 @@
     HeroBanner: false,
     HeroSection: false,
     LazyLoad: false,
+    ManufacturerCarousel: false,
     ResponsiveImage: false,
     ServiceCard: false,
     ServiceDetail: false,
@@ -38,6 +39,7 @@
     HeroBanner: null,
     HeroSection: null,
     LazyLoad: null,
+    ManufacturerCarousel: null,
     ResponsiveImage: null,
     ServiceCard: null,
     ServiceDetail: null,
@@ -368,6 +370,116 @@
     </section>
     
     <!-- Lazily loaded components -->
+    <section class="component-section" data-component="LazyLoad">
+      <h2 class="component-section__title">Lazy Load</h2>
+      <p class="component-section__description">
+        A utility component for lazy loading content as it enters the viewport.
+      </p>
+      
+      <div class="component-examples">
+        {#if componentsLoaded.LazyLoad && components.LazyLoad}
+          <div class="component-example">
+            <h3 class="component-example__title">Default</h3>
+            <div class="component-example__container">
+              <components.LazyLoad height="200px">
+                {#snippet children()}
+                <div style="padding: 2rem; background-color: #f5f5f5; text-align: center;">
+                  This content was lazy loaded!
+                </div>
+                {/snippet}
+              </components.LazyLoad>
+            </div>
+            <details class="component-example__code">
+              <summary>View Code</summary>
+              <pre><code>{`<LazyLoad height="200px">
+  {#snippet children()}
+  <div style="padding: 2rem; background-color: #f5f5f5; text-align: center;">
+    This content was lazy loaded!
+  </div>
+  {/snippet}
+</LazyLoad>`}</code></pre>
+            </details>
+          </div>
+        {:else}
+          <div class="component-section__placeholder">
+            {browser ? "Loading LazyLoad component..." : "LazyLoad component will load in browser"}
+          </div>
+        {/if}
+      </div>
+    </section>
+    
+    <section class="component-section" data-component="ManufacturerCarousel">
+      <h2 class="component-section__title">Manufacturer Carousel</h2>
+      <p class="component-section__description">
+        An auto-advancing horizontal carousel that displays manufacturer logos with smooth transitions, keyboard navigation, and accessibility features.
+      </p>
+      
+      <div class="component-examples">
+        {#if componentsLoaded.ManufacturerCarousel && components.ManufacturerCarousel}
+          <div class="component-example component-example--fullwidth">
+            <h3 class="component-example__title">Default Configuration</h3>
+            <div class="component-example__container component-example__container--fullwidth">
+              <components.ManufacturerCarousel />
+            </div>
+            <details class="component-example__code">
+              <summary>View Code</summary>
+              <pre><code>{`<ManufacturerCarousel />`}</code></pre>
+            </details>
+          </div>
+          
+          <div class="component-example component-example--fullwidth">
+            <h3 class="component-example__title">Custom Sizing & Speed</h3>
+            <div class="component-example__container component-example__container--fullwidth">
+              <components.ManufacturerCarousel
+                imageWidth={200}
+                imageHeight={200}
+                autoAdvanceInterval={2500}
+                transitionDuration={800}
+                ariaLabel="Automotive brand partners we service"
+              />
+            </div>
+            <details class="component-example__code">
+              <summary>View Code</summary>
+              <pre><code>{`<ManufacturerCarousel
+  imageWidth={200}
+  imageHeight={200}
+  autoAdvanceInterval={2500}
+  transitionDuration={800}
+  ariaLabel="Automotive brand partners we service"
+/>`}</code></pre>
+            </details>
+          </div>
+          
+          <div class="component-example component-example--fullwidth">
+            <h3 class="component-example__title">Large Format</h3>
+            <div class="component-example__container component-example__container--fullwidth">
+              <components.ManufacturerCarousel
+                imageWidth={300}
+                imageHeight={300}
+                autoAdvanceInterval={4000}
+                pauseOnHover={false}
+                ariaLabel="Premium automotive brands showcase"
+              />
+            </div>
+            <details class="component-example__code">
+              <summary>View Code</summary>
+              <pre><code>{`<ManufacturerCarousel
+  imageWidth={300}
+  imageHeight={300}
+  autoAdvanceInterval={4000}
+  pauseOnHover={false}
+  ariaLabel="Premium automotive brands showcase"
+/>`}</code></pre>
+            </details>
+          </div>
+        {:else}
+          <div class="component-section__placeholder">
+            {browser ? "Loading Manufacturer Carousel..." : "Manufacturer Carousel component will load in browser"}
+          </div>
+        {/if}
+      </div>
+    </section>
+    
     <section class="component-section" data-component="CallToAction">
       <h2 class="component-section__title">Call to Action</h2>
       <p class="component-section__description">
@@ -634,47 +746,6 @@
         {/if}
       </div>
     </section>
-    
-    <section class="component-section" data-component="LazyLoad">
-      <h2 class="component-section__title">Lazy Load</h2>
-      <p class="component-section__description">
-        A utility component for lazy loading content as it enters the viewport.
-      </p>
-      
-      <div class="component-examples">
-        {#if componentsLoaded.LazyLoad && components.LazyLoad}
-          <div class="component-example">
-            <h3 class="component-example__title">Default</h3>
-            <div class="component-example__container">
-              <components.LazyLoad height="200px">
-                {#snippet children()}
-                <div style="padding: 2rem; background-color: #f5f5f5; text-align: center;">
-                  This content was lazy loaded!
-                </div>
-                {/snippet}
-              </components.LazyLoad>
-            </div>
-            <details class="component-example__code">
-              <summary>View Code</summary>
-              <pre><code>{`<LazyLoad height="200px">
-  {#snippet children()}
-  <div style="padding: 2rem; background-color: #f5f5f5; text-align: center;">
-    This content was lazy loaded!
-  </div>
-  {/snippet}
-</LazyLoad>`}</code></pre>
-            </details>
-          </div>
-        {:else}
-          <div class="component-section__placeholder">
-            {browser ? "Loading LazyLoad component..." : "LazyLoad component will load in browser"}
-          </div>
-        {/if}
-      </div>
-    </section>
-    
-    <!-- Continue with the rest of the components following the same pattern -->
-    <!-- Include all other components with the same pattern: data-component attribute and conditional rendering -->
   </div>
 </div>
 
