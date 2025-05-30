@@ -47,17 +47,18 @@
   <meta name="description" content="Professional auto maintenance services including oil changes, brake service, and filter replacements from Scotia Performance Auto.">
 </svelte:head>
 
-<Hero />
+<HeroBanner 
+  title="Professional Maintenance Services"
+  subtitle="Save on your next service"
+  description="Keep your vehicle in peak condition with our comprehensive maintenance services. 
+      Our ASE-certified technicians use only quality parts and fluids to ensure reliability and longevity."
+  buttonText="Call Us"
+  buttonHref="tel:+15182801698"
+  backgroundImage="/images/mechanic.jpg"
+/>
 
 <main class="container mx-auto px-4 py-8">
-  <header class="text-center mb-12">
-    <h1 class="text-3xl font-bold text-scotia-blue mb-4">Professional Maintenance Services</h1>
-    <p class="max-w-2xl mx-auto text-gray-600">
-      Keep your vehicle in peak condition with our comprehensive maintenance services. 
-      Our ASE-certified technicians use only quality parts and fluids to ensure reliability and longevity.
-    </p>
-  </header>
-
+ 
   <section class="mb-16">
     <h2 class="text-2xl font-semibold mb-8 text-center">Our Maintenance Services</h2>
     
