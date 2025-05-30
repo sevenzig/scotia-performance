@@ -201,7 +201,7 @@
 
 <div 
   class="manufacturer-carousel"
-  role="region"
+  role="application"
   aria-label={ariaLabel}
   aria-live="polite"
   tabindex="0"
@@ -229,14 +229,12 @@
         aria-label="Manufacturer logos"
       >
         {#each images as imagePath, index (imagePath)}
-          <div 
+          <button 
             class="image-container"
             class:active={index === currentIndex}
-            role="img"
-            aria-label={getManufacturerName(imagePath)}
+            type="button"
+            aria-label="Select {getManufacturerName(imagePath)} logo"
             onclick={() => handleImageClick(index)}
-            tabindex="0"
-            onkeydown={(e: KeyboardEvent) => e.key === 'Enter' && handleImageClick(index)}
           >
             <img
               src={imagePath}
@@ -244,7 +242,7 @@
               loading="lazy"
               draggable="false"
             />
-          </div>
+          </button>
         {/each}
       </div>
 
@@ -386,6 +384,11 @@
 
     /* Shimmer effect base */
     overflow: hidden;
+    
+    /* Button-specific styles */
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   /* Shimmer effect pseudo-element */
