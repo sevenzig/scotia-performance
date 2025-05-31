@@ -14,6 +14,7 @@
     let isLoadingLocation = $state(false);
     let showLocationPrompt = $state(true);
     let userCity: string | null = $state(null);
+    let mounted = $state(false);
   
     // SEO data for this page
     const pageSEO = {
@@ -68,6 +69,7 @@
     }
   
     onMount(() => {
+      mounted = true;
       // Auto-request location if user hasn't denied it before
       const hasAskedBefore = localStorage.getItem('location-asked');
       if (!hasAskedBefore) {
@@ -126,7 +128,9 @@
           <div class="location-prompt">
             <div class="prompt-card">
               <div class="icon-container">
-                <Navigation size={32} color="#1e3a8a" />
+                {#if mounted}
+                  <Navigation size={32} color="#1e3a8a" />
+                {/if}
               </div>
               <h3>Get Personalized Directions</h3>
               <p>Allow location access to see driving time and directions from your current location.</p>
@@ -140,7 +144,9 @@
                     <span class="loading-spinner"></span>
                     Getting Location...
                   {:else}
-                    <MapPin size={18} />
+                    {#if mounted}
+                      <MapPin size={18} />
+                    {/if}
                     Get My Directions
                   {/if}
                 </button>
@@ -161,7 +167,9 @@
             <div class="direction-card featured">
               <div class="featured-badge">Your Location</div>
               <div class="icon-container">
-                <Navigation size={32} color="#1e3a8a" />
+                {#if mounted}
+                  <Navigation size={32} color="#1e3a8a" />
+                {/if}
               </div>
               <h3>
                 {directionInfo.duration} from your location
@@ -170,7 +178,9 @@
                 {/if}
               </h3>
               <p class="distance">
-                <Route size={16} />
+                {#if mounted}
+                  <Route size={16} />
+                {/if}
                 {directionInfo.distance} • {directionInfo.route}
               </p>
               
@@ -181,7 +191,9 @@
                   rel="noopener noreferrer"
                   class="btn btn-primary btn-md"
                 >
-                  <MapPin size={18} />
+                  {#if mounted}
+                    <MapPin size={18} />
+                  {/if}
                   Open in Google Maps
                 </a>
                 
@@ -190,7 +202,9 @@
                     href={locationService.generateAppleMapsUrl(userLocation.latitude, userLocation.longitude)}
                     class="btn btn-outline btn-md"
                   >
-                    <MapPin size={18} />
+                    {#if mounted}
+                      <MapPin size={18} />
+                    {/if}
                     Open in Apple Maps
                   </a>
                 {/if}
@@ -218,7 +232,9 @@
         <div class="contact-grid">
           <div class="contact-card">
             <div class="icon-container">
-              <MapPin size={32} color="#1e3a8a" />
+              {#if mounted}
+                <MapPin size={32} color="#1e3a8a" />
+              {/if}
             </div>
             <h3>Address</h3>
             <address>
@@ -231,14 +247,18 @@
               rel="noopener noreferrer"
               class="btn btn-outline btn-sm"
             >
-              <MapPin size={16} />
+              {#if mounted}
+                <MapPin size={16} />
+              {/if}
               View on Google Maps
             </a>
           </div>
   
           <div class="contact-card">
             <div class="icon-container">
-              <Phone size={32} color="#1e3a8a" />
+              {#if mounted}
+                <Phone size={32} color="#1e3a8a" />
+              {/if}
             </div>
             <h3>Phone</h3>
             <a href={companyInfo.phone.link} class="phone-link">
@@ -249,7 +269,9 @@
   
           <div class="contact-card">
             <div class="icon-container">
-              <Clock size={32} color="#1e3a8a" />
+              {#if mounted}
+                <Clock size={32} color="#1e3a8a" />
+              {/if}
             </div>
             <h3>Hours</h3>
             <div class="hours">
@@ -274,17 +296,23 @@
                 <div class="featured-badge">Closest</div>
               {/if}
               <div class="icon-container">
-                <Car size={24} color="#1e3a8a" />
+                {#if mounted}
+                  <Car size={24} color="#1e3a8a" />
+                {/if}
               </div>
               <h3>{area.name}</h3>
               <div class="direction-details">
                 <div class="time-distance">
                   <span class="time">
-                    <Timer size={16} />
+                    {#if mounted}
+                      <Timer size={16} />
+                    {/if}
                     {area.estimatedTime}
                   </span>
                   <span class="distance">
-                    <Route size={16} />
+                    {#if mounted}
+                      <Route size={16} />
+                    {/if}
                     {area.distance}
                   </span>
                 </div>
