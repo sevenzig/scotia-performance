@@ -26,15 +26,17 @@
   let isLoading = $state(true);
   let isHovered = $state(false);
   let isPaused = $state(false);
-  let carouselContainer: HTMLDivElement;
+  let carouselContainer: HTMLElement;
+  let isResetting = $state(false);
 
   // Derived state using $derived runes
   const totalImages = $derived(images.length);
+  const originalImageCount = $derived(Math.floor(totalImages / 3)); // Since we'll triple the images
   const isCarouselReady = $derived(totalImages > 0 && !isLoading);
   const translateX = $derived(-currentIndex * (imageWidth + 16)); // 16px for gap
   const carouselStyles = $derived({
     transform: `translateX(${translateX}px)`,
-    transition: `transform ${transitionDuration}ms cubic-bezier(0.4, 0, 0.2, 1)`
+    transition: isResetting ? 'none' : `transform ${transitionDuration}ms cubic-bezier(0.25, 0.46, 0.45, 0.94)`
   });
 
   // Auto-advance timer
@@ -90,7 +92,12 @@
         }
       }
 
-      images = validImages;
+      // Create infinite scroll by tripling the images
+      const infiniteImages = [...validImages, ...validImages, ...validImages];
+      images = infiniteImages;
+      
+      // Start at the middle set to allow scrolling in both directions
+      currentIndex = validImages.length;
     } catch (error) {
       console.error('Error loading images:', error);
       images = [];
@@ -99,15 +106,37 @@
     }
   }
 
-  // Navigation functions
+  // Navigation functions with infinite scroll logic
   function goToNext() {
     if (!isCarouselReady) return;
-    currentIndex = (currentIndex + 1) % totalImages;
+    currentIndex++;
+    
+    // Reset to middle set when reaching the end
+    if (currentIndex >= totalImages - originalImageCount) {
+      setTimeout(() => {
+        isResetting = true;
+        currentIndex = originalImageCount;
+        setTimeout(() => {
+          isResetting = false;
+        }, 50);
+      }, transitionDuration);
+    }
   }
 
   function goToPrevious() {
     if (!isCarouselReady) return;
-    currentIndex = currentIndex === 0 ? totalImages - 1 : currentIndex - 1;
+    currentIndex--;
+    
+    // Reset to middle set when reaching the beginning
+    if (currentIndex < originalImageCount) {
+      setTimeout(() => {
+        isResetting = true;
+        currentIndex = totalImages - originalImageCount * 2;
+        setTimeout(() => {
+          isResetting = false;
+        }, 50);
+      }, transitionDuration);
+    }
   }
 
   function goToImage(index: number) {
@@ -134,18 +163,6 @@
   }
 
   // Event handlers
-  function handleMouseEnter() {
-    if (pauseOnHover) {
-      isHovered = true;
-    }
-  }
-
-  function handleMouseLeave() {
-    if (pauseOnHover) {
-      isHovered = false;
-    }
-  }
-
   function handleKeydown(event: KeyboardEvent) {
     if (!isCarouselReady) return;
     
@@ -199,16 +216,12 @@
   }
 </script>
 
-<div 
+<section 
   class="manufacturer-carousel"
   role="application"
   aria-label={ariaLabel}
   aria-live="polite"
-  tabindex="0"
   bind:this={carouselContainer}
-  onkeydown={handleKeydown}
-  onmouseenter={handleMouseEnter}
-  onmouseleave={handleMouseLeave}
   style="--image-width: {imageWidth}px; --image-height: {imageHeight}px; --transition-duration: {transitionDuration}ms;"
 >
   {#if isLoading}
@@ -222,19 +235,47 @@
     </div>
   {:else}
     <div class="carousel-wrapper">
+      <!-- Previous arrow -->
+      <button
+        class="carousel-arrow carousel-arrow--prev"
+        onclick={goToPrevious}
+        aria-label="Previous manufacturer logos"
+        title="Previous"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M15 18l-6-6 6-6"/>
+        </svg>
+      </button>
+
+      <!-- Next arrow -->
+      <button
+        class="carousel-arrow carousel-arrow--next"
+        onclick={goToNext}
+        aria-label="Next manufacturer logos"
+        title="Next"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M9 18l6-6-6-6"/>
+        </svg>
+      </button>
+
       <!-- Carousel track -->
       <div 
         class="carousel-track"
         style="transform: {carouselStyles.transform}; transition: {carouselStyles.transition};"
         aria-label="Manufacturer logos"
+        role="group"
+        onmouseenter={() => isHovered = true}
+        onmouseleave={() => isHovered = false}
       >
-        {#each images as imagePath, index (imagePath)}
+        {#each images as imagePath, index (imagePath + index)}
           <button 
             class="image-container"
-            class:active={index === currentIndex}
             type="button"
+            tabindex={index === currentIndex ? "0" : "-1"}
             aria-label="Select {getManufacturerName(imagePath)} logo"
             onclick={() => handleImageClick(index)}
+            onkeydown={handleKeydown}
           >
             <img
               src={imagePath}
@@ -243,20 +284,6 @@
               draggable="false"
             />
           </button>
-        {/each}
-      </div>
-
-      <!-- Navigation dots -->
-      <div class="carousel-dots" role="tablist" aria-label="Carousel navigation">
-        {#each images as _, index}
-          <button
-            class="carousel-dot"
-            class:active={index === currentIndex}
-            role="tab"
-            aria-label="Go to slide {index + 1}"
-            aria-selected={index === currentIndex}
-            onclick={() => goToImage(index)}
-          ></button>
         {/each}
       </div>
 
@@ -282,12 +309,12 @@
       <div class="progress-bar">
         <div 
           class="progress-fill" 
-          style="width: {((currentIndex + 1) / totalImages) * 100}%"
+          style="width: {((currentIndex % originalImageCount + 1) / originalImageCount) * 100}%"
         ></div>
       </div>
     </div>
   {/if}
-</div>
+</section>
 
 <style lang="scss">
   /* CSS Custom Properties */
@@ -296,7 +323,8 @@
     --accent-color: rgba(30, 58, 138, 0.1);
     --glow-color: rgba(30, 58, 138, 0.4);
     --shadow-color: rgba(30, 58, 138, 0.25);
-    --shimmer-color: rgba(255, 255, 255, 0.6);
+    --shimmer-color: rgba(255, 255, 255, 0.8);
+    --shimmer-secondary: rgba(255, 255, 255, 0.4);
     --border-radius: 0.75rem;
     --gap-size: 1rem;
   }
@@ -306,7 +334,7 @@
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 2rem 1rem;
+    padding: 3rem 2.5rem 3.5rem 2.5rem;
     position: relative;
     outline: none;
     background-color: #f9fafb;
@@ -358,6 +386,50 @@
     position: relative;
     overflow: hidden;
     border-radius: var(--border-radius);
+    padding: 0 1rem;
+  }
+
+  /* Carousel Arrow Navigation */
+  .carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.9);
+    color: var(--primary-color);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 4;
+    opacity: 0.8;
+  }
+
+  .carousel-arrow:hover,
+  .carousel-arrow:focus-visible {
+    background-color: white;
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    opacity: 1;
+  }
+
+  .carousel-arrow:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+  }
+
+  .carousel-arrow--prev {
+    left: 1rem;
+  }
+
+  .carousel-arrow--next {
+    right: 1rem;
   }
 
   /* Carousel Track */
@@ -366,6 +438,7 @@
     gap: var(--gap-size);
     width: fit-content;
     will-change: transform;
+    padding: 1rem 0 2rem 0;
   }
 
   /* Image Container */
@@ -378,7 +451,7 @@
     background-color: white;
     padding: 1rem;
     border: 2px solid #e5e7eb;
-    transition: all var(--transition-duration) cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     outline: none;
 
@@ -391,7 +464,7 @@
     justify-content: center;
   }
 
-  /* Shimmer effect pseudo-element */
+  /* Enhanced Shimmer effect pseudo-element */
   .image-container::before {
     content: '';
     position: absolute;
@@ -402,47 +475,36 @@
     background: linear-gradient(
       110deg,
       transparent 20%,
-      var(--shimmer-color) 40%,
-      var(--shimmer-color) 60%,
+      rgba(255, 255, 255, 0.9) 40%,
+      rgba(255, 255, 255, 0.9) 60%,
       transparent 80%
-    );
-    transform: translateX(-100%);
-    transition: transform 0.6s ease;
-    z-index: 1;
-    pointer-events: none;
+    ) !important;
+    transform: translateX(-100%) !important;
+    transition: transform 0.6s ease !important;
+    z-index: 10 !important;
+    pointer-events: none !important;
     border-radius: var(--border-radius);
-    opacity: 0;
+    opacity: 0 !important;
   }
 
   .image-container:hover,
   .image-container:focus-visible {
-    transform: translateY(-8px) scale(1.02);
-    border-color: var(--primary-color);
+    transform: scale(1.05);
     box-shadow: 
-      0 20px 40px var(--shadow-color),
-      0 10px 20px rgba(0, 0, 0, 0.1),
-      0 0 0 1px var(--primary-color),
-      0 0 20px var(--glow-color);
+      0 8px 20px var(--shadow-color),
+      0 4px 10px rgba(0, 0, 0, 0.08),
+      0 0 15px rgba(255, 255, 255, 0.2);
   }
 
-  .image-container:hover::before,
-  .image-container:focus-visible::before {
-    transform: translateX(100%);
-    opacity: 1;
+  .image-container:hover::before {
+    transform: translateX(100%) !important;
+    opacity: 1 !important;
   }
 
-  .image-container:not(:hover):not(:focus-visible)::before {
-    transform: translateX(-100%);
-    opacity: 0;
-    transition: transform 0s, opacity 0.2s ease;
-  }
-
-  .image-container.active {
-    border-color: var(--primary-color);
-    box-shadow: 
-      0 8px 25px var(--shadow-color),
-      0 4px 10px rgba(0, 0, 0, 0.1),
-      0 0 0 2px var(--primary-color);
+  .image-container:not(:hover)::before {
+    transform: translateX(-100%) !important;
+    opacity: 0 !important;
+    transition: transform 0s, opacity 0.2s ease !important;
   }
 
   /* Image Styling */
@@ -451,46 +513,16 @@
     height: 100%;
     object-fit: contain;
     object-position: center;
-    transition: all var(--transition-duration) ease;
+    transition: all 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
     position: relative;
-    z-index: 2;
+    z-index: 1;
     border-radius: calc(var(--border-radius) - 0.5rem);
   }
 
-  /* Navigation Dots */
-  .carousel-dots {
-    display: flex;
-    justify-content: center;
-    gap: 0.5rem;
-    margin-top: 1.5rem;
-    padding: 1rem;
-  }
-
-  .carousel-dot {
-    width: 0.75rem;
-    height: 0.75rem;
-    border-radius: 50%;
-    border: none;
-    background-color: #d1d5db;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    outline: none;
+  /* Ensure all content stays BELOW shimmer effect */
+  .image-container > * {
     position: relative;
-  }
-
-  .carousel-dot:hover,
-  .carousel-dot:focus-visible {
-    background-color: #9ca3af;
-    transform: scale(1.2);
-  }
-
-  .carousel-dot.active {
-    background-color: var(--primary-color);
-    transform: scale(1.3);
-  }
-
-  .carousel-dot:focus-visible {
-    box-shadow: 0 0 0 3px var(--glow-color);
+    z-index: 1;
   }
 
   /* Play/Pause Button */
@@ -508,7 +540,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s ease;
+    transition: all 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
     backdrop-filter: blur(8px);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     z-index: 3;
@@ -529,20 +561,22 @@
   /* Progress Bar */
   .progress-bar {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    bottom: 0.5rem;
+    left: 1rem;
+    right: 1rem;
     height: 4px;
-    background-color: rgba(0, 0, 0, 0.1);
-    border-radius: 0 0 var(--border-radius) var(--border-radius);
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 2px;
     overflow: hidden;
+    margin: 0 1rem;
   }
 
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, var(--primary-color), #3b82f6);
-    transition: width var(--transition-duration) ease;
+    transition: width 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
     border-radius: inherit;
+    opacity: 0.7;
   }
 
   /* Responsive Design */
@@ -551,17 +585,28 @@
       --image-width: 200px;
       --image-height: 200px;
       --gap-size: 0.75rem;
-      padding: 1.5rem 0.75rem;
+      padding: 2.5rem 1.5rem 3rem 1.5rem;
     }
 
-    .carousel-dots {
-      gap: 0.375rem;
-      margin-top: 1rem;
+    .carousel-wrapper {
+      padding: 0 0.75rem;
     }
 
-    .carousel-dot {
-      width: 0.625rem;
-      height: 0.625rem;
+    .carousel-track {
+      padding: 0.75rem 0 1.5rem 0;
+    }
+
+    .carousel-arrow {
+      width: 2.5rem;
+      height: 2.5rem;
+    }
+
+    .carousel-arrow--prev {
+      left: 0.5rem;
+    }
+
+    .carousel-arrow--next {
+      right: 0.5rem;
     }
 
     .play-pause-btn {
@@ -570,6 +615,13 @@
       top: 0.75rem;
       right: 0.75rem;
     }
+
+    .progress-bar {
+      bottom: 0.5rem;
+      left: 0.75rem;
+      right: 0.75rem;
+      margin: 0 0.75rem;
+    }
   }
 
   @media (max-width: 480px) {
@@ -577,11 +629,39 @@
       --image-width: 150px;
       --image-height: 150px;
       --gap-size: 0.5rem;
-      padding: 1rem 0.5rem;
+      padding: 2rem 1rem 2.5rem 1rem;
+    }
+
+    .carousel-wrapper {
+      padding: 0 0.5rem;
+    }
+
+    .carousel-track {
+      padding: 0.5rem 0 1.25rem 0;
     }
 
     .image-container {
       padding: 0.75rem;
+    }
+
+    .carousel-arrow {
+      width: 2rem;
+      height: 2rem;
+    }
+
+    .carousel-arrow--prev {
+      left: 0.25rem;
+    }
+
+    .carousel-arrow--next {
+      right: 0.25rem;
+    }
+
+    .progress-bar {
+      bottom: 0.25rem;
+      left: 0.5rem;
+      right: 0.5rem;
+      margin: 0 0.5rem;
     }
   }
 
@@ -589,7 +669,7 @@
   @media (prefers-reduced-motion: reduce) {
     .carousel-track,
     .image-container,
-    .carousel-dot,
+    .carousel-arrow,
     .play-pause-btn,
     .progress-fill {
       transition: none;
@@ -598,6 +678,11 @@
     .image-container:hover,
     .image-container:focus-visible {
       transform: none;
+    }
+
+    .carousel-arrow:hover,
+    .carousel-arrow:focus-visible {
+      transform: translateY(-50%);
     }
 
     .image-container::before {
@@ -613,10 +698,6 @@
   @media (prefers-contrast: high) {
     .image-container {
       border-color: currentColor;
-    }
-
-    .carousel-dot {
-      border: 2px solid currentColor;
     }
 
     .play-pause-btn {
