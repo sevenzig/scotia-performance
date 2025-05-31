@@ -25,7 +25,6 @@
   let currentIndex = $state(0);
   let isLoading = $state(true);
   let isHovered = $state(false);
-  let isPaused = $state(false);
   let carouselContainer: HTMLElement;
   let isResetting = $state(false);
 
@@ -149,17 +148,10 @@
     if (autoAdvanceTimer) clearInterval(autoAdvanceTimer);
     
     autoAdvanceTimer = setInterval(() => {
-      if (!isPaused && !isHovered && isCarouselReady) {
+      if (!isHovered && isCarouselReady) {
         goToNext();
       }
     }, autoAdvanceInterval);
-  }
-
-  function stopAutoAdvance() {
-    if (autoAdvanceTimer) {
-      clearInterval(autoAdvanceTimer);
-      autoAdvanceTimer = null;
-    }
   }
 
   // Event handlers
@@ -175,10 +167,6 @@
         event.preventDefault();
         goToNext();
         break;
-      case ' ':
-        event.preventDefault();
-        isPaused = !isPaused;
-        break;
     }
   }
 
@@ -189,7 +177,12 @@
   // Lifecycle effects
   onMount(() => {
     loadImages();
-    return () => stopAutoAdvance();
+    return () => {
+      if (autoAdvanceTimer) {
+        clearInterval(autoAdvanceTimer);
+        autoAdvanceTimer = null;
+      }
+    };
   });
 
   // Effect for auto-advance
@@ -198,7 +191,12 @@
       startAutoAdvance();
     }
     
-    return () => stopAutoAdvance();
+    return () => {
+      if (autoAdvanceTimer) {
+        clearInterval(autoAdvanceTimer);
+        autoAdvanceTimer = null;
+      }
+    };
   });
 
   // Extract manufacturer name from filename for alt text
@@ -287,24 +285,6 @@
         {/each}
       </div>
 
-      <!-- Play/Pause control -->
-      <button
-        class="play-pause-btn"
-        onclick={() => isPaused = !isPaused}
-        aria-label={isPaused ? 'Resume carousel' : 'Pause carousel'}
-        title={isPaused ? 'Resume carousel' : 'Pause carousel'}
-      >
-        {#if isPaused}
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M8 5v14l11-7z"/>
-          </svg>
-        {:else}
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
-          </svg>
-        {/if}
-      </button>
-
       <!-- Progress indicator -->
       <div class="progress-bar">
         <div 
@@ -334,7 +314,7 @@
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 3rem 2.5rem 3.5rem 2.5rem;
+    padding: 1rem 2.5rem 3.5rem 2.5rem;
     position: relative;
     outline: none;
     background-color: #f9fafb;
@@ -525,39 +505,6 @@
     z-index: 1;
   }
 
-  /* Play/Pause Button */
-  .play-pause-btn {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: 50%;
-    border: none;
-    background-color: rgba(255, 255, 255, 0.9);
-    color: var(--primary-color);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    backdrop-filter: blur(8px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    z-index: 3;
-  }
-
-  .play-pause-btn:hover,
-  .play-pause-btn:focus-visible {
-    background-color: white;
-    transform: scale(1.1);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  }
-
-  .play-pause-btn:focus-visible {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 2px;
-  }
-
   /* Progress Bar */
   .progress-bar {
     position: absolute;
@@ -607,13 +554,6 @@
 
     .carousel-arrow--next {
       right: 0.5rem;
-    }
-
-    .play-pause-btn {
-      width: 2rem;
-      height: 2rem;
-      top: 0.75rem;
-      right: 0.75rem;
     }
 
     .progress-bar {
@@ -670,7 +610,6 @@
     .carousel-track,
     .image-container,
     .carousel-arrow,
-    .play-pause-btn,
     .progress-fill {
       transition: none;
     }
@@ -700,7 +639,7 @@
       border-color: currentColor;
     }
 
-    .play-pause-btn {
+    .carousel-arrow {
       border: 2px solid currentColor;
     }
   }
