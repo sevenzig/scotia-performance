@@ -6,6 +6,7 @@
   import ServicesOffered from '$lib/components/ServicesOffered.svelte';
   import DiagnosticHelp from '$lib/components/DiagnosticHelp.svelte';
   import PerformanceServices from '$lib/components/PerformanceServices.svelte';
+  import HomepageManufacturers from '$lib/components/HomepageManufacturers.svelte';
   import Reviews from '$lib/components/Reviews.svelte';
   import RotatingTagline from '$lib/components/RotatingTagline.svelte';
   
@@ -47,6 +48,9 @@
 
 <!-- Services Section - Using the ServicesOffered component -->
 <ServicesOffered />
+
+<!-- Manufacturers Section - Using the HomepageManufacturers component -->
+<HomepageManufacturers />
 
 <!-- Diagnostic Help Section - Using the DiagnosticHelp component -->
 <DiagnosticHelp />
