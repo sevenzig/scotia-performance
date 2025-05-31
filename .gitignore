@@ -6,6 +6,7 @@ node_modules
 .netlify
 .wrangler
 stats.html
+*.log
 
 # Svelte-specific
 /node_modules/
