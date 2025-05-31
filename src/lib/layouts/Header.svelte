@@ -29,15 +29,7 @@
   // Toggle mobile menu
   function handleMobileMenuToggle() {
     isMobileMenuOpen = !isMobileMenuOpen;
-    
-    // Handle body scrolling - only in browser
-    if (mounted && typeof document !== 'undefined') {
-      if (isMobileMenuOpen) {
-        document.body.classList.add('menu-open');
-      } else {
-        document.body.classList.remove('menu-open');
-      }
-    }
+    // DOM body class management is now handled by $effect
   }
   
   // Close menus when clicking outside
@@ -84,15 +76,18 @@
   onMount(() => {
     mounted = true;
     
-    // Set up click listener for outside clicks
-    document.addEventListener('click', handleClickOutside as EventListener);
-    
-    // Set up scroll listener
-    window.addEventListener('scroll', handleScroll);
-    
-    // Initial update of hours and scroll state
-    updateBusinessHours();
-    handleScroll();
+    // Defer DOM operations to prevent hydration conflicts
+    requestAnimationFrame(() => {
+      // Set up click listener for outside clicks
+      document.addEventListener('click', handleClickOutside as EventListener);
+      
+      // Set up scroll listener
+      window.addEventListener('scroll', handleScroll);
+      
+      // Initial update of hours and scroll state
+      updateBusinessHours();
+      handleScroll();
+    });
     
     // Set up interval to update hours
     const interval = setInterval(updateBusinessHours, 60000);
@@ -103,6 +98,17 @@
       window.removeEventListener('scroll', handleScroll);
       clearInterval(interval);
     };
+  });
+
+  // Use $effect for reactive DOM body class management
+  $effect(() => {
+    if (mounted && typeof document !== 'undefined') {
+      if (isMobileMenuOpen) {
+        document.body.classList.add('menu-open');
+      } else {
+        document.body.classList.remove('menu-open');
+      }
+    }
   });
   
     // Remove debug effects to prevent hydration mismatches
@@ -116,8 +122,6 @@
     }
   </style>
 </svelte:head>
-
-<svelte:body class:menu-open={isMobileMenuOpen} />
 
 <header 
   class="site-header" 
@@ -203,13 +207,17 @@
           <div class="info-card">
             <div class="info-item">
               <span class="icon-wrapper">
-                <Clock size={20} />
+                {#if mounted}
+                  <Clock size={20} />
+                {/if}
               </span>
               <span class="text">{hoursText}</span>
             </div>
             <div class="info-item">
               <span class="icon-wrapper">
-                <MapPin size={20} />
+                {#if mounted}
+                  <MapPin size={20} />
+                {/if}
               </span>
               <a href="https://www.google.com/maps/search/?api=1&query=24+Sacandaga+Rd,+Scotia,+NY+12302" class="text address-link">24 Sacandaga Rd, Scotia</a>
             </div>
@@ -295,13 +303,17 @@
     <div class="bottom-nav">
       <div class="info-item">
         <span class="icon-wrapper">
-          <Clock size={18} />
+          {#if mounted}
+            <Clock size={18} />
+          {/if}
         </span>
         <span class="hours-text">{hoursText}</span>
       </div>
       <div class="info-item">
         <span class="icon-wrapper">
-          <MapPin size={18} />
+          {#if mounted}
+            <MapPin size={18} />
+          {/if}
         </span>
         <a href="https://www.google.com/maps/search/?api=1&query=24+Sacandaga+Rd,+Scotia,+NY+12302">24 Sacandaga Rd, Scotia</a>
       </div>
