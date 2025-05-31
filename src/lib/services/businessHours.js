@@ -34,7 +34,7 @@ export const businessHoursService = {
     
     // Basic implementation
     const isOpen = day >= 1 && day <= 5 && hours >= 8 && hours < 17;
-    const message = isOpen ? "Open today until 5PM" : "Currently closed";
+    const message = isOpen ? "Open today until 5PM" : "Currently closed until 8AM Monday";
     
     return { isOpen, message };
   }
