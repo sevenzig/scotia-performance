@@ -312,14 +312,13 @@
   /* Main Container */
   .manufacturer-carousel {
     width: 100%;
-    max-width: 1200px;
+    max-width: 100vw;
     margin: 0 auto;
     padding: 1rem 2.5rem 3.5rem 2.5rem;
     position: relative;
     outline: none;
     background-color: #f9fafb;
     border-radius: var(--border-radius);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
 
   /* Loading State */
