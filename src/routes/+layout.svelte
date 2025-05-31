@@ -20,7 +20,7 @@
 	
 	// Props for Svelte 5 snippet pattern
 	const { children } = $props<{
-		children?: () => any;
+		children: import('svelte').Snippet;
 	}>();
 	
 	let isLoaded = $state(false);
