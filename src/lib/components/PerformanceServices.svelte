@@ -39,15 +39,15 @@
         <span class="stat-label">Years Experience</span>
       </div>
       <div class="stat-item">
-        <span class="stat-value">2,500+</span>
-        <span class="stat-label">Vehicles Tuned</span>
+        <span class="stat-value">1,500+</span>
+        <span class="stat-label">Vehicles Serviced</span>
       </div>
       <div class="stat-item">
-        <span class="stat-value">75+</span>
-        <span class="stat-label">HP Gained Avg</span>
+        <span class="stat-value">25+</span>
+        <span class="stat-label">Race Builds</span>
       </div>
       <div class="stat-item">
-        <span class="stat-value">4.9★</span>
+        <span class="stat-value">4.7★</span>
         <span class="stat-label">Customer Rating</span>
       </div>
     </div>
