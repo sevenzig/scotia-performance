@@ -1,5 +1,6 @@
 <script lang="ts">
   import { MapPin, Phone, Mail } from '@lucide/svelte';
+  import { onMount } from 'svelte';
 
   // Business info with customizable content using Svelte 5 runes
   type BusinessHours = {
@@ -20,6 +21,12 @@
     email: string;
     businessHours: BusinessHours[];
   }>();
+
+  let mounted = $state(false);
+
+  onMount(() => {
+    mounted = true;
+  });
 </script>
 
 <style>
@@ -130,7 +137,9 @@
               <h3 class="section-title">Location</h3>
               <div class="contact-item">
                 <div class="contact-icon">
-                  <MapPin size={24} />
+                  {#if mounted}
+                    <MapPin size={24} />
+                  {/if}
                 </div>
                 <span>{address}</span>
               </div>
@@ -140,13 +149,17 @@
               <h3 class="section-title">Contact</h3>
               <div class="contact-item">
                 <div class="contact-icon">
-                  <Phone size={24} />
+                  {#if mounted}
+                    <Phone size={24} />
+                  {/if}
                 </div>
                 <a href="tel:{phone.replace(/\D/g, '')}" class="hover:underline">{phone}</a>
               </div>
               <div class="contact-item">
                 <div class="contact-icon">
-                  <Mail size={24} />
+                  {#if mounted}
+                    <Mail size={24} />
+                  {/if}
                 </div>
                 <a href="mailto:{email}" class="hover:underline">{email}</a>
               </div>
