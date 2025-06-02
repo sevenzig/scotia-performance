@@ -31,6 +31,16 @@
     isMobileMenuOpen = !isMobileMenuOpen;
     // DOM body class management is now handled by $effect
   }
+
+  // Close mega menu when link is clicked
+  function closeMegaMenu() {
+    isServicesMenuOpen = false;
+  }
+
+  // Close mobile menu when link is clicked
+  function closeMobileMenu() {
+    isMobileMenuOpen = false;
+  }
   
   // Close menus when clicking outside
   function handleClickOutside(event: Event) {
@@ -155,49 +165,49 @@
         <div class="mega-menu-content">
           <!-- Performance & Tuning -->
           <div class="menu-section">
-            <h3><a href="/services/performance">Performance & Tuning</a></h3>
+            <h3><a href="/services/performance" onclick={closeMegaMenu}>Performance & Tuning</a></h3>
             <ul>
-              <li><a href="/services/performance/engine-performance">Engine Performance</a></li>
-              <li><a href="/services/performance/drivetrain-transmission">Drivetrain & Transmission</a></li>
-              <li><a href="/services/performance/suspension-handling">Suspension & Handling</a></li>
-              <li><a href="/services/performance/braking-systems">Braking Systems</a></li>
-              <li><a href="/services/performance/engine-building">Engine Building</a></li>
+              <li><a href="/services/performance#engine-performance" onclick={closeMegaMenu}>Engine Performance</a></li>
+              <li><a href="/services/performance#drivetrain-transmission" onclick={closeMegaMenu}>Drivetrain & Transmission</a></li>
+              <li><a href="/services/performance#suspension-handling" onclick={closeMegaMenu}>Suspension & Handling</a></li>
+              <li><a href="/services/performance#braking-systems" onclick={closeMegaMenu}>Braking Systems</a></li>
+              <li><a href="/services/performance#engine-building" onclick={closeMegaMenu}>Engine Building</a></li>
             </ul>
           </div>
 
           <!-- Auto Repair -->
           <div class="menu-section">
-            <h3><a href="/services/repair">Auto Repair</a></h3>
+            <h3><a href="/services/repair" onclick={closeMegaMenu}>Auto Repair</a></h3>
             <ul>
-              <li><a href="/services/repair/brake-repair">Brake Repair</a></li>
-              <li><a href="/services/repair/engine-repair">Engine Repair</a></li>
-              <li><a href="/services/repair/transmission-repair">Transmission Repair</a></li>
-              <li><a href="/services/repair/ac-service">AC Service</a></li>
-              <li><a href="/services/repair/electrical-repair">Electrical Repair</a></li>
+              <li><a href="/services/repair#brake-repair" onclick={closeMegaMenu}>Brake Repair</a></li>
+              <li><a href="/services/repair#engine-repair" onclick={closeMegaMenu}>Engine Repair</a></li>
+              <li><a href="/services/repair#transmission-repair" onclick={closeMegaMenu}>Transmission Repair</a></li>
+              <li><a href="/services/repair#ac-service" onclick={closeMegaMenu}>AC Service</a></li>
+              <li><a href="/services/repair#electrical-repair" onclick={closeMegaMenu}>Electrical Repair</a></li>
             </ul>
           </div>
 
           <!-- Maintenance -->
           <div class="menu-section">
-            <h3><a href="/services/maintenance">Maintenance</a></h3>
+            <h3><a href="/services/maintenance" onclick={closeMegaMenu}>Maintenance</a></h3>
             <ul>
-              <li><a href="/services/maintenance/oil-change">Oil Change Services</a></li>
-              <li><a href="/services/maintenance/brake-maintenance">Brake Maintenance</a></li>
-              <li><a href="/services/maintenance/scheduled-maintenance">Scheduled Maintenance</a></li>
-              <li><a href="/services/maintenance/state-inspection">State Inspection</a></li>
-              <li><a href="/services/maintenance/wheel-alignment">Wheel Alignment</a></li>
+              <li><a href="/services/maintenance#oil-change" onclick={closeMegaMenu}>Oil Change Services</a></li>
+              <li><a href="/services/maintenance#brake-maintenance" onclick={closeMegaMenu}>Brake Maintenance</a></li>
+              <li><a href="/services/maintenance#scheduled-maintenance" onclick={closeMegaMenu}>Scheduled Maintenance</a></li>
+              <li><a href="/services/maintenance#state-inspection" onclick={closeMegaMenu}>State Inspection</a></li>
+              <li><a href="/services/maintenance#wheel-alignment" onclick={closeMegaMenu}>Wheel Alignment</a></li>
             </ul>
           </div>
 
           <!-- Tires & Wheels -->
           <div class="menu-section">
-            <h3><a href="/services/tires-wheels">Tires & Wheels</a></h3>
+            <h3><a href="/services/tires-wheels" onclick={closeMegaMenu}>Tires & Wheels</a></h3>
             <ul>
-              <li><a href="/services/tires-wheels/tire-sales">Tire Sales</a></li>
-              <li><a href="/services/tires-wheels/wheel-alignment">Wheel Alignment</a></li>
-              <li><a href="/services/tires-wheels/tire-rotation">Tire Rotation</a></li>
-              <li><a href="/services/tires-wheels/wheel-balancing">Wheel Balancing</a></li>
-              <li><a href="/services/tires-wheels/tpms-service">TPMS Service</a></li>
+              <li><a href="/services/tires-wheels#tire-sales" onclick={closeMegaMenu}>Tire Sales</a></li>
+              <li><a href="/services/tires-wheels#wheel-alignment" onclick={closeMegaMenu}>Wheel Alignment</a></li>
+              <li><a href="/services/tires-wheels#tire-rotation" onclick={closeMegaMenu}>Tire Rotation</a></li>
+              <li><a href="/services/tires-wheels#wheel-balancing" onclick={closeMegaMenu}>Wheel Balancing</a></li>
+              <li><a href="/services/tires-wheels#tpms-service" onclick={closeMegaMenu}>TPMS Service</a></li>
             </ul>
           </div>
         </div>
@@ -227,9 +237,9 @@
     </div>
 
     <!-- Rest of nav items -->
-    <a href="/about" class="nav-link">About</a>
-    <a href="/gallery" class="nav-link">Gallery</a>
-    <a href="tel:5182801698" class="header-cta">Call Us: (518) 280-1698</a>
+    <a href="/about" class="nav-link" onclick={closeMegaMenu}>About</a>
+    <a href="/gallery" class="nav-link" onclick={closeMegaMenu}>Gallery</a>
+    <a href="tel:5182801698" class="header-cta" onclick={closeMegaMenu}>Call Us: (518) 280-1698</a>
   </nav>
 
   <!-- Mobile Navigation Toggle -->
@@ -259,42 +269,42 @@
   <div class="mobile-menu-content">
     <div class="menu-sections-grid">
       <div class="menu-section">
-        <h3><a href="/services/performance">Performance & Tuning</a></h3>
+        <h3><a href="/services/performance" onclick={closeMobileMenu}>Performance & Tuning</a></h3>
         <ul>
-          <li><a href="/services/performance/engine-performance">Engine Performance</a></li>
-          <li><a href="/services/performance/drivetrain-transmission">Drivetrain & Transmission</a></li>
-          <li><a href="/services/performance/suspension-handling">Suspension & Handling</a></li>
-          <li><a href="/services/performance" class="see-all">See All Performance Services</a></li>
+          <li><a href="/services/performance#engine-performance" onclick={closeMobileMenu}>Engine Performance</a></li>
+          <li><a href="/services/performance#drivetrain-transmission" onclick={closeMobileMenu}>Drivetrain & Transmission</a></li>
+          <li><a href="/services/performance#suspension-handling" onclick={closeMobileMenu}>Suspension & Handling</a></li>
+          <li><a href="/services/performance" class="see-all" onclick={closeMobileMenu}>See All Performance Services</a></li>
         </ul>
       </div>
 
       <div class="menu-section">
-        <h3><a href="/services/repair">Auto Repair</a></h3>
+        <h3><a href="/services/repair" onclick={closeMobileMenu}>Auto Repair</a></h3>
         <ul>
-          <li><a href="/services/repair/brake-repair">Brake Repair</a></li>
-          <li><a href="/services/repair/engine-repair">Engine Repair</a></li>
-          <li><a href="/services/repair/transmission-repair">Transmission Repair</a></li>
-          <li><a href="/services/repair" class="see-all">See All Repair Services</a></li>
+          <li><a href="/services/repair#brake-repair" onclick={closeMobileMenu}>Brake Repair</a></li>
+          <li><a href="/services/repair#engine-repair" onclick={closeMobileMenu}>Engine Repair</a></li>
+          <li><a href="/services/repair#transmission-repair" onclick={closeMobileMenu}>Transmission Repair</a></li>
+          <li><a href="/services/repair" class="see-all" onclick={closeMobileMenu}>See All Repair Services</a></li>
         </ul>
       </div>
 
       <div class="menu-section">
-        <h3><a href="/services/maintenance">Maintenance</a></h3>
+        <h3><a href="/services/maintenance" onclick={closeMobileMenu}>Maintenance</a></h3>
         <ul>
-          <li><a href="/services/maintenance/oil-change">Oil Change Services</a></li>
-          <li><a href="/services/maintenance/brake-maintenance">Brake Maintenance</a></li>
-          <li><a href="/services/maintenance/scheduled-maintenance">Scheduled Maintenance</a></li>
-          <li><a href="/services/maintenance" class="see-all">See All Maintenance Services</a></li>
+          <li><a href="/services/maintenance#oil-change" onclick={closeMobileMenu}>Oil Change Services</a></li>
+          <li><a href="/services/maintenance#brake-maintenance" onclick={closeMobileMenu}>Brake Maintenance</a></li>
+          <li><a href="/services/maintenance#scheduled-maintenance" onclick={closeMobileMenu}>Scheduled Maintenance</a></li>
+          <li><a href="/services/maintenance" class="see-all" onclick={closeMobileMenu}>See All Maintenance Services</a></li>
         </ul>
       </div>
 
       <div class="menu-section">
-        <h3><a href="/services">Quick Links</a></h3>
+        <h3><a href="/services" onclick={closeMobileMenu}>Quick Links</a></h3>
         <ul>
-          <li><a href="/services/tires-wheels">Tires & Wheels</a></li>
-          <li><a href="/about">About</a></li>
-          <li><a href="/gallery">Gallery</a></li>
-          <li><a href="/services" class="see-all">View All Services</a></li>
+          <li><a href="/services/tires-wheels" onclick={closeMobileMenu}>Tires & Wheels</a></li>
+          <li><a href="/about" onclick={closeMobileMenu}>About</a></li>
+          <li><a href="/gallery" onclick={closeMobileMenu}>Gallery</a></li>
+          <li><a href="/services" class="see-all" onclick={closeMobileMenu}>View All Services</a></li>
         </ul>
       </div>
     </div>
