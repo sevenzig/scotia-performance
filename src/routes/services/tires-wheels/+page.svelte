@@ -4,13 +4,13 @@
   import CallToAction from '$lib/components/CallToAction.svelte';
   import Button from '$lib/components/Button.svelte';
   import { companyInfo } from '$lib/data/companyInfo';
-  import { maintenanceServices, featuredMaintenanceServices } from '$lib/data/maintenanceServices';
+  import { tiresWheelsServices, featuredTireWheelServices } from '$lib/data/tiresWheelsServices';
   
   // State management with Svelte 5 runes
   let openAccordionItems = $state(new Set<string>());
   
   // Derived values for better performance
-  const serviceIds = $derived(maintenanceServices.map(service => service.id));
+  const serviceIds = $derived(tiresWheelsServices.map(service => service.id));
   const isValidService = $derived((hash: string) => serviceIds.includes(hash));
 
   // Accordion interaction handlers
@@ -85,31 +85,31 @@
 </script>
 
 <svelte:head>
-  <title>Maintenance Services | Scotia Performance Auto</title>
-  <meta name="description" content="Professional auto maintenance services including oil changes, brake service, scheduled maintenance, and state inspections from Scotia Performance Auto.">
-  <meta name="keywords" content="auto maintenance, oil change, brake service, state inspection, scheduled maintenance, Scotia NY, automotive repair" />
+  <title>Tire & Wheel Services | Scotia Performance Auto</title>
+  <meta name="description" content="Professional tire and wheel services including performance tires, custom wheels, precision alignment, and track preparation from Scotia Performance Auto.">
+  <meta name="keywords" content="performance tires, custom wheels, wheel alignment, tire installation, track tires, Scotia NY, automotive performance" />
   
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Maintenance Services | Scotia Performance Auto" />
-  <meta property="og:description" content="Professional automotive maintenance services including oil changes, brake service, and scheduled maintenance in Scotia, NY." />
-  <meta property="og:image" content="/images/maintenance-hero.jpg" />
-  <meta property="og:url" content="https://scotiaperformance.com/services/maintenance" />
+  <meta property="og:title" content="Tire & Wheel Services | Scotia Performance Auto" />
+  <meta property="og:description" content="Professional tire and wheel services including performance tires, custom wheels, and precision alignment in Scotia, NY." />
+  <meta property="og:image" content="/images/tires-wheels-hero.jpg" />
+  <meta property="og:url" content="https://scotiaperformance.com/services/tires-wheels" />
   
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image" />
-  <meta property="twitter:title" content="Maintenance Services | Scotia Performance Auto" />
-  <meta property="twitter:description" content="Professional automotive maintenance services including oil changes, brake service, and scheduled maintenance in Scotia, NY." />
-  <meta property="twitter:image" content="/images/maintenance-hero.jpg" />
+  <meta property="twitter:title" content="Tire & Wheel Services | Scotia Performance Auto" />
+  <meta property="twitter:description" content="Professional tire and wheel services including performance tires, custom wheels, and precision alignment in Scotia, NY." />
+  <meta property="twitter:image" content="/images/tires-wheels-hero.jpg" />
   
   <!-- Structured Data for SEO -->
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "AutoRepair",
-      "name": "Scotia Performance - Maintenance Services",
-      "description": "Professional automotive maintenance services including oil changes, brake service, scheduled maintenance, and state inspections",
-      "url": "https://scotiaperformance.com/services/maintenance",
+      "name": "Scotia Performance - Tire & Wheel Services",
+      "description": "Professional tire and wheel services including performance tires, custom wheels, precision alignment, and track preparation",
+      "url": "https://scotiaperformance.com/services/tires-wheels",
       "telephone": "(518) 280-1698",
       "address": {
         "@type": "PostalAddress",
@@ -124,7 +124,7 @@
         "latitude": "42.8264",
         "longitude": "-73.9593"
       },
-      "serviceType": ["Oil Change", "Brake Service", "State Inspection", "Scheduled Maintenance", "Automotive Repair"],
+      "serviceType": ["Performance Tires", "Custom Wheels", "Wheel Alignment", "Tire Installation", "Track Preparation"],
       "areaServed": {
         "@type": "Place",
         "name": "Scotia, NY and surrounding areas"
@@ -135,31 +135,31 @@
 
 <!-- Hero Banner Section -->
 <HeroBanner
-  title="Professional Maintenance Services"
-  subtitle="Keep Your Vehicle Running Smoothly"
-  description="Expert automotive maintenance services to ensure your vehicle's reliability, safety, and longevity. From routine oil changes to comprehensive inspections, our ASE-certified technicians deliver quality service you can trust."
-  buttonText="Schedule Service"
+  title="Tire & Wheel Services"
+  subtitle="Performance Tires & Custom Wheels"
+  description="Complete tire and wheel services from performance compounds to lightweight racing wheels. Our expertise covers everything from street performance to track-day preparation with professional installation and precision alignment."
+  buttonText="Get Quote"
   buttonHref="tel:5182801698"
-  backgroundImage="/images/maintenance-hero.jpg"
+  backgroundImage="/images/tires-wheels-hero.jpg"
 />
 
-<main class="maintenance-page">
+<main class="tires-wheels-page">
   <!-- Stats Section -->
   <section class="stats-section" aria-labelledby="stats-heading">
     <div class="container">
-      <h2 id="stats-heading" class="visually-hidden">Maintenance Statistics</h2>
+      <h2 id="stats-heading" class="visually-hidden">Tire & Wheel Statistics</h2>
       <div class="stats-grid">
         <div class="stat-card">
           <span class="stat-value">15+</span>
           <span class="stat-label">Years Experience</span>
         </div>
         <div class="stat-card">
-          <span class="stat-value">5,000+</span>
-          <span class="stat-label">Vehicles Serviced</span>
+          <span class="stat-value">2,000+</span>
+          <span class="stat-label">Wheels & Tires Installed</span>
         </div>
         <div class="stat-card">
-          <span class="stat-value">ASE</span>
-          <span class="stat-label">Certified Technicians</span>
+          <span class="stat-value">Track</span>
+          <span class="stat-label">Day Specialists</span>
         </div>
         <div class="stat-card">
           <span class="stat-value">4.9★</span>
@@ -172,11 +172,11 @@
   <!-- Featured Services Cards -->
   <section class="featured-services" aria-labelledby="featured-heading">
     <div class="container">
-      <h2 id="featured-heading">Our Most Popular Maintenance Services</h2>
-      <p class="section-subtitle">Essential maintenance services to keep your vehicle safe, reliable, and performing at its best</p>
+      <h2 id="featured-heading">Our Premium Tire & Wheel Services</h2>
+      <p class="section-subtitle">Expert tire and wheel services to enhance your vehicle's performance, handling, and appearance</p>
       
       <div class="services-grid">
-        {#each featuredMaintenanceServices as service}
+        {#each featuredTireWheelServices as service}
           <ServiceCard 
             title={service.title}
             description={service.description}
@@ -191,11 +191,11 @@
   <!-- Comprehensive Services Accordion -->
   <section class="services-accordion" aria-labelledby="accordion-heading">
     <div class="container">
-      <h2 id="accordion-heading">Complete Maintenance Services Catalog</h2>
-      <p class="section-subtitle">Explore our full range of automotive maintenance and repair services</p>
+      <h2 id="accordion-heading">Complete Tire & Wheel Services Catalog</h2>
+      <p class="section-subtitle">Explore our full range of tire and wheel services for street, track, and show applications</p>
       
       <div class="accordion-container">
-        {#each maintenanceServices as service}
+        {#each tiresWheelsServices as service}
           <div 
             class="accordion-item" 
             id={service.id}
@@ -218,9 +218,18 @@
               <div class="accordion-text">
                 <h3>{service.title}</h3>
                 <p>{service.description}</p>
-                {#if service.interval}
-                  <span class="service-interval">Recommended: {service.interval}</span>
-                {/if}
+                <div class="service-badges">
+                  {#if service.serviceTime}
+                    <span class="time-badge">
+                      Service Time: {service.serviceTime}
+                    </span>
+                  {/if}
+                  {#if service.recommendedFor && service.recommendedFor.length > 0}
+                    <span class="application-badge">
+                      Best For: {service.recommendedFor[0]}
+                    </span>
+                  {/if}
+                </div>
               </div>
               <div class="accordion-toggle" aria-hidden="true">
                 <svg 
@@ -249,14 +258,43 @@
                     <li>{serviceItem}</li>
                   {/each}
                 </ul>
-                {#if service.estimatedTime}
-                  <div class="service-details">
-                    <p><strong>Estimated Time:</strong> {service.estimatedTime}</p>
+                
+                {#if service.performanceFeatures && service.performanceFeatures.length > 0}
+                  <div class="performance-features">
+                    <h4>Performance Features:</h4>
+                    <ul class="features-list">
+                      {#each service.performanceFeatures as feature}
+                        <li>{feature}</li>
+                      {/each}
+                    </ul>
                   </div>
                 {/if}
+                
+                {#if service.benefits && service.benefits.length > 0}
+                  <div class="benefits-section">
+                    <h4>Key Benefits:</h4>
+                    <ul class="benefits-list">
+                      {#each service.benefits as benefit}
+                        <li>{benefit}</li>
+                      {/each}
+                    </ul>
+                  </div>
+                {/if}
+                
+                {#if service.recommendedFor && service.recommendedFor.length > 0}
+                  <div class="recommended-for">
+                    <h4>Recommended For:</h4>
+                    <div class="recommendation-tags">
+                      {#each service.recommendedFor as recommendation}
+                        <span class="recommendation-tag">{recommendation}</span>
+                      {/each}
+                    </div>
+                  </div>
+                {/if}
+                
                 <div class="accordion-actions">
                   <Button variant="primary" onClick={() => requestQuote()}>
-                    Schedule Service
+                    Get Quote
                   </Button>
                 </div>
               </div>
@@ -270,11 +308,11 @@
   <!-- Call to Action -->
   <div class="cta-wrapper">
     <CallToAction 
-      title="Ready to Schedule Your Maintenance?"
-      description="Keep your vehicle running at its best with professional maintenance from Scotia Performance. Our certified technicians are ready to help you maintain your vehicle's reliability and safety."
+      title="Ready to Upgrade Your Wheels & Tires?"
+      description="Transform your vehicle's performance and appearance with professional tire and wheel services from Scotia Performance. From track-day preparation to custom wheel packages, we have the expertise to meet your needs."
       phone="(518) 280-1698"
-      buttonText="Schedule Service"
-      secondaryAction={() => "View Service Specials"}
+      buttonText="Get Quote"
+      secondaryAction={() => "View Gallery"}
       fullWidth={true}
       noBorderRadius={true}
       customMargin="0"
@@ -288,7 +326,7 @@
   @use '../../../scss/core/variables' as *;
   @use '../../../scss/core/mixins' as *;
 
-  .maintenance-page {
+  .tires-wheels-page {
     .container {
       width: 100%;
       max-width: 1200px;
@@ -600,12 +638,19 @@
       @include body-text;
       color: $scotia-gray;
       line-height: 1.6;
-      margin: 0 0 $spacing-2;
+      margin: 0 0 $spacing-3;
     }
 
-    .service-interval {
+    .service-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: $spacing-2;
+      margin-top: $spacing-2;
+    }
+
+    .time-badge, .application-badge {
       @include body-text;
-      font-size: $font-size-sm;
+      font-size: $font-size-xs;
       color: $scotia-blue;
       font-weight: $font-weight-medium;
       background-color: rgba($scotia-blue, 0.1);
@@ -639,7 +684,7 @@
     @include transition(max-height);
 
     &.expanded {
-      max-height: 1000px;
+      max-height: 2000px;
     }
   }
 
@@ -656,7 +701,7 @@
     }
   }
 
-  .services-list {
+  .services-list, .features-list, .benefits-list {
     list-style: none;
     margin: 0 0 $spacing-6;
     padding: 0;
@@ -679,17 +724,66 @@
     }
   }
 
-  .service-details {
-    margin-bottom: $spacing-4;
-    padding: $spacing-3;
+  .performance-features {
+    margin-bottom: $spacing-6;
+    padding: $spacing-4;
     background-color: rgba($scotia-blue, 0.05);
     border-radius: 0.5rem;
+    border-left: 4px solid $scotia-blue;
 
-    p {
-      @include body-text;
-      margin: 0;
-      color: $scotia-gray;
+    h4 {
+      margin-bottom: $spacing-3;
+      color: $scotia-blue;
+    }
+
+    .features-list li::before {
+      content: "⚡";
       font-size: $font-size-sm;
+    }
+  }
+
+  .benefits-section {
+    margin-bottom: $spacing-6;
+    padding: $spacing-4;
+    background-color: rgba(#22c55e, 0.05);
+    border-radius: 0.5rem;
+    border-left: 4px solid #22c55e;
+
+    h4 {
+      margin-bottom: $spacing-3;
+      color: #22c55e;
+    }
+
+    .benefits-list li::before {
+      content: "✨";
+      color: #22c55e;
+      font-size: $font-size-sm;
+    }
+  }
+
+  .recommended-for {
+    margin-bottom: $spacing-6;
+
+    h4 {
+      margin-bottom: $spacing-3;
+      color: $scotia-blue;
+    }
+
+    .recommendation-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: $spacing-2;
+    }
+
+    .recommendation-tag {
+      @include body-text;
+      font-size: $font-size-xs;
+      font-weight: $font-weight-medium;
+      background-color: rgba($scotia-blue, 0.1);
+      color: $scotia-blue;
+      padding: 0.375rem 0.75rem;
+      border-radius: 1rem;
+      border: 1px solid rgba($scotia-blue, 0.2);
     }
   }
 

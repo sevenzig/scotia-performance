@@ -18,6 +18,7 @@
       <div class="footer-section">
         <h3>Service Area</h3>
         <p>Scotia, Schenectady, Glenville, Rotterdam, Niskayuna, and surrounding areas.</p>
+        <p><a href="/location">Get Directions</a></p>
       </div>
       <div class="footer-section">
         <h3>Quick Links</h3>

@@ -4,13 +4,13 @@
   import CallToAction from '$lib/components/CallToAction.svelte';
   import Button from '$lib/components/Button.svelte';
   import { companyInfo } from '$lib/data/companyInfo';
-  import { maintenanceServices, featuredMaintenanceServices } from '$lib/data/maintenanceServices';
+  import { repairServices, featuredRepairServices } from '$lib/data/repairService';
   
   // State management with Svelte 5 runes
   let openAccordionItems = $state(new Set<string>());
   
   // Derived values for better performance
-  const serviceIds = $derived(maintenanceServices.map(service => service.id));
+  const serviceIds = $derived(repairServices.map(service => service.id));
   const isValidService = $derived((hash: string) => serviceIds.includes(hash));
 
   // Accordion interaction handlers
@@ -82,34 +82,45 @@
       window.removeEventListener('hashchange', handleHashChange);
     };
   });
+
+  // Helper function to get urgency badge color
+  function getUrgencyColor(urgency?: string) {
+    switch (urgency) {
+      case 'Critical': return 'bg-red-100 text-red-800';
+      case 'High': return 'bg-orange-100 text-orange-800';
+      case 'Medium': return 'bg-yellow-100 text-yellow-800';
+      case 'Low': return 'bg-green-100 text-green-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  }
 </script>
 
 <svelte:head>
-  <title>Maintenance Services | Scotia Performance Auto</title>
-  <meta name="description" content="Professional auto maintenance services including oil changes, brake service, scheduled maintenance, and state inspections from Scotia Performance Auto.">
-  <meta name="keywords" content="auto maintenance, oil change, brake service, state inspection, scheduled maintenance, Scotia NY, automotive repair" />
+  <title>Repair Services | Scotia Performance Auto</title>
+  <meta name="description" content="Professional auto repair services including engine repair, transmission service, brake repair, and electrical diagnostics from Scotia Performance Auto.">
+  <meta name="keywords" content="auto repair, engine repair, transmission repair, brake repair, electrical repair, Scotia NY, automotive service" />
   
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Maintenance Services | Scotia Performance Auto" />
-  <meta property="og:description" content="Professional automotive maintenance services including oil changes, brake service, and scheduled maintenance in Scotia, NY." />
-  <meta property="og:image" content="/images/maintenance-hero.jpg" />
-  <meta property="og:url" content="https://scotiaperformance.com/services/maintenance" />
+  <meta property="og:title" content="Repair Services | Scotia Performance Auto" />
+  <meta property="og:description" content="Professional automotive repair services including engine repair, transmission service, and brake repair in Scotia, NY." />
+  <meta property="og:image" content="/images/repair-hero.jpg" />
+  <meta property="og:url" content="https://scotiaperformance.com/services/repair" />
   
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image" />
-  <meta property="twitter:title" content="Maintenance Services | Scotia Performance Auto" />
-  <meta property="twitter:description" content="Professional automotive maintenance services including oil changes, brake service, and scheduled maintenance in Scotia, NY." />
-  <meta property="twitter:image" content="/images/maintenance-hero.jpg" />
+  <meta property="twitter:title" content="Repair Services | Scotia Performance Auto" />
+  <meta property="twitter:description" content="Professional automotive repair services including engine repair, transmission service, and brake repair in Scotia, NY." />
+  <meta property="twitter:image" content="/images/repair-hero.jpg" />
   
   <!-- Structured Data for SEO -->
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "AutoRepair",
-      "name": "Scotia Performance - Maintenance Services",
-      "description": "Professional automotive maintenance services including oil changes, brake service, scheduled maintenance, and state inspections",
-      "url": "https://scotiaperformance.com/services/maintenance",
+      "name": "Scotia Performance - Repair Services",
+      "description": "Professional automotive repair services including engine repair, transmission service, brake repair, and electrical diagnostics",
+      "url": "https://scotiaperformance.com/services/repair",
       "telephone": "(518) 280-1698",
       "address": {
         "@type": "PostalAddress",
@@ -124,7 +135,7 @@
         "latitude": "42.8264",
         "longitude": "-73.9593"
       },
-      "serviceType": ["Oil Change", "Brake Service", "State Inspection", "Scheduled Maintenance", "Automotive Repair"],
+      "serviceType": ["Engine Repair", "Transmission Repair", "Brake Repair", "Electrical Repair", "Automotive Diagnostics"],
       "areaServed": {
         "@type": "Place",
         "name": "Scotia, NY and surrounding areas"
@@ -135,27 +146,27 @@
 
 <!-- Hero Banner Section -->
 <HeroBanner
-  title="Professional Maintenance Services"
-  subtitle="Keep Your Vehicle Running Smoothly"
-  description="Expert automotive maintenance services to ensure your vehicle's reliability, safety, and longevity. From routine oil changes to comprehensive inspections, our ASE-certified technicians deliver quality service you can trust."
-  buttonText="Schedule Service"
+  title="Professional Repair Services"
+  subtitle="Expert Automotive Repair & Diagnostics"
+  description="Comprehensive automotive repair services from engine diagnostics to transmission rebuilds. Our ASE-certified technicians use advanced diagnostic equipment and quality parts to get you back on the road safely."
+  buttonText="Schedule Repair"
   buttonHref="tel:5182801698"
-  backgroundImage="/images/maintenance-hero.jpg"
+  backgroundImage="/images/repair-hero.jpg"
 />
 
-<main class="maintenance-page">
+<main class="repair-page">
   <!-- Stats Section -->
   <section class="stats-section" aria-labelledby="stats-heading">
     <div class="container">
-      <h2 id="stats-heading" class="visually-hidden">Maintenance Statistics</h2>
+      <h2 id="stats-heading" class="visually-hidden">Repair Statistics</h2>
       <div class="stats-grid">
         <div class="stat-card">
           <span class="stat-value">15+</span>
           <span class="stat-label">Years Experience</span>
         </div>
         <div class="stat-card">
-          <span class="stat-value">5,000+</span>
-          <span class="stat-label">Vehicles Serviced</span>
+          <span class="stat-value">3,000+</span>
+          <span class="stat-label">Repairs Completed</span>
         </div>
         <div class="stat-card">
           <span class="stat-value">ASE</span>
@@ -172,11 +183,11 @@
   <!-- Featured Services Cards -->
   <section class="featured-services" aria-labelledby="featured-heading">
     <div class="container">
-      <h2 id="featured-heading">Our Most Popular Maintenance Services</h2>
-      <p class="section-subtitle">Essential maintenance services to keep your vehicle safe, reliable, and performing at its best</p>
+      <h2 id="featured-heading">Our Most Trusted Repair Services</h2>
+      <p class="section-subtitle">Expert repair services to restore your vehicle's performance, safety, and reliability</p>
       
       <div class="services-grid">
-        {#each featuredMaintenanceServices as service}
+        {#each featuredRepairServices as service}
           <ServiceCard 
             title={service.title}
             description={service.description}
@@ -191,11 +202,11 @@
   <!-- Comprehensive Services Accordion -->
   <section class="services-accordion" aria-labelledby="accordion-heading">
     <div class="container">
-      <h2 id="accordion-heading">Complete Maintenance Services Catalog</h2>
-      <p class="section-subtitle">Explore our full range of automotive maintenance and repair services</p>
+      <h2 id="accordion-heading">Complete Repair Services Catalog</h2>
+      <p class="section-subtitle">Explore our full range of automotive repair and diagnostic services</p>
       
       <div class="accordion-container">
-        {#each maintenanceServices as service}
+        {#each repairServices as service}
           <div 
             class="accordion-item" 
             id={service.id}
@@ -218,9 +229,13 @@
               <div class="accordion-text">
                 <h3>{service.title}</h3>
                 <p>{service.description}</p>
-                {#if service.interval}
-                  <span class="service-interval">Recommended: {service.interval}</span>
-                {/if}
+                                 <div class="service-badges">
+                   {#if service.urgencyLevel}
+                     <span class="urgency-badge {getUrgencyColor(service.urgencyLevel)}">
+                       {service.urgencyLevel} Priority
+                     </span>
+                   {/if}
+                 </div>
               </div>
               <div class="accordion-toggle" aria-hidden="true">
                 <svg 
@@ -249,14 +264,21 @@
                     <li>{serviceItem}</li>
                   {/each}
                 </ul>
-                {#if service.estimatedTime}
-                  <div class="service-details">
-                    <p><strong>Estimated Time:</strong> {service.estimatedTime}</p>
+                
+                {#if service.commonIssues && service.commonIssues.length > 0}
+                  <div class="common-issues">
+                    <h4>Common Issues We Address:</h4>
+                    <ul class="issues-list">
+                      {#each service.commonIssues as issue}
+                        <li>{issue}</li>
+                      {/each}
+                    </ul>
                   </div>
                 {/if}
+                
                 <div class="accordion-actions">
                   <Button variant="primary" onClick={() => requestQuote()}>
-                    Schedule Service
+                    Get Repair Quote
                   </Button>
                 </div>
               </div>
@@ -270,11 +292,11 @@
   <!-- Call to Action -->
   <div class="cta-wrapper">
     <CallToAction 
-      title="Ready to Schedule Your Maintenance?"
-      description="Keep your vehicle running at its best with professional maintenance from Scotia Performance. Our certified technicians are ready to help you maintain your vehicle's reliability and safety."
+      title="Need Immediate Repair Service?"
+      description="Don't let vehicle problems leave you stranded. Contact Scotia Performance for fast, reliable repair services backed by our comprehensive warranty and expert technicians."
       phone="(518) 280-1698"
-      buttonText="Schedule Service"
-      secondaryAction={() => "View Service Specials"}
+      buttonText="Schedule Repair"
+      secondaryAction={() => "Emergency Service"}
       fullWidth={true}
       noBorderRadius={true}
       customMargin="0"
@@ -288,7 +310,7 @@
   @use '../../../scss/core/variables' as *;
   @use '../../../scss/core/mixins' as *;
 
-  .maintenance-page {
+  .repair-page {
     .container {
       width: 100%;
       max-width: 1200px;
@@ -600,12 +622,28 @@
       @include body-text;
       color: $scotia-gray;
       line-height: 1.6;
-      margin: 0 0 $spacing-2;
+      margin: 0 0 $spacing-3;
     }
 
-    .service-interval {
+    .service-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: $spacing-2;
+      margin-top: $spacing-2;
+    }
+
+    .urgency-badge {
       @include body-text;
-      font-size: $font-size-sm;
+      font-size: $font-size-xs;
+      font-weight: $font-weight-medium;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      display: inline-block;
+    }
+
+    .warranty-badge {
+      @include body-text;
+      font-size: $font-size-xs;
       color: $scotia-blue;
       font-weight: $font-weight-medium;
       background-color: rgba($scotia-blue, 0.1);
@@ -639,7 +677,7 @@
     @include transition(max-height);
 
     &.expanded {
-      max-height: 1000px;
+      max-height: 1500px;
     }
   }
 
@@ -679,17 +717,38 @@
     }
   }
 
-  .service-details {
-    margin-bottom: $spacing-4;
-    padding: $spacing-3;
+  .common-issues {
+    margin-bottom: $spacing-6;
+    padding: $spacing-4;
     background-color: rgba($scotia-blue, 0.05);
     border-radius: 0.5rem;
+    border-left: 4px solid $scotia-blue;
 
-    p {
-      @include body-text;
+    h4 {
+      margin-bottom: $spacing-3;
+      color: $scotia-blue;
+    }
+
+    .issues-list {
+      list-style: none;
       margin: 0;
-      color: $scotia-gray;
-      font-size: $font-size-sm;
+      padding: 0;
+
+      li {
+        @include body-text;
+        color: $scotia-gray;
+        padding: $spacing-1 0;
+        padding-left: $spacing-5;
+        position: relative;
+        line-height: 1.5;
+
+        &::before {
+          content: "⚠️";
+          position: absolute;
+          left: 0;
+          font-size: $font-size-sm;
+        }
+      }
     }
   }
 
@@ -698,6 +757,18 @@
     justify-content: flex-start;
     margin-top: $spacing-6;
   }
+
+  // Utility classes for urgency badges
+  .bg-red-100 { background-color: #fee2e2; }
+  .text-red-800 { color: #991b1b; }
+  .bg-orange-100 { background-color: #fed7aa; }
+  .text-orange-800 { color: #9a3412; }
+  .bg-yellow-100 { background-color: #fef3c7; }
+  .text-yellow-800 { color: #92400e; }
+  .bg-green-100 { background-color: #dcfce7; }
+  .text-green-800 { color: #166534; }
+  .bg-gray-100 { background-color: #f3f4f6; }
+  .text-gray-800 { color: #1f2937; }
 
   // Responsive adjustments
   @include sm {

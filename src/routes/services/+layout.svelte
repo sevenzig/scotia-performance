@@ -3,7 +3,7 @@
 </script>
 
 <div class="services-layout">
-  <div class="container mx-auto px-4 py-8">
+  <div class="container mx-auto">
     {@render children()}
   </div>
 </div>

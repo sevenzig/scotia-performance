@@ -8,7 +8,9 @@
     fullWidth = false,
     loading = false,
     onClick = undefined,
-    children = () => ""
+    children = () => "",
+    noWrap = false,
+    autoWidth = false
   } = $props<{
     variant?: 'primary' | 'secondary' | 'outline' | 'text';
     size?: 'sm' | 'md' | 'lg';
@@ -18,6 +20,8 @@
     loading?: boolean;
     onClick?: (event: MouseEvent) => void;
     children?: () => any;
+    noWrap?: boolean;
+    autoWidth?: boolean;
   }>();
 
   // Event handlers with runes syntax
@@ -30,11 +34,11 @@
 
 <button
   {type}
-  class={`btn btn-${variant} btn-${size} ${fullWidth ? 'btn-full' : ''} ${loading ? 'btn-loading' : ''}`}
+  class={`btn btn-${variant} btn-${size} ${fullWidth ? 'btn-full' : ''} ${loading ? 'btn-loading' : ''} ${noWrap ? 'btn-no-wrap' : ''} ${autoWidth ? 'btn-auto-width' : ''}`}
   disabled={disabled || loading}
   onclick={handleClick}
   style={`
-    width: ${fullWidth ? '100%' : 'auto'};
+    width: ${fullWidth ? '100%' : autoWidth ? 'auto' : 'auto'};
     opacity: ${disabled ? 0.6 : 1};
   `}
 >
@@ -129,6 +133,16 @@
   .btn:focus-visible {
     outline: 2px solid var(--scotia-blue);
     outline-offset: 2px;
+  }
+
+  /* Button modifiers */
+  .btn-no-wrap {
+    white-space: nowrap;
+  }
+
+  .btn-auto-width {
+    width: auto;
+    min-width: max-content;
   }
   
   /* Loading State */
