@@ -313,23 +313,22 @@
   .repair-page {
     .container {
       width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0;
+      margin: 0;
+      padding: 0 1rem;
     }
   }
 
   // Stats Section
   .stats-section {
-    padding: $spacing-12 0;
+    padding: $spacing-8 0 $spacing-2 0;
     background: linear-gradient(135deg, $scotia-light 0%, $white 100%);
   }
 
   .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: $spacing-6;
-    margin-bottom: $spacing-8;
+    gap: $spacing-4;
+    margin-bottom: 0;
   }
 
   .stat-card {
@@ -362,14 +361,15 @@
 
   // Featured Services Section
   .featured-services {
-    padding: $spacing-16 0;
+    padding: $spacing-8 0 $spacing-2 0;
     background-color: $white;
 
     h2 {
       @include heading-1;
       text-align: center;
       color: $scotia-blue;
-      margin-bottom: $spacing-4;
+      margin-bottom: $spacing-2;
+      margin-top: $spacing-2;
     }
 
     .section-subtitle {
@@ -609,9 +609,12 @@
 
     h3 {
       @include heading-3;
-      color: $scotia-blue;
-      margin-bottom: $spacing-2;
-      font-size: $font-size-lg;
+      
+      & {
+        color: $scotia-blue;
+        margin-bottom: $spacing-2;
+        font-size: $font-size-lg;
+      }
 
       @include md {
         font-size: $font-size-xl;

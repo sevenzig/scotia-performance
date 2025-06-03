@@ -2,13 +2,19 @@
 	// Module context to preload essential assets
 	const preloadedImages = new Set<string>();
 	
-	// Preload critical images
+	// Preload critical images with priority hints
 	if (typeof window !== 'undefined') {
 		// Preload hero image with high priority
 		const preloadHero = new Image();
 		preloadHero.src = '/images/hero-bg.jpg';
 		(preloadHero as any).fetchPriority = 'high';
 		preloadedImages.add('/images/hero-bg.jpg');
+		
+		// Preload garage image with medium priority
+		const preloadGarage = new Image();
+		preloadGarage.src = '/images/garage.jpg';
+		preloadGarage.loading = 'lazy';
+		preloadedImages.add('/images/garage.jpg');
 	}
 </script>
 
@@ -29,124 +35,112 @@
 	
 	let isLoaded = $state(false);
 	let initialRenderComplete = $state(false);
+	let isNavigating = $state(false);
 	
-	// Simple scroll behavior control with debug logging
+	// Performance monitoring
+	let performanceMetrics = $state({
+		navigationStart: 0,
+		domContentLoaded: 0,
+		loadComplete: 0
+	});
+	
+	// Smart scroll behavior control - preserve anchor navigation
 	onNavigate((navigation) => {
-		console.log('🚀 onNavigate triggered:', {
-			from: navigation.from?.url?.pathname,
-			to: navigation.to?.url?.pathname,
-			type: navigation.type,
-			currentScrollY: typeof window !== 'undefined' ? window.scrollY : 'N/A',
-			hash: navigation.to?.url?.hash || 'none'
-		});
+		isNavigating = true;
 		
-		// Reset scroll to top on navigation
-		if (typeof window !== 'undefined') {
-			console.log('📍 Before scroll - scrollY:', window.scrollY);
-			window.scrollTo(0, 0);
-			console.log('📍 After scroll - scrollY:', window.scrollY);
-			
-			// Check if scroll actually took effect after a brief delay
+		// Only reset scroll to top if this is NOT an anchor link navigation
+		const isAnchorNavigation = navigation.to?.url?.hash && navigation.to.url.hash.length > 1;
+		
+		if (typeof window !== 'undefined' && !isAnchorNavigation) {
+			// Use requestAnimationFrame for smooth scrolling
+			requestAnimationFrame(() => {
+				window.scrollTo(0, 0);
+				isNavigating = false;
+			});
+		} else if (isAnchorNavigation) {
+			// Let the individual page components handle anchor scrolling
 			setTimeout(() => {
-				console.log('📍 ScrollY after 50ms:', window.scrollY);
-			}, 50);
-			
-			setTimeout(() => {
-				console.log('📍 ScrollY after 200ms:', window.scrollY);
-			}, 200);
+				isNavigating = false;
+			}, 100);
 		}
 	});
 	
-	// Load non-critical resources lazily
+	// Load non-critical resources lazily with adaptive loading
 	function lazyLoadResources() {
-		// Use requestIdleCallback for non-critical resource loading
+		// Check connection speed for adaptive loading
+		const connection = (navigator as any).connection;
+		const isSlowConnection = connection && (
+			connection.effectiveType === '2g' || 
+			connection.effectiveType === 'slow-2g' ||
+			connection.saveData
+		);
+		
+		// Load based on connection quality
 		const loadNonCritical = () => {
-			// Load additional font weights
-			const fontLink = document.createElement('link');
-			fontLink.href = 'https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;800&display=swap';
-			fontLink.rel = 'stylesheet';
-			document.head.appendChild(fontLink);
+			// Only load additional fonts on fast connections
+			if (!isSlowConnection) {
+				const fontLink = document.createElement('link');
+				fontLink.href = 'https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&display=swap';
+				fontLink.rel = 'stylesheet';
+				fontLink.media = 'print';
+				fontLink.onload = function() {
+					(this as HTMLLinkElement).media = 'all';
+				};
+				document.head.appendChild(fontLink);
+			}
 		};
 		
+		// Use different scheduling based on browser support
 		if (typeof window.requestIdleCallback === 'function') {
-			window.requestIdleCallback(loadNonCritical, { timeout: 2000 });
+			window.requestIdleCallback(loadNonCritical, { timeout: isSlowConnection ? 5000 : 2000 });
 		} else {
-			setTimeout(loadNonCritical, 1000);
+			setTimeout(loadNonCritical, isSlowConnection ? 2000 : 1000);
+		}
+	}
+	
+	// Performance monitoring
+	function trackPerformance() {
+		if (typeof window === 'undefined') return;
+		
+		performanceMetrics.navigationStart = performance.timeOrigin;
+		
+		// Track DOM Content Loaded
+		if (document.readyState === 'loading') {
+			document.addEventListener('DOMContentLoaded', () => {
+				performanceMetrics.domContentLoaded = performance.now();
+			});
+		} else {
+			performanceMetrics.domContentLoaded = performance.now();
+		}
+		
+		// Track load complete
+		if (document.readyState === 'complete') {
+			performanceMetrics.loadComplete = performance.now();
+		} else {
+			window.addEventListener('load', () => {
+				performanceMetrics.loadComplete = performance.now();
+			});
 		}
 	}
 	
 	// Lifecycle - use requestAnimationFrame for non-blocking updates
 	onMount(() => {
-		console.log('🔄 Layout onMount triggered');
-		
 		// Mark as client-side
 		isLoaded = true;
 		
+		// Start performance tracking
+		trackPerformance();
+		
 		// Disable browser's automatic scroll restoration
 		if ('scrollRestoration' in history) {
-			console.log('📜 Setting scrollRestoration to manual');
 			history.scrollRestoration = 'manual';
-		} else {
-			console.log('⚠️ scrollRestoration not supported');
 		}
 		
-		console.log('📍 Initial scroll position:', window.scrollY);
-		
 		// Use a single requestAnimationFrame to mark initial render complete
-		// This prevents rapid state changes that cause DOM conflicts
 		requestAnimationFrame(() => {
 			initialRenderComplete = true;
-			console.log('✅ Initial render complete');
 			
-			// Add scroll event listener for debugging
-			let scrollTimeout: ReturnType<typeof setTimeout>;
-			
-			// Multiple ways to detect scroll
-			console.log('🔍 Setting up scroll detection...');
-			console.log('📏 Document dimensions:', {
-				documentHeight: document.documentElement.scrollHeight,
-				windowHeight: window.innerHeight,
-				bodyHeight: document.body.scrollHeight,
-				canScroll: document.documentElement.scrollHeight > window.innerHeight
-			});
-			
-			// Check CSS that might prevent scrolling
-			const bodyStyles = window.getComputedStyle(document.body);
-			const htmlStyles = window.getComputedStyle(document.documentElement);
-			console.log('🎨 Body CSS that affects scrolling:', {
-				bodyOverflow: bodyStyles.overflow,
-				bodyOverflowY: bodyStyles.overflowY,
-				bodyHeight: bodyStyles.height,
-				htmlOverflow: htmlStyles.overflow,
-				htmlOverflowY: htmlStyles.overflowY,
-				htmlHeight: htmlStyles.height
-			});
-			
-			window.addEventListener('scroll', () => {
-				clearTimeout(scrollTimeout);
-				scrollTimeout = setTimeout(() => {
-					console.log('📍 Window scroll event - position:', window.scrollY);
-				}, 100);
-			});
-			
-			document.addEventListener('scroll', () => {
-				console.log('📍 Document scroll event - position:', window.scrollY);
-			});
-			
-			// Test scroll capability
-			setTimeout(() => {
-				console.log('🧪 Testing scroll capability...');
-				const beforeTest = window.scrollY;
-				window.scrollTo(0, 100);
-				setTimeout(() => {
-					const afterTest = window.scrollY;
-					console.log('🧪 Scroll test result:', { beforeTest, afterTest, scrollWorking: afterTest !== beforeTest });
-					// Reset
-					window.scrollTo(0, beforeTest);
-				}, 50);
-			}, 2000);
-			
-			// After a delay, load non-critical resources
+			// Schedule non-critical resource loading
 			setTimeout(() => {
 				lazyLoadResources();
 			}, 1000);
@@ -157,7 +151,7 @@
 <div class="app">
 	<Header />
 	
-	<main class="site-content">
+	<main class="site-content" class:navigating={isNavigating}>
 		{@render children()}
 	</main>
 	
@@ -172,17 +166,74 @@
 	:global(html) {
 		height: auto;
 		overflow-y: auto;
+		/* Content visibility support */
+		contain: layout style paint;
 	}
 	
 	:global(body) {
 		height: auto;
 		min-height: 100vh;
 		overflow-y: auto;
+		/* Optimize rendering */
+		contain: layout style;
 	}
 	
-	/* Basic layout styling */
+	/* App wrapper optimization */
+	.app {
+		display: flex;
+		flex-direction: column;
+		min-height: 100vh;
+		/* Improve rendering performance */
+		contain: layout;
+	}
+	
+	/* Basic layout styling with performance optimizations */
 	.site-content {
+		flex: 1;
 		min-height: 70vh;
 		padding-top: 80px; /* Match the header height */
+		/* Content visibility for better performance */
+		contain: layout style;
+	}
+	
+	/* Navigation transition */
+	.site-content.navigating {
+		opacity: 0.95;
+		transition: opacity 0.15s ease-out;
+	}
+	
+	/* Content visibility optimizations for lazy sections */
+	:global(.lazy-section) {
+		content-visibility: auto;
+		contain-intrinsic-size: 0 500px;
+		/* Add a subtle loading hint */
+		background: linear-gradient(135deg, 
+			rgba(248, 250, 252, 0.8) 0%, 
+			rgba(241, 245, 249, 0.6) 100%);
+	}
+	
+	/* Optimize below-the-fold content */
+	:global(.below-fold) {
+		content-visibility: auto;
+		contain-intrinsic-size: 0 400px;
+	}
+	
+	/* Optimize heavy components */
+	:global(.heavy-component) {
+		content-visibility: auto;
+		contain-intrinsic-size: 0 300px;
+		/* Layer promotion for better compositing */
+		will-change: transform;
+	}
+	
+	/* Performance optimization for slow connections */
+	:global(.slow-connection) .site-content {
+		/* Reduce visual complexity on slow connections */
+		animation: none !important;
+	}
+	
+	:global(.slow-connection) :global(.animation-heavy) {
+		animation: none !important;
+		transition: none !important;
 	}
 </style>

@@ -3,3 +3,84 @@ description:
 globs:
 alwaysApply: false
 ---
+# Service-Driven Components
+
+Guidelines for correctly using components that fetch data from service singletons rather than receiving it via props.
+
+<rule>
+name: service_driven_components
+description: Ensures components that use service singletons are not passed data via props
+filters:
+  # Match Svelte files
+  - type: file_extension
+    pattern: "\\.svelte$"
+
+actions:
+  - type: suggest
+    message: |
+      ## Service-Driven Component Pattern
+
+      Some components in this project are designed to fetch their data directly from service singletons rather than receiving it via props. This architectural pattern has the following characteristics:
+
+      1. The component imports a service singleton (e.g., `businessHoursService`)
+      2. The component calls methods on the service to get its data (e.g., `const status = businessHoursService.getCurrentStatus()`)
+      3. The component does not define or accept props for this data
+
+      ### Common Errors:
+
+      - **Type Error**: Passing props to a component that doesn't define them results in TypeScript errors like `Type '{ propName: PropType }' is not assignable to type 'never'`
+      - **Unexpected Behavior**: Even if TypeScript is not used, passing props that aren't defined won't affect the component's behavior
+
+      ### How to Identify Service-Driven Components:
+
+      Look for components that:
+      1. Import service files (typically from `$lib/services/`)
+      2. Don't have corresponding prop definitions in their `<script>` section
+      3. Call methods on imported services to get data
+
+      ### Examples:
+
+      **AboutCard.svelte** gets its status directly from the businessHoursService:
+      ```svelte
+      <script lang="ts">
+        import { businessHoursService } from '$lib/services/BusinessHoursService';
+        
+        // Get status directly from service instead of props
+        const status = businessHoursService.getCurrentStatus();
+      </script>
+      ```
+
+      ### Correct Usage:
+
+      ```svelte
+      <!-- Correct: No props passed -->
+      <AboutCard />
+      ```
+
+      ### Incorrect Usage:
+
+      ```svelte
+      <!-- Incorrect: Passing props to a service-driven component -->
+      <AboutCard currentStatus={{ isOpen: true, message: "We're open" }} />
+      ```
+
+      ### How to Customize Behavior:
+
+      If you need to customize the behavior of a service-driven component:
+      1. Modify the service itself (e.g., `BusinessHoursService.ts`)
+      2. Create a wrapper component that uses the service-driven component
+      3. Consider refactoring the component to accept props if needed
+
+examples:
+  - input: |
+      <!-- Example of incorrect usage -->
+      <AboutCard currentStatus={{ isOpen: true, message: "Custom message" }} />
+    output: |
+      <!-- Correct usage -->
+      <AboutCard />
+
+metadata:
+  priority: high
+  version: 1.0
+  error_type: "Type error when passing props to components that use service singletons"
+</rule>

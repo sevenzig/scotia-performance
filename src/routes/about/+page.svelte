@@ -101,7 +101,7 @@
   const projects = [
     {
       title: "Engine Rebuild - BMW M3",
-      description: "Complete engine rebuild for a high-performance vehicle with custom tuning and dyno testing.",
+      description: "Complete engine rebuild for a high-performance vehicle with custom tuning and performance verification.",
       image: "/images/placeholder-engine.jpg"
     },
     {
@@ -111,7 +111,7 @@
     },
     {
       title: "Custom ECU Tuning - Subaru WRX",
-      description: "Performance optimization with dyno-verified gains of 42HP and 55lb-ft torque.",
+      description: "Performance optimization with verified gains of 42HP and 55lb-ft torque.",
       image: "/images/placeholder-ecu.jpg"
     }
   ];

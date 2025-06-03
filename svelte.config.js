@@ -13,7 +13,7 @@ const config = {
 			scss: {
 				includePaths: ['src'],
 				sassOptions: {
-					outputStyle: 'expanded',
+					outputStyle: 'compressed',
 					charset: false,
 					javascriptEnabled: true,
 					legacyJavaScript: false,
@@ -41,6 +41,38 @@ const config = {
 		output: {
 			preloadStrategy: 'modulepreload'
 		},
+		// Service worker configuration
+		serviceWorker: {
+			register: true,
+			files: (filepath) => {
+				// Include important static assets in service worker
+				return !/\.(?:png|jpe?g|gif|svg|webp|ico|pdf|zip)$/.test(filepath) || 
+				       filepath.includes('/images/hero-bg.') ||
+				       filepath.includes('/images/garage.') ||
+				       filepath.includes('/favicon.');
+			}
+		},
+		prerender: {
+			// Prerender static pages for better performance
+			entries: [
+				'/',
+				'/services',
+				'/services/repair',
+				'/services/maintenance', 
+				'/services/performance',
+				'/services/tires-wheels',
+				'/about',
+				'/location'
+			],
+			handleHttpError: ({ path, referrer, message }) => {
+				// Handle errors during prerendering
+				console.warn(`Warning: ${path} failed to prerender (${message})`);
+			},
+			handleMissingId: ({ path, id, message }) => {
+				// Handle missing IDs during prerendering
+				console.warn(`Warning: ${path}#${id} not found (${message})`);
+			}
+		},
 		csp: {
 			directives: {
 				'default-src': ['self'],
@@ -64,19 +96,22 @@ const config = {
 			mode: 'auto'
 		},
 		files: {
-			assets: 'static'
+			assets: 'static',
+			serviceWorker: 'static/sw.js'
 		},
-		inlineStyleThreshold: 5000,  // Inline styles smaller than 5kb for critical CSS
+		inlineStyleThreshold: 8192,  // Increased from 5000 to 8KB for better critical CSS inlining
 		version: {
 			name: Date.now().toString(),
 			pollInterval: 0
-		}
+		},
+		// Performance optimizations
+		embedded: false
 	},
 	
 	// Add explicit extensions to handle Svelte files properly
 	extensions: ['.svelte'],
 	
-	// Ensure compilerOptions are properly set for Svelte 5 runes
+	// Ensure compilerOptions are properly set for Svelte 5 runes with performance optimizations
 	compilerOptions: {
 		accessors: true,
 		runes: true,
@@ -86,7 +121,7 @@ const config = {
 		},
 		css: "injected",
 		namespace: 'html',
-		preserveComments: false
+		preserveComments: false // Remove comments for smaller bundle
 	}
 };
 

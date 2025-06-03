@@ -188,7 +188,7 @@ Supports variable height items and smooth scrolling
   bind:this={containerRef}
   class="virtual-list {className}"
   style:height
-  on:scroll={handleScroll}
+  onscroll={handleScroll}
 >
   <!-- Spacer for total height -->
   <div class="virtual-list-spacer" style:height="{totalHeight}px">

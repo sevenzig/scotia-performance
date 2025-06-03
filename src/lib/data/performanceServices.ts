@@ -65,7 +65,7 @@ export const performanceServices: PerformanceService[] = [
     services: [
       'ECU remapping and flash tuning',
       'Standalone engine management systems',
-      'Dyno tuning and optimization',
+      'Performance tuning and optimization',
       'Performance chip installations',
       'Wideband O2 sensor installations',
       'Data logging and analysis',

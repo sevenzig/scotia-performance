@@ -3,3 +3,90 @@ description:
 globs:
 alwaysApply: false
 ---
+# Svelte Component Rendering Guidelines
+
+## Component Loading Issues
+
+### Problem
+Components were not properly rendering on the page, particularly after the hero banner section. This manifested as missing content sections despite the components being correctly imported.
+
+### Root Causes
+1. **Missing Component Inclusion**: Components were imported but not properly included in the page template
+2. **Reactivity Issues**: State variables not properly declared with `$state()` in Svelte 5
+3. **Hydration Mismatches**: Server-rendered content not matching client-side expectations
+
+### Solutions
+
+#### 1. Ensure Proper Component Inclusion
+Components must be both imported AND included in the page markup:
+
+```svelte
+<script>
+  import ComponentName from '$components/ComponentName.svelte';
+  // ...other imports
+</script>
+
+<!-- In page markup -->
+<ComponentName />
+```
+
+#### 2. State Management in Svelte 5
+All reactive variables must use the `$state()` syntax:
+
+```svelte
+<script>
+  import { onMount } from 'svelte';
+  
+  // Correct way to declare reactive state
+  let componentsLoaded = $state(false);
+  let components = $state([]);
+  
+  onMount(() => {
+    // Load components
+    componentsLoaded = true;
+  });
+</script>
+```
+
+#### 3. Component Conditional Rendering
+When conditionally rendering components, ensure the condition properly resolves:
+
+```svelte
+{#if componentsLoaded}
+  {#each components as component}
+    <!-- Use modern rendering pattern -->
+    {@const DynamicComponent = component.component}
+    <DynamicComponent {...component.props} />
+  {/each}
+{/if}
+```
+
+#### 4. Modern Content Projection
+Use snippets and render tags instead of legacy slot system:
+
+```svelte
+<!-- In parent component -->
+{#snippet content()}
+  <Component />
+{/snippet}
+
+<!-- In child component -->
+{@render content()}
+```
+
+## Checklist for Component Debugging
+
+- [ ] Verify all components are properly imported
+- [ ] Confirm components are included in the page markup
+- [ ] Check reactive variables are declared with `$state()`
+- [ ] Inspect browser console for any hydration warnings
+- [ ] Ensure WebSocket connections are established (if applicable)
+- [ ] Verify component conditional logic works as expected
+
+## Best Practices
+
+1. Use TypeScript for better component props validation
+2. Follow the established component structure pattern
+3. Implement proper loading states for asynchronous content
+4. Test components both in isolation and integrated in pages
+5. Keep component responsibilities focused and well-defined

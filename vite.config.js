@@ -20,11 +20,11 @@ export default defineConfig(({ mode }) => {
 				optimizationLevel: 7
 			},
 			mozjpeg: {
-				quality: 80,
+				quality: 85,
 				progressive: true
 			},
 			pngquant: {
-				quality: [0.8, 0.9],
+				quality: [0.85, 0.95],
 				speed: 4
 			},
 			svgo: {
@@ -32,8 +32,19 @@ export default defineConfig(({ mode }) => {
 					{
 						name: 'removeViewBox',
 						active: false
+					},
+					{
+						name: 'cleanupIDs',
+						active: true
+					},
+					{
+						name: 'removeUnusedNS',
+						active: true
 					}
 				]
+			},
+			webp: {
+				quality: 85
 			}
 		})
 	].filter(Boolean);
@@ -45,7 +56,8 @@ export default defineConfig(({ mode }) => {
 				open: true,
 				gzipSize: true,
 				brotliSize: true,
-				filename: 'stats.html'
+				filename: 'stats.html',
+				template: 'treemap'
 			})
 		);
 	}
@@ -55,83 +67,115 @@ export default defineConfig(({ mode }) => {
 		css: {
 			preprocessorOptions: {
 				scss: {
-					includePaths: [path.resolve('./src'), path.resolve('./src/scss')],
-					// Use the modern Sass API
-					api: 'modern',
-					sassOptions: {
-						outputStyle: 'expanded',
-						charset: false,
-						// This explicitly enables the new API
-						javascriptEnabled: true,
-						// Set to false to avoid legacy API warnings
-						legacyJavaScript: false,
-						// Silence the legacy API deprecation warnings
-						silenceDeprecations: ['legacy-js-api']
-					}
+					includePaths: [path.resolve('./src'), path.resolve('./src/scss')]
 				}
 			},
-			devSourcemap: false
+			devSourcemap: mode !== 'production'
 		},
 		build: {
 			target: 'esnext',
 			minify: 'terser',
-			cssMinify: true,
+			cssMinify: 'lightningcss',
 			reportCompressedSize: false,
-			chunkSizeWarningLimit: 1000,
+			chunkSizeWarningLimit: 800,
+			sourcemap: mode !== 'production',
 			terserOptions: {
 				compress: {
-					drop_console: true,
+					drop_console: mode === 'production',
 					drop_debugger: true,
 					ecma: 2020,
-					passes: 2,
-					pure_funcs: ['console.log', 'console.info', 'console.debug']
+					passes: 3,
+					pure_funcs: ['console.log', 'console.info', 'console.debug', 'console.warn'],
+					reduce_vars: true,
+					reduce_funcs: true,
+					hoist_funs: true,
+					hoist_vars: true
+				},
+				mangle: {
+					safari10: true,
+					properties: {
+						regex: /^_/
+					}
 				},
 				format: {
-					comments: false
+					comments: false,
+					ecma: 2020
 				}
 			},
 			rollupOptions: {
 				output: {
 					manualChunks: (id) => {
-						// More granular chunking strategy
-						if (id.includes('node_modules/svelte')) {
+						if (id.includes('node_modules/svelte/')) {
 							return 'vendor-svelte';
 						}
-						if (id.includes('node_modules/@sveltejs')) {
+						if (id.includes('node_modules/@sveltejs/')) {
 							return 'vendor-sveltekit';
 						}
 						if (id.includes('node_modules/tailwindcss') || 
-							id.includes('node_modules/postcss')) {
+							id.includes('node_modules/postcss') ||
+							id.includes('node_modules/autoprefixer')) {
 							return 'vendor-css';
 						}
-						// Other vendor libs
-						if (id.includes('node_modules')) {
-							return 'vendor';
+						
+						if (id.includes('node_modules/@lucide/')) {
+							return 'vendor-icons';
 						}
-						// Core styles
-						if (id.includes('app.scss') || id.includes('app.css')) {
-							return 'styles';
+						if (id.includes('node_modules/daisyui')) {
+							return 'vendor-ui';
 						}
-						// Utils and services
+						
 						if (id.includes('/lib/utils/') || id.includes('/lib/services/')) {
-							return 'utils';
+							return 'app-utils';
+						}
+						if (id.includes('/lib/data/')) {
+							return 'app-data';
+						}
+						if (id.includes('/lib/components/')) {
+							return 'app-components';
+						}
+						
+						if (id.includes('/routes/services/')) {
+							return 'routes-services';
+						}
+						if (id.includes('/routes/')) {
+							return 'routes-misc';
+						}
+						
+						if (id.includes('app.scss') || id.includes('app.css')) {
+							return 'styles-core';
+						}
+						
+						if (id.includes('node_modules')) {
+							return 'vendor-misc';
 						}
 					},
-					// Optimize chunk loading with better naming strategy
-					entryFileNames: 'entries/[name].[hash].js',
-					chunkFileNames: 'chunks/[name].[hash].js',
+					entryFileNames: (chunkInfo) => {
+						return `entries/[name]-[hash].js`;
+					},
+					chunkFileNames: (chunkInfo) => {
+						const facadeModuleId = chunkInfo.facadeModuleId ? chunkInfo.facadeModuleId.split('/').pop() : 'chunk';
+						return `chunks/[name]-[hash].js`;
+					},
 					assetFileNames: ({ name }) => {
 						if (/\.(css)$/.test(name ?? '')) {
-							return 'assets/styles/[name].[hash][extname]';
+							return 'assets/styles/[name]-[hash][extname]';
 						}
-						if (/\.(png|jpe?g|gif|svg|webp|ico)$/.test(name ?? '')) {
-							return 'assets/images/[name].[hash][extname]';
+						if (/\.(png|jpe?g|gif|svg|webp|avif|ico)$/.test(name ?? '')) {
+							return 'assets/images/[name]-[hash][extname]';
 						}
 						if (/\.(woff2?|eot|ttf|otf)$/.test(name ?? '')) {
-							return 'assets/fonts/[name].[hash][extname]';
+							return 'assets/fonts/[name]-[hash][extname]';
 						}
-						return 'assets/[name].[hash][extname]';
+						if (/\.(mp4|webm|ogg|mp3|wav|flac|aac)$/.test(name ?? '')) {
+							return 'assets/media/[name]-[hash][extname]';
+						}
+						return 'assets/misc/[name]-[hash][extname]';
 					}
+				},
+				treeshake: {
+					moduleSideEffects: false,
+					propertyReadSideEffects: false,
+					unknownGlobalSideEffects: false
 				}
 			}
 		},
@@ -143,7 +187,8 @@ export default defineConfig(({ mode }) => {
 			headers: {
 				'Cache-Control': 'public, max-age=31536000',
 				'X-Content-Type-Options': 'nosniff',
-				'X-Frame-Options': 'DENY'
+				'X-Frame-Options': 'DENY',
+				'X-XSS-Protection': '1; mode=block'
 			},
 			hmr: {
 				protocol: 'ws',
@@ -154,7 +199,8 @@ export default defineConfig(({ mode }) => {
 				overlay: true
 			},
 			watch: {
-				usePolling: false
+				usePolling: false,
+				ignored: ['**/node_modules/**', '**/.git/**']
 			},
 			host: 'localhost'
 		},
@@ -162,20 +208,28 @@ export default defineConfig(({ mode }) => {
 			headers: {
 				'Cache-Control': 'public, max-age=31536000',
 				'X-Content-Type-Options': 'nosniff',
-				'X-Frame-Options': 'DENY'
+				'X-Frame-Options': 'DENY',
+				'X-XSS-Protection': '1; mode=block'
 			}
 		},
 		optimizeDeps: {
-			include: ['@sveltejs/kit', 'svelte'],
+			include: ['@sveltejs/kit', 'svelte', '@lucide/svelte'],
 			exclude: ['src/lib/utils/imageOptimizer.js'],
 			esbuildOptions: {
 				platform: 'browser',
 				target: 'esnext',
 				supported: {
 					'top-level-await': true
-				}
+				},
+				treeShaking: true,
+				minify: mode === 'production'
 			}
 		},
+		worker: {
+			format: 'es',
+			plugins: () => []
+		},
+		assetsInclude: ['**/*.webp', '**/*.avif'],
 		test: {
 			workspace: [
 				{
@@ -203,9 +257,21 @@ export default defineConfig(({ mode }) => {
 		},
 		resolve: {
 			alias: {
-				$lib: path.resolve('./src/lib')
+				$lib: path.resolve('./src/lib'),
+				$assets: path.resolve('./static'),
+				$components: path.resolve('./src/lib/components'),
+				$utils: path.resolve('./src/lib/utils')
 			},
 			extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.svelte']
+		},
+		experimental: {
+			renderBuiltUrl: (filename, { hostType }) => {
+				if (hostType === 'js') {
+					return { js: `"/${filename}"` };
+				} else {
+					return `/${filename}`;
+				}
+			}
 		}
 	};
 });

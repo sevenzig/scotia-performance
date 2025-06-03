@@ -95,7 +95,7 @@ export const services: ServiceInfo[] = [
     category: 'diagnostic'
   },
   {
-    name: 'Dyno Tuning',
+    name: 'Performance Tuning',
     description: 'Precision dynamometer testing and tuning for optimal performance analysis',
     category: 'performance'
   },
@@ -125,7 +125,7 @@ export const seoData = {
   homepage: {
     title: `${companyInfo.shortName} | Auto Repair & AC Service Scotia, NY`,
     description: `${companyInfo.description} Call ${companyInfo.phone.formatted}`,
-    keywords: 'auto repair Scotia NY, AC replacement Scotia NY, air conditioner repair Scotia, brake service, performance tuning, dyno tuning, car repair near me, VW repair, Subaru auto shop',
+    keywords: 'auto repair Scotia NY, AC replacement Scotia NY, air conditioner repair Scotia, brake service, performance tuning, performance diagnostics, car repair near me, VW repair, Subaru auto shop',
     canonicalUrl: companyInfo.website.baseUrl,
     ogImage: '/images/scotia-performance-og.jpg',
     lastModified: '2025-05-28'
@@ -141,9 +141,9 @@ export const seoData = {
   } as SEOData,
   
   performance: {
-    title: `Performance Tuning & Dyno Services | ${companyInfo.shortName}`,
-    description: 'Professional performance tuning and dyno services in Scotia, NY. ECU tuning, engine modifications, turbo/supercharger installation, and custom performance builds.',
-    keywords: 'performance tuning Scotia NY, dyno tuning, ECU tuning, engine modification, turbo installation, custom performance',
+    title: `Performance Tuning & Diagnostics Services | ${companyInfo.shortName}`,
+    description: 'Professional performance tuning and diagnostics services in Scotia, NY. ECU tuning, engine modifications, turbo/supercharger installation, and custom performance builds.',
+    keywords: 'performance tuning Scotia NY, performance diagnostics, ECU tuning, engine modification, turbo installation, custom performance',
     canonicalUrl: `${companyInfo.website.baseUrl}/performance`,
     ogImage: '/images/performance-og.jpg',
     lastModified: '2025-05-28'
@@ -263,15 +263,15 @@ export function generateFAQSchema() {
         "name": "What performance services do you offer?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": `${companyInfo.name} specializes in performance tuning including ECU tuning, dyno testing, turbo/supercharger installation, exhaust systems, intake modifications, and custom performance builds. We work on all makes and models with state-of-the-art dyno equipment for precise tuning.`
+          "text": `${companyInfo.name} specializes in performance tuning including ECU tuning, performance testing, turbo/supercharger installation, exhaust systems, intake modifications, and custom performance builds. We work on all makes and models with state-of-the-art diagnostic equipment for precise tuning.`
         }
       },
       {
         "@type": "Question",
-        "name": "Do you have a dyno for performance tuning?", 
+        "name": "Do you have performance testing equipment for tuning?", 
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes, we have professional dynamometer equipment for accurate performance testing and tuning. Our dyno services include baseline testing, custom ECU tuning, and performance verification to ensure optimal power and reliability for your vehicle."
+          "text": "Yes, we have professional diagnostic and testing equipment for accurate performance analysis and tuning. Our testing services include baseline analysis, custom ECU tuning, and performance verification to ensure optimal power and reliability for your vehicle."
         }
       },
       {
@@ -289,7 +289,7 @@ export function generateFAQSchema() {
         "name": "What auto repair services do you offer?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "We offer comprehensive auto repair services including brake service, engine diagnostics, transmission service, AC repair, oil changes, suspension work, tire service, state inspections, and electrical repairs. We also specialize in performance tuning and dyno services for enthusiasts."
+          "text": "We offer comprehensive auto repair services including brake service, engine diagnostics, transmission service, AC repair, oil changes, suspension work, tire service, state inspections, and electrical repairs. We also specialize in performance tuning and diagnostics services for enthusiasts."
         }
       },
       {

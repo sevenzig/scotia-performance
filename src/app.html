@@ -1,114 +1,112 @@
 <!doctype html>
-<html lang="en" data-theme="scotia">
+<html lang="en">
 	<head>
 		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<meta name="description" content="Scotia Performance - Professional auto repair services in Scotia, NY. ASE certified mechanics specializing in brake service, engine repair, transmission service, and more." />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-		<meta name="theme-color" content="#1e3a8a" />
+		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		
-		<!-- Content Security Policy -->
-		<meta http-equiv="Content-Security-Policy" content="
-			default-src 'self';
-			script-src 'self' 'unsafe-inline' 'unsafe-eval';
-			script-src-attr 'self' 'unsafe-inline';
-			script-src-elem 'self' 'unsafe-inline';
-			style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-			style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com;
-			img-src 'self' data: blob: https:;
-			connect-src 'self' ws: wss: https:;
-			font-src 'self' data: https://fonts.gstatic.com;
-			object-src 'none';
-			media-src 'self' data: blob: https:;
-			frame-src 'self' https://www.google.com https://maps.google.com;
-			worker-src 'self' blob:;
-			child-src 'self' blob:;
-			form-action 'self';
-			base-uri 'self';
-			manifest-src 'self';
-		" />
+		<!-- DNS Prefetch for external resources -->
+		<link rel="dns-prefetch" href="//fonts.googleapis.com">
+		<link rel="dns-prefetch" href="//fonts.gstatic.com">
 		
-		<!-- Favicons with optimized loading order -->
-		<link rel="icon" type="image/svg+xml" href="%sveltekit.assets%/favicon.svg" />
-		<link rel="icon" type="image/png" href="%sveltekit.assets%/favicon-96x96.png" sizes="96x96" />
-		<link rel="shortcut icon" href="%sveltekit.assets%/favicon.ico" />
-		<link rel="apple-touch-icon" sizes="180x180" href="%sveltekit.assets%/apple-touch-icon.png" />
-		<link rel="manifest" href="%sveltekit.assets%/site.webmanifest" />
+		<!-- Preconnect to speed up font loading -->
+		<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		
-		<!-- Preload critical assets -->
-		<link rel="preload" href="%sveltekit.assets%/images/hero-bg.jpg" as="image" fetchpriority="high" />
-		<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-		<link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+		<!-- Preload critical resources -->
+		<link rel="preload" href="/images/hero-bg.jpg" as="image" type="image/jpeg" fetchpriority="high">
+		<link rel="preload" href="/images/garage.jpg" as="image" type="image/jpeg">
 		
-		<!-- Inline critical CSS for faster render -->
+		<!-- Critical CSS - inlined for immediate rendering -->
 		<style %sveltekit.nonce%>
-			/* Critical CSS for initial render */
-			:root {
-				--primary-color: #1e3a8a;
-				--secondary-color: #7f1d1d;
-				--bg-color: #ffffff;
-				--text-color: #1a202c;
+			/* Critical CSS for above-the-fold content */
+			html {
+				line-height: 1.15;
+				-webkit-text-size-adjust: 100%;
+				height: 100%;
+				scroll-behavior: smooth;
 			}
 			
 			body {
 				margin: 0;
-				padding: 0;
-				font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-				font-size: 16px;
-				line-height: 1.5;
-				color: var(--text-color);
-				background-color: var(--bg-color);
+				font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+				line-height: 1.6;
+				color: #1e3a8a;
+				background-color: #ffffff;
+				height: 100%;
+				overflow-x: hidden;
 			}
 			
-			body.menu-open {
-				overflow: hidden;
+			* {
+				box-sizing: border-box;
 			}
 			
+			/* Critical header styles */
 			.site-header {
-				position: sticky;
+				position: fixed;
 				top: 0;
-				z-index: 100;
-				background-color: var(--primary-color);
-				color: white;
-				padding: 1rem;
-				transition: padding 0.3s ease;
+				left: 0;
+				right: 0;
+				z-index: 1000;
+				background: rgba(255, 255, 255, 0.95);
+				backdrop-filter: blur(10px);
+				border-bottom: 1px solid rgba(30, 58, 138, 0.1);
+				height: 80px;
+			}
+			
+			/* Critical hero section styles */
+			.hero-section {
+				min-height: 100vh;
+				background: linear-gradient(135deg, rgba(30, 58, 138, 0.8), rgba(59, 130, 246, 0.6));
 				display: flex;
 				align-items: center;
-				justify-content: space-between;
-			}
-			
-			.logo {
-				font-weight: bold;
-				font-size: 1.25rem;
+				justify-content: center;
+				text-align: center;
 				color: white;
-				text-decoration: none;
+				padding-top: 80px;
 			}
 			
+			/* Critical content wrapper */
 			.site-content {
 				min-height: 70vh;
+				padding-top: 80px;
 			}
 			
-			@media (max-width: 768px) {
-				.desktop-nav {
-					display: none;
-				}
+			/* Loading state */
+			.loading-skeleton {
+				background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+				background-size: 200% 100%;
+				animation: loading 1.5s infinite;
 			}
-		</style>
-		
-		<!-- Font loading optimization - subset and display swap -->
-		<link rel="preload" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Almarai:wght@300;400;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
-		<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Almarai:wght@300;400;700&display=swap" /></noscript>
-		
-		<!-- Font display CSS -->
-		<style %sveltekit.nonce%>
+			
+			@keyframes loading {
+				0% { background-position: 200% 0; }
+				100% { background-position: -200% 0; }
+			}
+			
+			/* Font loading optimization */
+			@font-face {
+				font-family: 'Montserrat';
+				font-style: normal;
+				font-weight: 400;
+				font-display: swap;
+				src: local('Montserrat');
+			}
+			
 			@font-face {
 				font-family: 'Montserrat';
 				font-style: normal;
 				font-weight: 500;
 				font-display: swap;
-				src: local('Montserrat');
+				src: local('Montserrat Medium');
+			}
+			
+			@font-face {
+				font-family: 'Montserrat';
+				font-style: normal;
+				font-weight: 600;
+				font-display: swap;
+				src: local('Montserrat SemiBold');
 			}
 			
 			@font-face {
@@ -118,6 +116,25 @@
 				font-display: swap;
 				src: local('Almarai');
 			}
+			
+			/* Content visibility optimizations */
+			.lazy-section {
+				content-visibility: auto;
+				contain-intrinsic-size: 0 500px;
+			}
+			
+			/* Reduced motion support */
+			@media (prefers-reduced-motion: reduce) {
+				html {
+					scroll-behavior: auto;
+				}
+				
+				*, *::before, *::after {
+					animation-duration: 0.01ms !important;
+					animation-iteration-count: 1 !important;
+					transition-duration: 0.01ms !important;
+				}
+			}
 		</style>
 		
 		%sveltekit.head%
@@ -125,34 +142,95 @@
 	<body data-sveltekit-preload-data="tap" data-sveltekit-preload-code="hover">
 		<div style="display: contents">%sveltekit.body%</div>
 		
-		<!-- Disable scroll restoration as early as possible -->
+		<!-- Early performance optimizations -->
 		<script %sveltekit.nonce%>
-			console.log('🚀 app.html script executing');
-			// Disable browser scroll restoration immediately
+			// Performance monitoring start
+			const perfStart = performance.now();
+			
+			// Disable scroll restoration as early as possible
 			if ('scrollRestoration' in history) {
-				console.log('📜 app.html: Setting scrollRestoration to manual');
 				history.scrollRestoration = 'manual';
-			} else {
-				console.log('⚠️ app.html: scrollRestoration not supported');
 			}
-			console.log('📍 app.html: Initial scroll position:', window.scrollY || 0);
-		</script>
-		
-		<!-- Optimized script loading -->
-		<script type="module" %sveltekit.nonce%>
-			// Enable modern image loading
+			
+			// Early image lazy loading support detection
 			if ('loading' in HTMLImageElement.prototype) {
 				document.documentElement.classList.add('loading-supported');
 			}
 			
-			// Add touch class
+			// Early touch device detection
 			if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
 				document.documentElement.classList.add('touch-device');
 			}
 			
-			// Initialize any required global functionality
+			// Early connection type detection for adaptive loading
+			if ('connection' in navigator) {
+				const connection = navigator.connection;
+				if (connection.effectiveType === '2g' || connection.effectiveType === 'slow-2g') {
+					document.documentElement.classList.add('slow-connection');
+				}
+			}
+		</script>
+		
+		<!-- Optimized resource loading -->
+		<script type="module" %sveltekit.nonce%>
+			// Performance optimization utilities
+			const performanceUtils = {
+				// Preload next likely page
+				preloadPage(href) {
+					if (!href || document.querySelector(`link[href="${href}"]`)) return;
+					
+					const link = document.createElement('link');
+					link.rel = 'prefetch';
+					link.href = href;
+					document.head.appendChild(link);
+				},
+				
+				// Critical font loading
+				loadCriticalFonts() {
+					if (document.fonts && 'load' in document.fonts) {
+						document.fonts.load('500 1em Montserrat').then(() => {
+							document.documentElement.classList.add('fonts-loaded');
+						});
+					}
+				},
+				
+				// Report performance metrics
+				reportPerformance() {
+					if ('performance' in window && 'PerformanceObserver' in window) {
+						try {
+							// First Contentful Paint
+							new PerformanceObserver((list) => {
+								for (const entry of list.getEntries()) {
+									if (entry.name === 'first-contentful-paint') {
+										console.log('FCP:', entry.startTime);
+									}
+								}
+							}).observe({ type: 'paint', buffered: true });
+							
+							// Largest Contentful Paint
+							new PerformanceObserver((list) => {
+								const entries = list.getEntries();
+								const lastEntry = entries[entries.length - 1];
+								console.log('LCP:', lastEntry.startTime);
+							}).observe({ type: 'largest-contentful-paint', buffered: true });
+						} catch (e) {
+							// PerformanceObserver not supported
+						}
+					}
+				}
+			};
+			
+			// Initialize performance optimizations
 			document.addEventListener('DOMContentLoaded', () => {
-				// Add any initialization code here
+				performanceUtils.loadCriticalFonts();
+				performanceUtils.reportPerformance();
+				
+				// Preload likely next pages on hover
+				document.addEventListener('mouseover', (e) => {
+					if (e.target.tagName === 'A' && e.target.hostname === location.hostname) {
+						performanceUtils.preloadPage(e.target.href);
+					}
+				});
 			});
 		</script>
 	</body>

@@ -17,147 +17,212 @@
   }>();
 </script>
 
+<section class="hero-banner" style="--bg-image: url('{backgroundImage}')">
+  <div class="container">
+    <div class="hero-content">
+      <div class="content-wrapper">
+        <h1>{title}</h1>
+        <div class="divider"></div>
+        <h2>{subtitle}</h2>
+        <p class="description">{description}</p>
+        <a href={buttonHref} class="cta-button">{buttonText}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
 <style>
-  /* Component-specific reset using higher specificity instead of !important */
-  .hero-banner-wrapper {
-    /* Reset any inherited constraints */
-    margin: 0;
-    padding: 0;
+  .hero-banner {
+    /* Full width breakout - ensure it spans entire viewport */
     width: 100vw;
-    position: relative;
-    
-    /* Break out of all parent containers */
     margin-left: calc(-50vw + 50%);
     margin-right: calc(-50vw + 50%);
     
-    /* Ensure no overflow issues */
-    overflow-x: hidden;
-  }
-
-  .hero-banner {
-    /* Core responsive height setup following responsive-height-constraints pattern */
-    height: 60vh;
-    min-height: 450px;
-    max-height: 700px;
-    
-    /* Full viewport width - no breakout needed here since wrapper handles it */
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    
-    /* Background and visual styling */
+    /* Background and visual styling - matching Hero component */
+    background-color: var(--scotia-blue);
     background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), var(--bg-image);
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
     
+    /* Height constraints following responsive-height-constraints pattern */
+    height: 60vh;
+    min-height: 450px;
+    max-height: 700px;
+    
     /* Layout properties */
     color: white;
-    border-radius: 0;
-    
-    /* Essential for proper layout with height constraints */
     display: flex;
     align-items: center;
     overflow: hidden;
+    position: relative;
   }
 
-  /* Desktop - slightly taller following the pattern */
   @media (min-width: 768px) {
     .hero-banner {
       height: 65vh;
-      /* min-height and max-height remain consistent across breakpoints */
-      min-height: 350px;
-      max-height: 500px;
+      min-height: 450px;
+      max-height: 700px;
     }
   }
 
-  /* Component-specific inner container with high specificity */
-  .hero-banner-wrapper .hero-banner .hero {
+  .container {
     width: 100%;
-    max-width: 1200px; /* Match other sections' max-width */
-    margin: 0 auto; /* Center the content */
-    
-    /* Component-specific padding using high specificity */
-    padding: 2rem 1rem; /* Mobile padding */
-    
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    
-    /* Ensure proper box sizing */
-    box-sizing: border-box;
   }
 
   @media (min-width: 768px) {
-    .hero-banner-wrapper .hero-banner .hero {
-      padding: 2rem 2rem; /* Desktop padding */
+    .container {
+      padding: 0 2rem;
     }
   }
 
   @media (min-width: 1024px) {
-    .hero-banner-wrapper .hero-banner .hero {
-      padding: 2rem 3rem; /* Large screen padding */
+    .container {
+      padding: 0 3rem;
     }
   }
 
-  .hero-banner-wrapper .hero-banner .hero .hero-content {
+  .hero-content {
     width: 100%;
-    max-width: 48rem;
-    margin: 0 auto;
-    
-    /* Ensure content doesn't inherit any global padding */
-    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  /* Responsive adjustments for very small screens */
+  .content-wrapper {
+    width: 100%;
+    max-width: 48rem;
+    text-align: center;
+  }
+
+  .hero-banner h1 {
+    font-family: var(--font-primary, 'Montserrat', sans-serif);
+    font-weight: 700;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  @media (min-width: 768px) {
+    .hero-banner h1 {
+      font-size: 2.5rem;
+    }
+  }
+
+  .divider {
+    background: white;
+    height: 2px;
+    opacity: 0.3;
+    margin: 0 auto 1rem;
+    width: 6rem;
+  }
+
+  .hero-banner h2 {
+    font-family: var(--font-primary, 'Montserrat', sans-serif);
+    font-weight: 500;
+    font-size: 1.125rem;
+    margin-bottom: 1rem;
+    color: rgba(255, 255, 255, 0.95);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  }
+
+  @media (min-width: 768px) {
+    .hero-banner h2 {
+      font-size: 1.25rem;
+    }
+  }
+
+  .description {
+    margin: 0 auto 2rem;
+    max-width: 600px;
+    line-height: 1.6;
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.9);
+    opacity: 0.9;
+  }
+
+  @media (min-width: 768px) {
+    .description {
+      font-size: 1.1rem;
+    }
+  }
+
+  .cta-button {
+    display: inline-block;
+    background-color: #cd353f;
+    padding: 0.75rem 2rem;
+    font-weight: 600;
+    font-size: 1.125rem;
+    color: white;
+    text-decoration: none;
+    border-radius: 0.375rem;
+    transition: background-color 0.3s, transform 0.2s;
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  .cta-button:hover {
+    background-color: #b6313a;
+    transform: translateY(-2px);
+  }
+
+  /* Responsive adjustments for small screens */
   @media (max-width: 480px) {
     .hero-banner {
-      /* Slightly smaller on very small screens but maintain min-height */
       height: 55vh;
       min-height: 450px;
       max-height: 700px;
     }
-    
-    .hero-banner-wrapper .hero-banner .hero {
-      padding: 1.5rem 0.75rem; /* Minimal but sufficient padding for small screens */
+
+    .container {
+      padding: 0 0.75rem;
+    }
+
+    .hero-banner h1 {
+      font-size: 1.75rem;
+    }
+
+    .hero-banner h2 {
+      font-size: 1rem;
+    }
+
+    .description {
+      font-size: 0.95rem;
+    }
+
+    .cta-button {
+      width: 100%;
+      max-width: 280px;
+      font-size: 1rem;
+      padding: 0.75rem 1rem;
     }
   }
 
   /* Handle very large screens */
   @media (min-width: 1440px) {
     .hero-banner {
-      /* Cap at max-height for very large screens */
       height: 65vh;
       min-height: 450px;
       max-height: 700px;
     }
-    
-    .hero-banner-wrapper .hero-banner .hero {
-      padding: 2rem 4rem; /* Extra padding for very large screens */
+
+    .container {
+      padding: 0 4rem;
     }
   }
 
   /* Handle ultra-wide screens */
   @media (min-width: 1920px) {
-    .hero-banner-wrapper .hero-banner .hero {
-      max-width: 1400px; /* Larger max-width for ultra-wide screens */
-      padding: 2rem 5rem;
+    .container {
+      max-width: 1400px;
+      padding: 0 5rem;
     }
   }
-</style>
-
-<div class="hero-banner-wrapper">
-  <section class="hero-banner w-full" style="--bg-image: url('{backgroundImage}')">
-    <div class="hero">
-      <div class="hero-content text-center">
-        <div class="max-w-3xl mx-auto">
-          <h1 class="text-4xl md:text-5xl font-bold mb-4">{title}</h1>
-          <div class="divider bg-white h-0.5 opacity-30 mx-auto w-24 mb-4"></div>
-          <p class="text-lg md:text-xl mb-4">{subtitle}</p>
-          <p class="py-4 opacity-90 mb-6">{description}</p>
-          <a href={buttonHref} class="btn btn-primary">{buttonText}</a>
-        </div>
-      </div>
-    </div>
-  </section>
-</div> 
+</style> 

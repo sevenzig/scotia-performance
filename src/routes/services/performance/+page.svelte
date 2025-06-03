@@ -119,21 +119,21 @@
 </script>
 
 <svelte:head>
-  <title>Performance Services | Scotia Performance - Engine Tuning, Dyno, Custom Builds</title>
-  <meta name="description" content="Professional performance services in Scotia, NY. ECU tuning, dyno services, custom engine builds, suspension upgrades, and more. Expert performance modifications for all vehicles." />
-  <meta name="keywords" content="performance tuning, ECU tuning, dyno services, engine building, suspension upgrades, brake upgrades, Scotia NY, automotive performance" />
+  <title>Performance Services | Scotia Performance - Engine Tuning, Diagnostics, Custom Builds</title>
+  <meta name="description" content="Professional performance services in Scotia, NY. ECU tuning, performance diagnostics, custom engine builds, suspension upgrades, and more. Expert performance modifications for all vehicles." />
+  <meta name="keywords" content="performance tuning, ECU tuning, performance diagnostics, engine building, suspension upgrades, brake upgrades, Scotia NY, automotive performance" />
   
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Performance Services | Scotia Performance" />
-  <meta property="og:description" content="Professional automotive performance services including ECU tuning, dyno services, and custom engine builds in Scotia, NY." />
+  <meta property="og:description" content="Professional automotive performance services including ECU tuning, performance diagnostics, and custom engine builds in Scotia, NY." />
   <meta property="og:image" content="/images/hero-bg.jpg" />
   <meta property="og:url" content="https://scotiaperformance.com/services/performance" />
   
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image" />
   <meta property="twitter:title" content="Performance Services | Scotia Performance" />
-  <meta property="twitter:description" content="Professional automotive performance services including ECU tuning, dyno services, and custom engine builds in Scotia, NY." />
+  <meta property="twitter:description" content="Professional automotive performance services including ECU tuning, performance diagnostics, and custom engine builds in Scotia, NY." />
   <meta property="twitter:image" content="/images/hero-bg.jpg" />
   
   <!-- Structured Data for SEO -->
@@ -142,7 +142,7 @@
       "@context": "https://schema.org",
       "@type": "AutoRepair",
       "name": "Scotia Performance - Performance Services",
-      "description": "Professional automotive performance services including ECU tuning, dyno services, suspension upgrades, and custom engine builds",
+      "description": "Professional automotive performance services including ECU tuning, performance diagnostics, suspension upgrades, and custom engine builds",
       "url": "https://scotiaperformance.com/services/performance",
       "telephone": "(518) 280-1698",
       "address": {
@@ -158,7 +158,7 @@
         "latitude": "42.8264",
         "longitude": "-73.9593"
       },
-      "serviceType": ["ECU Tuning", "Dyno Services", "Engine Building", "Suspension Upgrades", "Performance Modifications"],
+      "serviceType": ["ECU Tuning", "Performance Diagnostics", "Engine Building", "Suspension Upgrades", "Performance Modifications"],
       "areaServed": {
         "@type": "Place",
         "name": "Scotia, NY and surrounding areas"
@@ -171,7 +171,7 @@
 <HeroBanner 
   title="Performance Services"
   subtitle="Unleash Your Vehicle's True Potential"
-  description="Expert performance tuning, custom engine builds, dyno services, and comprehensive modifications to maximize your vehicle's power, handling, and efficiency. Professional results backed by 15+ years of experience."
+  description="Expert performance tuning, custom engine builds, performance diagnostics, and comprehensive modifications to maximize your vehicle's power, handling, and efficiency. Professional results backed by 15+ years of experience."
   buttonText="Schedule Consultation"
   buttonHref="tel:5182801698"
   backgroundImage="/images/hero-bg.jpg"
@@ -343,10 +343,11 @@
 
   /* Inner content container mixin with proper specificity */
   @mixin inner-content-container {
-    max-width: 1200px;
-    margin: 0 auto;
+    margin: 0;
     padding: 0 1rem; /* Mobile padding */
     box-sizing: border-box;
+    /* Override global container styles using component specificity */
+    width: 100%;
     
     @include md {
       padding: 0 2rem; /* Desktop padding */
@@ -355,15 +356,12 @@
     @include lg {
       padding: 0 3rem; /* Large screen padding */
     }
-    
-    /* Override global container styles using component specificity */
-    width: 100%;
   }
 
   // Stats Section - Full width with component-controlled styling
   .stats-section {
     @include full-width-section(linear-gradient(135deg, $scotia-light 0%, $white 100%));
-    padding: $spacing-12 0;
+    padding: $spacing-8 0 $spacing-2 0;
 
     /* Component-specific container override using high specificity */
     &.stats-section .container {
@@ -409,7 +407,7 @@
   // Featured Services Section - Full width with component-controlled styling
   .featured-services {
     @include full-width-section($white);
-    padding: $spacing-16 0;
+    padding: $spacing-8 0 $spacing-2 0;
 
     /* Component-specific container override using high specificity */
     &.featured-services .container {
@@ -665,9 +663,12 @@
 
     h3 {
       @include heading-3;
-      color: $scotia-blue;
-      margin-bottom: $spacing-2;
-      font-size: $font-size-lg;
+      
+      & {
+        color: $scotia-blue;
+        margin-bottom: $spacing-2;
+        font-size: $font-size-lg;
+      }
 
       @include md {
         font-size: $font-size-xl;
@@ -762,7 +763,7 @@
       border-radius: 0;
       
       @include md {
-        padding: $spacing-12 2rem;
+        padding: 0;
       }
     }
 
@@ -784,7 +785,7 @@
     :global(.cta-content) {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 0 1rem;
+      padding: 0;
       
       @include md {
         padding: 0 2rem;

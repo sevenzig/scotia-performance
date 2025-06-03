@@ -37,26 +37,41 @@
   <link rel="preload" fetchpriority="high" href="/images/garage.jpg" as="image" type="image/jpeg">
 </svelte:head>
 
-<!-- Hero Section - Using the Hero component -->
+<!-- Hero Section - Critical above-the-fold content -->
 <Hero />
 
-<!-- Rotating Tagline Section -->
-<RotatingTagline />
+<!-- Below-the-fold content with performance optimizations -->
+<div class="below-fold">
+	<!-- Rotating Tagline Section -->
+	<div class="lazy-section">
+		<RotatingTagline />
+	</div>
 
-<!-- Performance Services Section - Using the PerformanceServices component -->
-<PerformanceServices />
+	<!-- Performance Services Section -->
+	<div class="lazy-section heavy-component">
+		<PerformanceServices />
+	</div>
 
-<!-- Services Section - Using the ServicesOffered component -->
-<ServicesOffered />
+	<!-- Services Section -->
+	<div class="lazy-section">
+		<ServicesOffered />
+	</div>
 
-<!-- Manufacturers Section - Using the HomepageManufacturers component -->
-<HomepageManufacturers />
+	<!-- Manufacturers Section -->
+	<div class="lazy-section heavy-component">
+		<HomepageManufacturers />
+	</div>
 
-<!-- Diagnostic Help Section - Using the DiagnosticHelp component -->
-<DiagnosticHelp />
+	<!-- Diagnostic Help Section -->
+	<div class="lazy-section">
+		<DiagnosticHelp />
+	</div>
 
-<!-- Reviews Section - Using the Reviews component -->
-<Reviews />
+	<!-- Reviews Section -->
+	<div class="lazy-section">
+		<Reviews />
+	</div>
+</div>
 
 <style>
   /* Page-level styles can be added here if needed */
