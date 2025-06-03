@@ -6,8 +6,8 @@
       description: "Professional ECU tuning and calibration for maximum power and efficiency. Custom mapping for your specific vehicle and performance goals."
     },
     {
-      title: "Dyno Tuning",
-      description: "Precision dynamometer testing and tuning for optimal performance. All-wheel drive and hub dyno capabilities with detailed power analysis."
+      title: "Forced Induction Systems",
+      description: "Turbocharger and supercharger installations, upgrades, and tuning. Complete forced induction solutions from bolt-on kits to custom turbo systems."
     },
     {
       title: "Engine Performance",
@@ -22,8 +22,8 @@
       description: "Brand-specific tuning expertise for Corvette, VW/Audi, Mercedes, Subaru, and other performance vehicles."
     },
     {
-      title: "Automotive Repair",
-      description: "Expert automotive repair and maintenance services. Diagnostic services and preventive maintenance for performance vehicles."
+      title: "Suspension & Handling Upgrades",
+      description: "Complete suspension system upgrades including coilovers, sway bars, strut braces, and alignment services to improve handling and vehicle dynamics."
     }
   ];
 </script>
@@ -178,10 +178,10 @@
     bottom: 0;
     background: linear-gradient(
       110deg,
-      transparent 20%,
-      var(--shimmer-color) 40%,
-      var(--shimmer-color) 60%,
-      transparent 80%
+      transparent 25%,
+      var(--shimmer-color) 45%,
+      var(--shimmer-color) 55%,
+      transparent 75%
     );
     transform: translateX(-100%);
     transition: transform 0.6s ease;
@@ -189,6 +189,8 @@
     pointer-events: none;
     border-radius: 0.75rem;
     opacity: 0;
+    /* Constrain shimmer within card boundaries */
+    clip-path: inset(0 0 0 0 round 0.75rem);
   }
 
   .performance-service-card:hover {

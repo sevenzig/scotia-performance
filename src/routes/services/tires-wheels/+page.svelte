@@ -93,14 +93,14 @@
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Tire & Wheel Services | Scotia Performance Auto" />
   <meta property="og:description" content="Professional tire and wheel services including performance tires, custom wheels, and precision alignment in Scotia, NY." />
-  <meta property="og:image" content="/images/tires-wheels-hero.jpg" />
+  <meta property="og:image" content="/images/garage.jpg" />
   <meta property="og:url" content="https://scotiaperformance.com/services/tires-wheels" />
   
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image" />
   <meta property="twitter:title" content="Tire & Wheel Services | Scotia Performance Auto" />
   <meta property="twitter:description" content="Professional tire and wheel services including performance tires, custom wheels, and precision alignment in Scotia, NY." />
-  <meta property="twitter:image" content="/images/tires-wheels-hero.jpg" />
+  <meta property="twitter:image" content="/images/garage.jpg" />
   
   <!-- Structured Data for SEO -->
   <script type="application/ld+json">
@@ -140,7 +140,7 @@
   description="Complete tire and wheel services from performance compounds to lightweight racing wheels. Our expertise covers everything from street performance to track-day preparation with professional installation and precision alignment."
   buttonText="Get Quote"
   buttonHref="tel:5182801698"
-  backgroundImage="/images/tires-wheels-hero.jpg"
+  backgroundImage="/images/garage.jpg"
 />
 
 <main class="tires-wheels-page">

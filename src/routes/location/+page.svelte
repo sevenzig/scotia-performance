@@ -763,8 +763,7 @@
         grid-template-columns: 1fr;
       }
 
-      .btn-primary,
-      .btn-secondary {
+      .btn-primary {
         width: 100%;
         justify-content: center;
       }

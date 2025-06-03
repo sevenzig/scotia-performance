@@ -59,48 +59,5 @@
 <Reviews />
 
 <style>
-  /* Main Container */
-  .container {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
-  }
-  
-  /* Loading Spinner */
-  .loading-spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid rgba(0, 0, 0, 0.1);
-    border-left-color: #1e3a8a;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-  }
-  
-  /* Apply content-visibility to improve rendering performance */
-  @supports (content-visibility: auto) {
-    .reviews-grid:not(.visible) {
-      content-visibility: auto;
-      contain-intrinsic-size: auto 400px;
-    }
-  }
-  
-  /* Respect reduced motion preferences */
-  @media (prefers-reduced-motion: reduce) {
-    .loading-spinner {
-      animation: none;
-      border-left-color: #1e3a8a;
-    }
-  }
-  
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
-  
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    .reviews-grid {
-      grid-template-columns: 1fr;
-    }
-  }
+  /* Page-level styles can be added here if needed */
 </style>

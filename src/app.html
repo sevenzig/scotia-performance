@@ -43,7 +43,7 @@
 		<link rel="dns-prefetch" href="https://fonts.gstatic.com" />
 		
 		<!-- Inline critical CSS for faster render -->
-		<style>
+		<style %sveltekit.nonce%>
 			/* Critical CSS for initial render */
 			:root {
 				--primary-color: #1e3a8a;
@@ -102,7 +102,7 @@
 		<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Almarai:wght@300;400;700&display=swap" /></noscript>
 		
 		<!-- Font display CSS -->
-		<style>
+		<style %sveltekit.nonce%>
 			@font-face {
 				font-family: 'Montserrat';
 				font-style: normal;
@@ -125,8 +125,21 @@
 	<body data-sveltekit-preload-data="tap" data-sveltekit-preload-code="hover">
 		<div style="display: contents">%sveltekit.body%</div>
 		
+		<!-- Disable scroll restoration as early as possible -->
+		<script %sveltekit.nonce%>
+			console.log('🚀 app.html script executing');
+			// Disable browser scroll restoration immediately
+			if ('scrollRestoration' in history) {
+				console.log('📜 app.html: Setting scrollRestoration to manual');
+				history.scrollRestoration = 'manual';
+			} else {
+				console.log('⚠️ app.html: scrollRestoration not supported');
+			}
+			console.log('📍 app.html: Initial scroll position:', window.scrollY || 0);
+		</script>
+		
 		<!-- Optimized script loading -->
-		<script type="module">
+		<script type="module" %sveltekit.nonce%>
 			// Enable modern image loading
 			if ('loading' in HTMLImageElement.prototype) {
 				document.documentElement.classList.add('loading-supported');

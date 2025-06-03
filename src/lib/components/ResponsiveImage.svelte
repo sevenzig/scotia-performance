@@ -2,6 +2,28 @@
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
   
+  // Type definitions for component props
+  interface ImageSource {
+    srcset: string;
+    type?: string;
+    sizes?: string;
+    media?: string;
+  }
+  
+  interface Props {
+    src: string;
+    alt?: string;
+    width?: number;
+    height?: number;
+    sources?: ImageSource[];
+    className?: string;
+    loading?: 'lazy' | 'eager';
+    decoding?: 'async' | 'sync' | 'auto';
+    fetchPriority?: 'auto' | 'high' | 'low';
+    eager?: boolean;
+    thumb?: string;
+  }
+  
   // Props for component
   const {
     src,
@@ -15,7 +37,7 @@
     fetchPriority = 'auto',
     eager = false,
     thumb = ''
-  } = $props();
+  }: Props = $props();
 
   // Track if image has loaded
   let isLoaded = $state(false);

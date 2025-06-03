@@ -104,14 +104,14 @@
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Repair Services | Scotia Performance Auto" />
   <meta property="og:description" content="Professional automotive repair services including engine repair, transmission service, and brake repair in Scotia, NY." />
-  <meta property="og:image" content="/images/repair-hero.jpg" />
+  <meta property="og:image" content="/images/mechanic.jpg" />
   <meta property="og:url" content="https://scotiaperformance.com/services/repair" />
   
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image" />
   <meta property="twitter:title" content="Repair Services | Scotia Performance Auto" />
   <meta property="twitter:description" content="Professional automotive repair services including engine repair, transmission service, and brake repair in Scotia, NY." />
-  <meta property="twitter:image" content="/images/repair-hero.jpg" />
+  <meta property="twitter:image" content="/images/mechanic.jpg" />
   
   <!-- Structured Data for SEO -->
   <script type="application/ld+json">
@@ -151,7 +151,7 @@
   description="Comprehensive automotive repair services from engine diagnostics to transmission rebuilds. Our ASE-certified technicians use advanced diagnostic equipment and quality parts to get you back on the road safely."
   buttonText="Schedule Repair"
   buttonHref="tel:5182801698"
-  backgroundImage="/images/repair-hero.jpg"
+  backgroundImage="/images/mechanic.jpg"
 />
 
 <main class="repair-page">

@@ -39,10 +39,16 @@
   // Handle accordion expansion from URL hash
   function handleHashChange() {
     const hash = window.location.hash.slice(1); // Remove # symbol
+    console.log('🔗 handleHashChange called with hash:', hash);
+    
+    // Only proceed if there's actually a hash and it's a valid service
     if (hash && isValidService(hash)) {
+      console.log('✅ Valid service hash detected:', hash);
+      
       // Expand the accordion item that matches the hash
       openAccordionItems.add(hash);
       openAccordionItems = new Set(openAccordionItems);
+      console.log('📂 Accordion items now open:', Array.from(openAccordionItems));
       
       // Wait for Svelte's reactivity to update the DOM
       setTimeout(() => {
@@ -50,19 +56,31 @@
         const element = document.getElementById(hash);
         const accordionContent = element?.querySelector('.accordion-content');
         
+        console.log('🔍 Looking for element:', hash, 'found:', !!element);
+        console.log('📋 Accordion content found:', !!accordionContent);
+        console.log('🎯 Accordion expanded:', accordionContent?.classList.contains('expanded'));
+        
         if (element && accordionContent?.classList.contains('expanded')) {
           // Accordion is expanded, wait for animation to complete then scroll
+          console.log('⏳ Waiting for animation, then scrolling...');
           setTimeout(() => {
+            console.log('📍 Scrolling to element. Current scroll:', window.scrollY);
             element.scrollIntoView({ 
               behavior: 'smooth', 
               block: 'start' 
             });
+            setTimeout(() => {
+              console.log('📍 After scroll:', window.scrollY);
+            }, 100);
           }, 350); // Wait for 300ms transition + buffer
         } else if (element) {
           // Accordion not expanded yet, try again
+          console.log('🔄 Accordion not expanded yet, retrying...');
           setTimeout(() => handleHashChange(), 50);
         }
       }, 10); // Small delay for Svelte reactivity
+    } else {
+      console.log('❌ Invalid or no hash:', hash, 'Valid services:', serviceIds);
     }
   }
 
@@ -70,15 +88,31 @@
   $effect(() => {
     if (typeof window === 'undefined') return;
     
-    // Handle initial page load with hash
-    const handleInitial = () => handleHashChange();
-    setTimeout(handleInitial, 100);
+    console.log('🎬 Performance page $effect triggered');
+    
+    // Handle initial page load with hash (only if hash exists and is valid)
+    // The global layout handles scroll restoration for normal navigation
+    const initialHash = window.location.hash.slice(1);
+    console.log('🏁 Initial hash on page load:', initialHash);
+    
+    if (initialHash && isValidService(initialHash)) {
+      console.log('⏰ Setting up initial hash handler with 200ms delay');
+      const handleInitial = () => {
+        console.log('🎯 Handling initial hash after delay');
+        handleHashChange();
+      };
+      setTimeout(handleInitial, 200); // Slightly longer delay to work with global scroll restoration
+    } else {
+      console.log('🚫 No valid initial hash found');
+    }
     
     // Listen for hash changes
+    console.log('👂 Adding hashchange event listener');
     window.addEventListener('hashchange', handleHashChange);
     
     // Cleanup on component destroy
     return () => {
+      console.log('🧹 Cleaning up hashchange event listener');
       window.removeEventListener('hashchange', handleHashChange);
     };
   });
@@ -93,14 +127,14 @@
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Performance Services | Scotia Performance" />
   <meta property="og:description" content="Professional automotive performance services including ECU tuning, dyno services, and custom engine builds in Scotia, NY." />
-  <meta property="og:image" content="/images/performance-hero.jpg" />
+  <meta property="og:image" content="/images/hero-bg.jpg" />
   <meta property="og:url" content="https://scotiaperformance.com/services/performance" />
   
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image" />
   <meta property="twitter:title" content="Performance Services | Scotia Performance" />
   <meta property="twitter:description" content="Professional automotive performance services including ECU tuning, dyno services, and custom engine builds in Scotia, NY." />
-  <meta property="twitter:image" content="/images/performance-hero.jpg" />
+  <meta property="twitter:image" content="/images/hero-bg.jpg" />
   
   <!-- Structured Data for SEO -->
   <script type="application/ld+json">
@@ -140,7 +174,7 @@
   description="Expert performance tuning, custom engine builds, dyno services, and comprehensive modifications to maximize your vehicle's power, handling, and efficiency. Professional results backed by 15+ years of experience."
   buttonText="Schedule Consultation"
   buttonHref="tel:5182801698"
-  backgroundImage="/images/performance-hero.jpg"
+  backgroundImage="/images/hero-bg.jpg"
 />
 
 <main class="performance-page">
@@ -281,18 +315,60 @@
   @use '../../../scss/core/mixins' as *;
 
   .performance-page {
+    /* Component-level override using specificity instead of !important */
     .container {
       width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0;
+      max-width: none; /* Override global max-width constraints */
+      margin: 0; /* Override global margin */
+      padding: 0; /* Override global padding completely */
     }
   }
 
-  // Stats Section
+  /* Full-width section wrapper mixin */
+  @mixin full-width-section($bg-color: transparent) {
+    /* Break out of parent container constraints */
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
+    width: 100vw;
+    background-color: $bg-color;
+    
+    /* Ensure no overflow issues */
+    overflow-x: hidden;
+    
+    /* Reset any inherited constraints */
+    margin-top: 0;
+    margin-bottom: 0;
+    box-sizing: border-box;
+  }
+
+  /* Inner content container mixin with proper specificity */
+  @mixin inner-content-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem; /* Mobile padding */
+    box-sizing: border-box;
+    
+    @include md {
+      padding: 0 2rem; /* Desktop padding */
+    }
+    
+    @include lg {
+      padding: 0 3rem; /* Large screen padding */
+    }
+    
+    /* Override global container styles using component specificity */
+    width: 100%;
+  }
+
+  // Stats Section - Full width with component-controlled styling
   .stats-section {
+    @include full-width-section(linear-gradient(135deg, $scotia-light 0%, $white 100%));
     padding: $spacing-12 0;
-    background: linear-gradient(135deg, $scotia-light 0%, $white 100%);
+
+    /* Component-specific container override using high specificity */
+    &.stats-section .container {
+      @include inner-content-container;
+    }
   }
 
   .stats-grid {
@@ -330,10 +406,15 @@
     }
   }
 
-  // Featured Services Section
+  // Featured Services Section - Full width with component-controlled styling
   .featured-services {
+    @include full-width-section($white);
     padding: $spacing-16 0;
-    background-color: $white;
+
+    /* Component-specific container override using high specificity */
+    &.featured-services .container {
+      @include inner-content-container;
+    }
 
     h2 {
       @include heading-1;
@@ -360,18 +441,18 @@
     margin-bottom: $spacing-8;
   }
 
-  // Override ServiceCard styling to match PerformanceServices.svelte
-  :global(.services-grid .service-card) {
+  // Override ServiceCard styling with proper global selector
+  :global(.performance-page .services-grid .service-card) {
     background-color: $white;
-    padding: $spacing-4 !important;
+    padding: $spacing-4;
     border-radius: 0.75rem;
     border: 1px solid rgba($scotia-gray, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
     position: relative;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    height: auto !important;
-    min-height: 220px !important;
-    max-height: 260px !important;
+    height: auto;
+    min-height: 220px;
+    max-height: 260px;
     
     /* CSS Custom Properties for hover effects */
     --accent-color: #{$scotia-blue};
@@ -430,37 +511,37 @@
     }
   }
 
-  :global(.services-grid .service-card__icon) {
-    margin-bottom: $spacing-2 !important;
+  :global(.performance-page .services-grid .service-card__icon) {
+    margin-bottom: $spacing-2;
     color: $scotia-blue;
-    flex-shrink: 0 !important;
+    flex-shrink: 0;
     
     svg {
-      width: 32px !important;
-      height: 32px !important;
+      width: 32px;
+      height: 32px;
     }
   }
 
-  :global(.services-grid .service-card__title) {
+  :global(.performance-page .services-grid .service-card__title) {
     font-family: $font-primary;
     font-weight: $font-weight-semibold;
-    font-size: $font-size-base !important;
+    font-size: $font-size-base;
     color: $scotia-blue;
-    margin-bottom: $spacing-2 !important;
-    line-height: 1.2 !important;
-    flex-shrink: 0 !important;
+    margin-bottom: $spacing-2;
+    line-height: 1.2;
+    flex-shrink: 0;
   }
 
-  :global(.services-grid .service-card__description) {
+  :global(.performance-page .services-grid .service-card__description) {
     color: $scotia-gray;
-    font-size: $font-size-xs !important;
-    margin-bottom: $spacing-2 !important;
-    line-height: 1.4 !important;
+    font-size: $font-size-xs;
+    margin-bottom: $spacing-2;
+    line-height: 1.4;
     flex-grow: 1;
-    overflow-y: auto !important;
+    overflow-y: auto;
   }
 
-  :global(.services-grid .service-card__link) {
+  :global(.performance-page .services-grid .service-card__link) {
     display: inline-flex; // Show the link
     align-items: center;
     color: $scotia-blue;
@@ -492,10 +573,15 @@
     }
   }
 
-  // Accordion Section
+  // Accordion Section - Full width with component-controlled styling
   .services-accordion {
+    @include full-width-section($scotia-light);
     padding: $spacing-16 0;
-    background-color: $scotia-light;
+
+    /* Component-specific container override using high specificity */
+    &.services-accordion .container {
+      @include inner-content-container;
+    }
 
     h2 {
       @include heading-1;
@@ -666,6 +752,50 @@
     margin-top: $spacing-6;
   }
 
+  // Full-width CallToAction styling with component encapsulation
+  .cta-wrapper {
+    @include full-width-section(transparent);
+    
+    // Use proper global selector placement
+    :global(.cta-section) {
+      margin: 0;
+      border-radius: 0;
+      
+      @include md {
+        padding: $spacing-12 2rem;
+      }
+    }
+
+    // Improve button styling with global scope
+    :global(.cta-button) {
+      white-space: nowrap;
+      font-size: 0.875rem;
+      padding: 0.75rem 1.5rem;
+      width: auto;
+      min-width: max-content;
+
+      @include md {
+        padding: 0.875rem 2rem;
+        font-size: 1rem;
+      }
+    }
+
+    // Content centering with global scope
+    :global(.cta-content) {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+      
+      @include md {
+        padding: 0 2rem;
+      }
+      
+      @include lg {
+        padding: 0 3rem;
+      }
+    }
+  }
+
   // Responsive adjustments
   @include sm {
     .accordion-header {
@@ -700,19 +830,19 @@
       gap: $spacing-3;
     }
 
-    :global(.services-grid .service-card) {
-      min-height: 200px !important;
-      max-height: 240px !important;
-      padding: $spacing-3 !important;
+    :global(.performance-page .services-grid .service-card) {
+      min-height: 200px;
+      max-height: 240px;
+      padding: $spacing-3;
     }
 
-    :global(.services-grid .service-card__icon svg) {
-      width: 28px !important;
-      height: 28px !important;
+    :global(.performance-page .services-grid .service-card__icon svg) {
+      width: 28px;
+      height: 28px;
     }
 
-    :global(.services-grid .service-card__title) {
-      font-size: $font-size-sm !important;
+    :global(.performance-page .services-grid .service-card__title) {
+      font-size: $font-size-sm;
     }
   }
 
@@ -731,7 +861,7 @@
     }
 
     // Disable animations on service cards for reduced motion
-    :global(.services-grid .service-card) {
+    :global(.performance-page .services-grid .service-card) {
       transition: none;
 
       &:hover {
@@ -763,40 +893,5 @@
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
     border-width: 0;
-  }
-
-  // Full-width CallToAction styling
-  .cta-wrapper {
-    // Break out of parent container constraints
-    margin-left: calc(-50vw + 50%);
-    margin-right: calc(-50vw + 50%);
-    
-    // Responsive padding adjustment
-    :global(.cta-section) {
-      @include md {
-        padding: $spacing-12 $spacing-8;
-      }
-    }
-
-    // Improve button styling
-    :global(.cta-button) {
-      white-space: nowrap;
-      font-size: 0.875rem;
-      padding: 0.75rem 1.5rem;
-      width: auto;
-      min-width: max-content;
-
-      @include md {
-        padding: 0.875rem 2rem;
-        font-size: 1rem;
-      }
-    }
-
-    // Ensure content stays properly centered
-    :global(.cta-content) {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0;
-    }
   }
 </style>

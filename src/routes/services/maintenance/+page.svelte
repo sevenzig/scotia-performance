@@ -93,14 +93,14 @@
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Maintenance Services | Scotia Performance Auto" />
   <meta property="og:description" content="Professional automotive maintenance services including oil changes, brake service, and scheduled maintenance in Scotia, NY." />
-  <meta property="og:image" content="/images/maintenance-hero.jpg" />
+  <meta property="og:image" content="/images/garage.jpg" />
   <meta property="og:url" content="https://scotiaperformance.com/services/maintenance" />
   
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image" />
   <meta property="twitter:title" content="Maintenance Services | Scotia Performance Auto" />
   <meta property="twitter:description" content="Professional automotive maintenance services including oil changes, brake service, and scheduled maintenance in Scotia, NY." />
-  <meta property="twitter:image" content="/images/maintenance-hero.jpg" />
+  <meta property="twitter:image" content="/images/garage.jpg" />
   
   <!-- Structured Data for SEO -->
   <script type="application/ld+json">
@@ -140,7 +140,7 @@
   description="Expert automotive maintenance services to ensure your vehicle's reliability, safety, and longevity. From routine oil changes to comprehensive inspections, our ASE-certified technicians deliver quality service you can trust."
   buttonText="Schedule Service"
   buttonHref="tel:5182801698"
-  backgroundImage="/images/maintenance-hero.jpg"
+  backgroundImage="/images/garage.jpg"
 />
 
 <main class="maintenance-page">

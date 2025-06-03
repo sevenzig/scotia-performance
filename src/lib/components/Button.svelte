@@ -63,16 +63,35 @@
     border: none;
     outline: none;
     position: relative;
+    text-decoration: none;
   }
   
   /* Button Variants */
   .btn-primary {
     background-color: var(--scotia-blue);
     color: var(--white);
+    text-decoration: none;
   }
   
   .btn-primary:hover:not(:disabled) {
     background-color: #154880;
+    color: var(--white);
+    text-decoration: none;
+  }
+  
+  .btn-primary:focus:not(:disabled) {
+    color: var(--white);
+    text-decoration: none;
+  }
+  
+  .btn-primary:active:not(:disabled) {
+    color: var(--white);
+    text-decoration: none;
+  }
+  
+  .btn-primary:visited {
+    color: var(--white);
+    text-decoration: none;
   }
   
   .btn-secondary {
@@ -136,6 +155,10 @@
   }
 
   /* Button modifiers */
+  .btn-full {
+    width: 100%;
+  }
+
   .btn-no-wrap {
     white-space: nowrap;
   }

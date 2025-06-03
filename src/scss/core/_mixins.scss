@@ -1,4 +1,5 @@
 @use 'sass:color';
+@use 'sass:list';
 @use 'variables' as *;
 
 // Responsive breakpoints
@@ -145,7 +146,7 @@
 @mixin transition($properties...) {
   $transitions: ();
   @each $property in $properties {
-    $transitions: append($transitions, $property $transition-normal, comma);
+    $transitions: list.append($transitions, $property $transition-normal, comma);
   }
   transition: $transitions;
 } 

@@ -217,17 +217,13 @@
           <div class="info-card">
             <div class="info-item">
               <span class="icon-wrapper">
-                {#if mounted}
-                  <Clock size={20} />
-                {/if}
+                <Clock size={20} />
               </span>
               <span class="text">{hoursText}</span>
             </div>
             <div class="info-item">
               <span class="icon-wrapper">
-                {#if mounted}
-                  <MapPin size={20} />
-                {/if}
+                <MapPin size={20} />
               </span>
               <a href="https://www.google.com/maps/search/?api=1&query=24+Sacandaga+Rd,+Scotia,+NY+12302" class="text address-link">24 Sacandaga Rd, Scotia</a>
             </div>
@@ -313,17 +309,13 @@
     <div class="bottom-nav">
       <div class="info-item">
         <span class="icon-wrapper">
-          {#if mounted}
-            <Clock size={18} />
-          {/if}
+          <Clock size={18} />
         </span>
         <span class="hours-text">{hoursText}</span>
       </div>
       <div class="info-item">
         <span class="icon-wrapper">
-          {#if mounted}
-            <MapPin size={18} />
-          {/if}
+          <MapPin size={18} />
         </span>
         <a href="https://www.google.com/maps/search/?api=1&query=24+Sacandaga+Rd,+Scotia,+NY+12302">24 Sacandaga Rd, Scotia</a>
       </div>
