@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { businessHoursService } from '$lib/services/businessHours';
+  import BusinessHoursService from '$lib/services/BusinessHoursService';
   import { Clock, MapPin } from '@lucide/svelte';
   import { onMount } from 'svelte';
   
@@ -9,6 +9,9 @@
   let hoursText = $state('Hours available by phone');
   let isScrolled = $state(false);
   let mounted = $state(false);
+  
+  // Initialize business hours service
+  const businessHoursService = new BusinessHoursService();
   
   // Derived values
   const menuAriaLabel = $derived(
@@ -73,8 +76,7 @@
   function updateBusinessHours() {
     if (mounted) {
       try {
-        const status = businessHoursService.getCurrentStatus();
-        hoursText = status.message || 'Hours available by phone';
+        hoursText = businessHoursService.getHoursMessage();
       } catch (error) {
         console.warn('Error updating business hours:', error);
         hoursText = 'Hours available by phone';
