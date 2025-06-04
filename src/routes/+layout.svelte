@@ -169,16 +169,12 @@
 	:global(html) {
 		height: auto;
 		overflow-y: auto;
-		/* Content visibility support */
-		contain: layout style paint;
 	}
 	
 	:global(body) {
 		height: auto;
 		min-height: 100vh;
 		overflow-y: auto;
-		/* Optimize rendering */
-		contain: layout style;
 	}
 	
 	/* App wrapper optimization */
@@ -186,8 +182,6 @@
 		display: flex;
 		flex-direction: column;
 		min-height: 100vh;
-		/* Improve rendering performance */
-		contain: layout;
 	}
 	
 	/* Basic layout styling with performance optimizations */
@@ -196,8 +190,6 @@
 		min-height: 70vh;
 		padding-top: 80px; /* Match the header height */
 		padding-bottom: 80px; /* Add reasonable bottom padding for mobile CTA */
-		/* Content visibility for better performance */
-		contain: layout style;
 	}
 	
 	/* Remove bottom padding on desktop where CTA is hidden */
@@ -233,8 +225,6 @@
 	:global(.heavy-component) {
 		content-visibility: auto;
 		contain-intrinsic-size: 0 300px;
-		/* Layer promotion for better compositing */
-		will-change: transform;
 	}
 	
 	/* Performance optimization for slow connections */
