@@ -332,13 +332,13 @@
   
   /* Header Core Styles */
   .site-header {
-    position: fixed;
-    top: 0;
+    position: fixed !important;
+    top: 0 !important;
     left: 0;
     right: 0;
     background-color: vars.$white;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    z-index: vars.$z-index-header;
+    z-index: 1000 !important; /* High z-index to ensure it's always on top */
     padding: 0 vars.$spacing-4;
     height: 80px;
     display: flex;
@@ -489,7 +489,7 @@
     overflow-y: auto;
     max-height: 80vh; /* Use vh instead of fit-content */
     transition: opacity 0.2s ease, visibility 0.2s ease;
-    z-index: 98;
+    z-index: 999; /* Just below header */
     
     &.active {
       opacity: 1 !important;
@@ -604,7 +604,7 @@
     height: calc(100vh - 140px); /* Reduced height to make space for bottom CTA */
     background-color: vars.$white;
     overflow-y: auto;
-    z-index: 99;
+    z-index: 998; /* Below header and mega menu */
     transform: translateX(100%);
     transition: transform 0.3s ease-in-out;
     display: flex;
@@ -742,20 +742,20 @@
   /* Bottom CTA for mobile */
   .cta-bottom {
     display: block;
-    position: fixed;
-    bottom: 0;
+    position: fixed !important;
+    bottom: 0 !important;
     left: 0;
     width: 100%;
     background-color: vars.$scotia-red;
     padding: vars.$spacing-3 vars.$spacing-4;
     text-align: center;
-    z-index: 100; /* Higher z-index than mobile menu */
+    z-index: 50; /* Lower than header but above other content */
     box-shadow: 0 -4px 12px rgba(vars.$black, 0.1);
     
+        /* Only show on mobile */
     @include mix.md {
-      display: none;
-    }
-    
+      display: none !important;
+    }    
     .cta-button {
       display: inline-block;
       background-color: vars.$white;
