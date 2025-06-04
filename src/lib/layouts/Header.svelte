@@ -179,11 +179,11 @@
           <div class="menu-section">
             <h3><a href="/services/repair" onclick={closeMegaMenu}>Auto Repair</a></h3>
             <ul>
-              <li><a href="/services/repair#brake-repair" onclick={closeMegaMenu}>Brake Repair</a></li>
-              <li><a href="/services/repair#engine-repair" onclick={closeMegaMenu}>Engine Repair</a></li>
+              <li><a href="/services/repair#brake-repair-service" onclick={closeMegaMenu}>Brake Repair</a></li>
+              <li><a href="/services/repair#engine-repair-diagnostics" onclick={closeMegaMenu}>Engine Repair</a></li>
               <li><a href="/services/repair#transmission-repair" onclick={closeMegaMenu}>Transmission Repair</a></li>
-              <li><a href="/services/repair#ac-service" onclick={closeMegaMenu}>AC Service</a></li>
-              <li><a href="/services/repair#electrical-repair" onclick={closeMegaMenu}>Electrical Repair</a></li>
+              <li><a href="/services/repair#ac-climate-control" onclick={closeMegaMenu}>AC Service</a></li>
+              <li><a href="/services/repair#electrical-system" onclick={closeMegaMenu}>Electrical Repair</a></li>
             </ul>
           </div>
 
@@ -277,8 +277,8 @@
       <div class="menu-section">
         <h3><a href="/services/repair" onclick={closeMobileMenu}>Auto Repair</a></h3>
         <ul>
-          <li><a href="/services/repair#brake-repair" onclick={closeMobileMenu}>Brake Repair</a></li>
-          <li><a href="/services/repair#engine-repair" onclick={closeMobileMenu}>Engine Repair</a></li>
+          <li><a href="/services/repair#brake-repair-service" onclick={closeMobileMenu}>Brake Repair</a></li>
+          <li><a href="/services/repair#engine-repair-diagnostics" onclick={closeMobileMenu}>Engine Repair</a></li>
           <li><a href="/services/repair#transmission-repair" onclick={closeMobileMenu}>Transmission Repair</a></li>
           <li><a href="/services/repair" class="see-all" onclick={closeMobileMenu}>See All Repair Services</a></li>
         </ul>
