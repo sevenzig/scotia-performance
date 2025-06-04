@@ -38,17 +38,16 @@
 <section class="hero">
   <div class="container">
     <div class="info-card">
-      <table class="info-table">
-        <tbody>
-          <tr>
-            <td class="icon-cell">{#if mounted}<Clock size={20} />{/if}</td>
-            <td class="text-cell">{hoursText || 'Hours available by phone'}</td>
-            <td class="spacer-cell"></td>
-            <td class="icon-cell">{#if mounted}<MapPin size={20} />{/if}</td>
-            <td class="text-cell"><a href="https://www.google.com/maps/search/?api=1&query=42.8288669,-73.9672425" class="address-link" style="color: white !important;">24 Sacandaga Rd, Scotia, NY 12302</a></td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="info-items">
+        <div class="info-item">
+          <span class="info-icon">{#if mounted}<Clock size={20} />{/if}</span>
+          <span class="info-text">{hoursText || 'Hours available by phone'}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-icon">{#if mounted}<MapPin size={20} />{/if}</span>
+          <span class="info-text"><a href="https://www.google.com/maps/search/?api=1&query=42.8288669,-73.9672425" class="address-link">24 Sacandaga Rd, Scotia, NY 12302</a></span>
+        </div>
+      </div>
     </div>
     <div class="hero-content">
       <h1>Scotia Performance Auto</h1>
@@ -109,27 +108,44 @@
     }
   }
   
-  .info-table {
-    border-collapse: collapse;
-    width: 100%;
+  .info-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: center;
+    align-items: center;
   }
   
-  .icon-cell {
-    vertical-align: middle;
-    padding: 0;
+  .info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .info-icon {
+    display: flex;
+    align-items: center;
     width: 20px;
+    height: 20px;
   }
   
-  .text-cell {
-    vertical-align: middle;
-    padding: 0 0 0 0.75rem;
+  .info-text {
     font-size: 0.875rem;
     color: rgba(255, 255, 255, 0.9);
     white-space: nowrap;
   }
   
-  .spacer-cell {
-    width: 2rem;
+  /* Mobile responsive - stack items vertically */
+  @media (max-width: 600px) {
+    .info-items {
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    
+    .info-text {
+      white-space: normal;
+      text-align: center;
+    }
   }
   
   .address-link,
@@ -155,19 +171,8 @@
     text-decoration: underline;
   }
   
-  /* More specific selector to override browser defaults */
-  .info-table .text-cell a[href*="google.com"] {
-    color: white;
-    text-decoration: none;
-    transition: color 0.3s;
-  }
-  
-  .info-table .text-cell a[href*="google.com"]:hover {
-    color: white;
-    text-decoration: underline;
-  }
-  
-  .info-table :global(svg) {
+  /* Icon styling */
+  .info-icon :global(svg) {
     stroke: rgba(255, 255, 255, 0.9);
     display: block;
   }
@@ -263,21 +268,5 @@
     }
   }
   
-  /* Mobile responsive for info table */
-  @media (max-width: 600px) {
-    .info-table {
-      width: 100%;
-    }
-    
-    .info-table tr {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 1rem;
-    }
-    
-    .info-table td.spacer-cell {
-      display: none;
-    }
-  }
+
 </style> 
