@@ -8,7 +8,8 @@
     fullWidth = false,
     noBorderRadius = false,
     customPadding = undefined,
-    customMargin = undefined
+    customMargin = undefined,
+    mobileBottomFixed = false
   } = $props<{
     title?: string;
     description?: string;
@@ -19,6 +20,7 @@
     noBorderRadius?: boolean;
     customPadding?: string;
     customMargin?: string;
+    mobileBottomFixed?: boolean;
   }>();
 </script>
 
@@ -26,6 +28,7 @@
   class="cta-section" 
   class:full-width={fullWidth}
   class:no-border-radius={noBorderRadius}
+  class:mobile-bottom-fixed={mobileBottomFixed}
   style:padding={customPadding}
   style:margin={customMargin}
 >
@@ -86,6 +89,29 @@
   .cta-section.no-border-radius {
     border-radius: 0;
   }
+
+  /* Mobile bottom fixed positioning */
+  .cta-section.mobile-bottom-fixed {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    z-index: 1000;
+    border-radius: 0;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(8px);
+  }
+
+  @media (min-width: 768px) {
+    .cta-section.mobile-bottom-fixed {
+      position: static;
+      border-radius: var(--border-radius, 0.25rem);
+      margin: var(--spacing-12, 3rem) 0;
+      box-shadow: none;
+      backdrop-filter: none;
+    }
+  }
   
   .cta-content {
     max-width: 800px;
@@ -124,13 +150,38 @@
     display: inline-block;
     background-color: var(--white, #FFFFFF);
     color: var(--scotia-red, #7F1D1D);
-    padding: var(--spacing-3, 0.75rem) var(--spacing-6, 1.5rem);
+    padding: var(--spacing-4, 1rem) var(--spacing-8, 2rem);
     border-radius: var(--border-radius, 0.25rem);
-    font-weight: var(--font-weight-semibold, 600);
+    font-weight: var(--font-weight-bold, 700);
+    font-size: var(--font-size-lg, 1.125rem);
     text-decoration: none;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
     position: relative;
     overflow: hidden;
+    min-width: 280px;
+    text-align: center;
+    border: 2px solid var(--white, #FFFFFF);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Enhanced mobile styling for fixed bottom CTA */
+  .mobile-bottom-fixed .cta-actions .cta-button {
+    padding: var(--spacing-6, 1.5rem) var(--spacing-8, 2rem);
+    min-width: 320px;
+    font-size: 1.25rem;
+    font-weight: var(--font-weight-bold, 700);
+    border: 3px solid var(--white, #FFFFFF);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  }
+
+  @media (min-width: 768px) {
+    .mobile-bottom-fixed .cta-actions .cta-button {
+      padding: var(--spacing-4, 1rem) var(--spacing-8, 2rem);
+      min-width: 280px;
+      font-size: var(--font-size-lg, 1.125rem);
+      border: 2px solid var(--white, #FFFFFF);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
   }
 
   /* Higher specificity for all link states */

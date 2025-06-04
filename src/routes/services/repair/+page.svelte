@@ -301,6 +301,7 @@
       noBorderRadius={true}
       customMargin="0"
       customPadding="3rem 1rem"
+      mobileBottomFixed={true}
     />
   </div>
 </main>
@@ -311,6 +312,13 @@
   @use '../../../scss/core/mixins' as *;
 
   .repair-page {
+    // Add bottom padding on mobile to account for fixed CTA
+    padding-bottom: 140px;
+    
+    @include md {
+      padding-bottom: 0;
+    }
+    
     .container {
       width: 100%;
       margin: 0;
