@@ -120,19 +120,25 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    min-height: 20px; /* Ensure consistent height */
   }
   
   .info-icon {
     display: flex;
     align-items: center;
+    justify-content: center;
     width: 20px;
     height: 20px;
+    flex-shrink: 0; /* Prevent icon from shrinking */
   }
   
   .info-text {
     font-size: 0.875rem;
     color: rgba(255, 255, 255, 0.9);
     white-space: nowrap;
+    line-height: 1.25; /* Consistent line height */
+    display: flex;
+    align-items: center; /* Align text vertically */
   }
   
   /* Mobile responsive - stack items vertically */
