@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { businessHoursService } from '$lib/services/businessHours.js';
+  import { businessHoursService } from '$lib/services/businessHours';
   import { Clock, MapPin } from '@lucide/svelte';
   import { onMount } from 'svelte';
   
