@@ -35,8 +35,25 @@ const config = {
 		// If your environment is not supported or you settled on a specific environment, switch out the adapter.
 		// See https://kit.svelte.dev/docs/adapters for more information about adapters.
 		adapter: adapter({
-			// Explicitly specify Node.js 20 runtime for Vercel compatibility
-			runtime: 'nodejs20.x'
+			// Runtime configuration following Vercel best practices
+			runtime: 'nodejs20.x',
+			
+			// Regional deployment optimization for better performance
+			regions: ['iad1'], // US East (Virginia) - default for serverless functions
+			
+			// Memory allocation optimization for performance
+			memory: 1024, // 1GB memory allocation (default, can be adjusted based on needs)
+			
+			// Maximum execution duration optimization
+			maxDuration: 10, // 10 seconds for Hobby/Pro accounts
+			
+			// Image optimization configuration following Vercel best practices
+			images: {
+				sizes: [640, 828, 1200, 1920, 3840],
+				formats: ['image/avif', 'image/webp'],
+				minimumCacheTTL: 300, // 5 minutes cache TTL
+				domains: [], // Add your domains here if using external images
+			}
 		}),
 		alias: {
 			$lib: path.resolve('./src/lib')
