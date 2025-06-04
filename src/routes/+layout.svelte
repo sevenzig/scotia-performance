@@ -195,7 +195,7 @@
 		flex: 1;
 		min-height: 70vh;
 		padding-top: 80px; /* Match the header height */
-		padding-bottom: 140px; /* Add bottom padding for mobile CTA */
+		padding-bottom: 80px; /* Add reasonable bottom padding for mobile CTA */
 		/* Content visibility for better performance */
 		contain: layout style;
 	}
