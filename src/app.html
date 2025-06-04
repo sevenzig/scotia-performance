@@ -187,6 +187,9 @@
 				
 				// Critical font loading
 				loadCriticalFonts() {
+					// Only run in browser environment
+					if (typeof window === 'undefined' || typeof document === 'undefined') return;
+					
 					if (document.fonts && 'load' in document.fonts) {
 						document.fonts.load('500 1em Montserrat').then(() => {
 							document.documentElement.classList.add('fonts-loaded');
@@ -196,6 +199,9 @@
 				
 				// Report performance metrics
 				reportPerformance() {
+					// Only run in browser environment
+					if (typeof window === 'undefined') return;
+					
 					if ('performance' in window && 'PerformanceObserver' in window) {
 						try {
 							// First Contentful Paint

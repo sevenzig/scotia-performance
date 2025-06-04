@@ -67,6 +67,9 @@
 	
 	// Load non-critical resources lazily with adaptive loading
 	function lazyLoadResources() {
+		// Only run in browser environment
+		if (typeof window === 'undefined' || typeof navigator === 'undefined' || typeof document === 'undefined') return;
+		
 		// Check connection speed for adaptive loading
 		const connection = (navigator as any).connection;
 		const isSlowConnection = connection && (
@@ -100,7 +103,7 @@
 	
 	// Performance monitoring
 	function trackPerformance() {
-		if (typeof window === 'undefined') return;
+		if (typeof window === 'undefined' || typeof document === 'undefined' || typeof performance === 'undefined') return;
 		
 		performanceMetrics.navigationStart = performance.timeOrigin;
 		
