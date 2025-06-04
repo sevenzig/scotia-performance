@@ -195,8 +195,16 @@
 		flex: 1;
 		min-height: 70vh;
 		padding-top: 80px; /* Match the header height */
+		padding-bottom: 140px; /* Add bottom padding for mobile CTA */
 		/* Content visibility for better performance */
 		contain: layout style;
+	}
+	
+	/* Remove bottom padding on desktop where CTA is hidden */
+	@media (min-width: 768px) {
+		.site-content {
+			padding-bottom: 0;
+		}
 	}
 	
 	/* Navigation transition */

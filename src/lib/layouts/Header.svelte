@@ -747,27 +747,87 @@
     left: 0;
     width: 100%;
     background-color: vars.$scotia-red;
-    padding: vars.$spacing-2 vars.$spacing-3;
+    padding: vars.$spacing-6 vars.$spacing-4;
     text-align: center;
     z-index: 100; /* Higher z-index than mobile menu */
-    box-shadow: 0 -2px 10px rgba(vars.$black, 0.2);
+    box-shadow: 0 -4px 20px rgba(vars.$black, 0.15);
+    backdrop-filter: blur(8px);
     
     @include mix.md {
       display: none;
     }
     
     .cta-button {
-      color: vars.$white;
-      font-weight: vars.$font-weight-semibold;
+      display: inline-block;
+      background-color: vars.$white;
+      color: vars.$scotia-red;
+      font-weight: vars.$font-weight-bold;
+      font-size: vars.$font-size-lg;
       text-decoration: none;
       font-family: vars.$font-primary;
-      width: auto;
-      max-width: 100%;
-      padding: 0 vars.$spacing-2;
-      display: inline-block;
-      white-space: nowrap;
-      text-overflow: ellipsis;
+      padding: vars.$spacing-6 vars.$spacing-8;
+      border-radius: vars.$border-radius-md;
+      min-width: 320px;
+      text-align: center;
+      border: 3px solid vars.$white;
+      box-shadow: 0 6px 20px rgba(vars.$black, 0.25);
+      transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+      position: relative;
       overflow: hidden;
+      
+      /* Shimmer effect */
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(
+          110deg,
+          transparent 20%,
+          rgba(255, 255, 255, 0.6) 40%,
+          rgba(255, 255, 255, 0.6) 60%,
+          transparent 80%
+        );
+        transform: translateX(-100%);
+        transition: transform 0.6s ease;
+        z-index: 1;
+        pointer-events: none;
+        border-radius: vars.$border-radius-md;
+        opacity: 0;
+      }
+      
+      &:hover,
+      &:focus {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 24px rgba(vars.$black, 0.3);
+        background-color: vars.$white;
+        color: vars.$scotia-red;
+        text-decoration: none;
+        
+        &::before {
+          transform: translateX(100%);
+          opacity: 1;
+        }
+      }
+      
+      &:active {
+        transform: translateY(2px);
+        box-shadow: 0 2px 8px rgba(vars.$black, 0.2);
+      }
+      
+      &:not(:hover)::before {
+        transform: translateX(-100%);
+        opacity: 0;
+        transition: transform 0s, opacity 0.2s ease;
+      }
+      
+      /* Ensure text stays above shimmer effect */
+      > * {
+        position: relative;
+        z-index: 2;
+      }
     }
   }
   
