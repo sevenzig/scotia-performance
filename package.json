@@ -46,6 +46,8 @@
     "build": "bun x vite build",
     "preview": "bun x vite preview",
     "prepare": "bun x svelte-kit sync",
+    "clean": "rm -rf .svelte-kit .vercel dist node_modules/.vite node_modules/.cache",
+    "clean:build": "bun run clean && bun install && bun x svelte-kit sync && bun run build",
     "test:unit": "bun x vitest",
     "test": "bun test",
     "lint": "bun x eslint . && bun x prettier --check .",

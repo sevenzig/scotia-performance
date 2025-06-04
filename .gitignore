@@ -36,3 +36,88 @@ Thumbs.db
 # Vite
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Dependencies
+node_modules/
+/.pnp
+.pnp.js
+
+# Production builds
+/build
+/.svelte-kit
+.svelte-kit/
+.vercel/
+dist/
+
+# Environment variables
+.env
+.env.local
+.env.production.local
+.env.development.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# nyc test coverage
+.nyc_output
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Optional REPL history
+.DS_Store
+
+# Build artifacts
+*.tgz
+.cache/
+.parcel-cache/
+
+# TailwindCSS logs  
+tailwindcss-*.log
+
+# Build stats
+stats.html
+
+# Temporary directories
+temp_backup/
+
+# Additional SvelteKit build artifacts
+.svelte-kit/build/
+.svelte-kit/generated/
+.svelte-kit/output/
+.svelte-kit/runtime/
+.svelte-kit/types/
+.vercel/output/

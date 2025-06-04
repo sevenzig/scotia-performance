@@ -31,28 +31,16 @@ const config = {
 	],
 
 	kit: {
-		// adapter-auto only supports some environments, see https://kit.svelte.dev/docs/adapter-auto for a list.
-		// If your environment is not supported or you settled on a specific environment, switch out the adapter.
-		// See https://kit.svelte.dev/docs/adapters for more information about adapters.
 		adapter: adapter({
-			// Runtime configuration following Vercel best practices
 			runtime: 'nodejs20.x',
-			
-			// Regional deployment optimization for better performance
-			regions: ['iad1'], // US East (Virginia) - default for serverless functions
-			
-			// Memory allocation optimization for performance
-			memory: 1024, // 1GB memory allocation (default, can be adjusted based on needs)
-			
-			// Maximum execution duration optimization
-			maxDuration: 10, // 10 seconds for Hobby/Pro accounts
-			
-			// Image optimization configuration following Vercel best practices
+			regions: ['iad1'],
+			memory: 1024,
+			maxDuration: 10,
 			images: {
 				sizes: [640, 828, 1200, 1920, 3840],
 				formats: ['image/avif', 'image/webp'],
-				minimumCacheTTL: 300, // 5 minutes cache TTL
-				domains: [], // Add your domains here if using external images
+				minimumCacheTTL: 300,
+				domains: []
 			}
 		}),
 		alias: {
@@ -61,37 +49,13 @@ const config = {
 		output: {
 			preloadStrategy: 'modulepreload'
 		},
-		// Service worker configuration
 		serviceWorker: {
-			register: true,
-			files: (filepath) => {
-				// Include important static assets in service worker
-				return !/\.(?:png|jpe?g|gif|svg|webp|ico|pdf|zip)$/.test(filepath) || 
-				       filepath.includes('/images/hero-bg.') ||
-				       filepath.includes('/images/garage.') ||
-				       filepath.includes('/favicon.');
-			}
+			register: false // Disabled for faster builds
 		},
 		prerender: {
-			// Prerender static pages for better performance
-			entries: [
-				'/',
-				'/services',
-				'/services/repair',
-				'/services/maintenance', 
-				'/services/performance',
-				'/services/tires-wheels',
-				'/about',
-				'/location'
-			],
-			handleHttpError: ({ path, referrer, message }) => {
-				// Handle errors during prerendering
-				console.warn(`Warning: ${path} failed to prerender (${message})`);
-			},
-			handleMissingId: ({ path, id, message }) => {
-				// Handle missing IDs during prerendering
-				console.warn(`Warning: ${path}#${id} not found (${message})`);
-			}
+			entries: ['/', '/services', '/about', '/location'],
+			handleHttpError: 'warn',
+			handleMissingId: 'warn'
 		},
 		csp: {
 			directives: {

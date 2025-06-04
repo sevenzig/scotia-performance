@@ -10,41 +10,21 @@ export default defineConfig(({ mode }) => {
 	const plugins = [
 		sveltekit(), 
 		tailwindcss(),
-		// Add imagemin for production builds to optimize images
+		// Simplified imagemin for production builds - only optimize essentials
 		mode === 'production' && imagemin({
 			gifsicle: {
-				optimizationLevel: 7,
-				interlaced: false
+				optimizationLevel: 3 // Reduced from 7
 			},
 			optipng: {
-				optimizationLevel: 7
+				optimizationLevel: 3 // Reduced from 7
 			},
 			mozjpeg: {
-				quality: 85,
-				progressive: true
+				quality: 90, // Increased for faster processing
+				progressive: false // Disabled for speed
 			},
-			pngquant: {
-				quality: [0.85, 0.95],
-				speed: 4
-			},
-			svgo: {
-				plugins: [
-					{
-						name: 'removeViewBox',
-						active: false
-					},
-					{
-						name: 'cleanupIDs',
-						active: true
-					},
-					{
-						name: 'removeUnusedNS',
-						active: true
-					}
-				]
-			},
+			// Removed pngquant and svgo for faster builds
 			webp: {
-				quality: 85
+				quality: 90
 			}
 		})
 	].filter(Boolean);
@@ -84,18 +64,12 @@ export default defineConfig(({ mode }) => {
 					drop_console: mode === 'production',
 					drop_debugger: true,
 					ecma: 2020,
-					passes: 3,
-					pure_funcs: ['console.log', 'console.info', 'console.debug', 'console.warn'],
-					reduce_vars: true,
-					reduce_funcs: true,
-					hoist_funs: true,
-					hoist_vars: true
+					passes: 1, // Reduced from 3 passes - major speed improvement
+					pure_funcs: ['console.log', 'console.info', 'console.debug', 'console.warn']
+					// Removed aggressive optimizations for speed
 				},
 				mangle: {
-					safari10: true,
-					properties: {
-						regex: /^_/
-					}
+					safari10: true
 				},
 				format: {
 					comments: false,
@@ -104,58 +78,14 @@ export default defineConfig(({ mode }) => {
 			},
 			rollupOptions: {
 				output: {
-					manualChunks: (id) => {
-						if (id.includes('node_modules/svelte/')) {
-							return 'vendor-svelte';
-						}
-						if (id.includes('node_modules/@sveltejs/')) {
-							return 'vendor-sveltekit';
-						}
-						if (id.includes('node_modules/tailwindcss') || 
-							id.includes('node_modules/postcss') ||
-							id.includes('node_modules/autoprefixer')) {
-							return 'vendor-css';
-						}
-						
-						if (id.includes('node_modules/@lucide/')) {
-							return 'vendor-icons';
-						}
-						if (id.includes('node_modules/daisyui')) {
-							return 'vendor-ui';
-						}
-						
-						if (id.includes('/lib/utils/') || id.includes('/lib/services/')) {
-							return 'app-utils';
-						}
-						if (id.includes('/lib/data/')) {
-							return 'app-data';
-						}
-						if (id.includes('/lib/components/')) {
-							return 'app-components';
-						}
-						
-						if (id.includes('/routes/services/')) {
-							return 'routes-services';
-						}
-						if (id.includes('/routes/')) {
-							return 'routes-misc';
-						}
-						
-						if (id.includes('app.scss') || id.includes('app.css')) {
-							return 'styles-core';
-						}
-						
-						if (id.includes('node_modules')) {
-							return 'vendor-misc';
-						}
+					// Simplified manual chunking - major speed improvement
+					manualChunks: {
+						'vendor-svelte': ['svelte'],
+						'vendor-sveltekit': ['@sveltejs/kit'],
+						'vendor-icons': ['@lucide/svelte']
 					},
-					entryFileNames: (chunkInfo) => {
-						return `entries/[name]-[hash].js`;
-					},
-					chunkFileNames: (chunkInfo) => {
-						const facadeModuleId = chunkInfo.facadeModuleId ? chunkInfo.facadeModuleId.split('/').pop() : 'chunk';
-						return `chunks/[name]-[hash].js`;
-					},
+					entryFileNames: `entries/[name]-[hash].js`,
+					chunkFileNames: `chunks/[name]-[hash].js`,
 					assetFileNames: ({ name }) => {
 						if (/\.(css)$/.test(name ?? '')) {
 							return 'assets/styles/[name]-[hash][extname]';
@@ -163,20 +93,10 @@ export default defineConfig(({ mode }) => {
 						if (/\.(png|jpe?g|gif|svg|webp|avif|ico)$/.test(name ?? '')) {
 							return 'assets/images/[name]-[hash][extname]';
 						}
-						if (/\.(woff2?|eot|ttf|otf)$/.test(name ?? '')) {
-							return 'assets/fonts/[name]-[hash][extname]';
-						}
-						if (/\.(mp4|webm|ogg|mp3|wav|flac|aac)$/.test(name ?? '')) {
-							return 'assets/media/[name]-[hash][extname]';
-						}
-						return 'assets/misc/[name]-[hash][extname]';
+						return 'assets/[name]-[hash][extname]';
 					}
-				},
-				treeshake: {
-					moduleSideEffects: false,
-					propertyReadSideEffects: false,
-					unknownGlobalSideEffects: false
 				}
+				// Removed aggressive tree-shaking for speed
 			}
 		},
 		server: {
